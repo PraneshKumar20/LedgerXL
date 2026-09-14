@@ -9,6 +9,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <title>LedgerFlow — Personal Wealth & Expense Command</title>
     <meta name="description" content="Enterprise-grade personal expense tracker, financial analytics, category envelopes, savings milestones, and subscription radar." />
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('ledgerflow-theme');
+          if (saved === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.documentElement.classList.add('light');
+          } else {
+            document.documentElement.classList.add('dark');
+            document.documentElement.classList.remove('light');
+          }
+        } catch (e) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

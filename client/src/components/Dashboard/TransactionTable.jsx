@@ -260,7 +260,7 @@ export default function TransactionTable({ transactions = [], onEdit, onDelete, 
                           {tx.title}
                         </span>
                         {tx.isRecurring && (
-                          <span className="inline-flex items-center gap-1 text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 px-1.5 py-0.2 rounded-badge font-semibold font-mono-nums uppercase">
+                          <span className="inline-flex items-center gap-1 text-[10px] bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20 px-1.5 py-0.2 rounded-badge font-semibold font-mono-nums uppercase">
                             <Repeat className="h-2.5 w-2.5" /> Recurring
                           </span>
                         )}
@@ -345,7 +345,7 @@ export default function TransactionTable({ transactions = [], onEdit, onDelete, 
                     <div className="flex items-center gap-1.5">
                       <span className="font-medium text-sm text-text-primary truncate">{tx.title}</span>
                       {tx.isRecurring && (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                        <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20">
                           <Repeat className="h-2.5 w-2.5" /> Recurring
                         </span>
                       )}

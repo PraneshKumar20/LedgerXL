@@ -73,11 +73,11 @@ export default function SubscriptionsView({
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
               Monthly Subscription Costs
             </span>
-            <div className="p-1.5 rounded-lg bg-surface-2 border border-border-default/60 text-blue-400">
+            <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-surface-2 dark:border-border-default/60 dark:text-blue-400">
               <Radio className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-[22px] sm:text-[26px] font-bold text-white font-mono mt-2 leading-tight">
+          <p className="text-[22px] sm:text-[26px] font-bold text-text-primary font-mono mt-2 leading-tight">
             <AnimatedCounter value={monthlyBurn} prefix={currencySymbol} />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -91,11 +91,11 @@ export default function SubscriptionsView({
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
               Annual Projected Costs
             </span>
-            <div className="p-1.5 rounded-lg bg-surface-2 border border-border-default/60 text-text-secondary">
+            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-surface-2 dark:border-border-default/60 dark:text-text-secondary">
               <Clock className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-[22px] sm:text-[26px] font-bold text-white font-mono mt-2 leading-tight">
+          <p className="text-[22px] sm:text-[26px] font-bold text-text-primary font-mono mt-2 leading-tight">
             <AnimatedCounter value={annualBurn} prefix={currencySymbol} />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -111,14 +111,14 @@ export default function SubscriptionsView({
             </span>
             <div className={`p-1.5 rounded-lg border ${
               imminentRenewals.length > 0 
-                ? 'bg-rose-950/40 border-rose-800/40 text-rose-400' 
+                ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-950/40 dark:border-rose-800/40 dark:text-rose-400' 
                 : 'bg-surface-2 border-border-default/60 text-text-secondary'
             }`}>
               <Bell className="h-4 w-4" />
             </div>
           </div>
           <p className={`text-[22px] sm:text-[26px] font-bold font-mono mt-2 leading-tight ${
-            imminentRenewals.length > 0 ? 'text-rose-400' : 'text-white'
+            imminentRenewals.length > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-text-primary'
           }`}>
             {imminentRenewals.length}
           </p>
@@ -130,17 +130,17 @@ export default function SubscriptionsView({
 
       {/* Imminent Alert Notice */}
       {imminentRenewals.length > 0 && (
-        <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-800/40 flex items-center justify-between gap-3 shadow-elevation-sm">
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 dark:bg-rose-950/30 dark:border-rose-800/40 flex items-center justify-between gap-3 shadow-elevation-sm">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-rose-900/30 border border-rose-800/40 text-rose-400">
+            <div className="p-2 rounded-lg bg-rose-100 border border-rose-300 text-rose-600 dark:bg-rose-900/30 dark:border-rose-800/40 dark:text-rose-400">
               <AlertTriangle className="h-4 w-4 shrink-0" />
             </div>
             <div>
-              <p className="text-xs font-semibold text-rose-400">
+              <p className="text-xs font-semibold text-rose-600 dark:text-rose-400">
                 Notice: {imminentRenewals.length} subscription{imminentRenewals.length > 1 ? 's' : ''} renew within 3 days
               </p>
               <p className="text-xs text-text-primary font-normal mt-0.5">
-                Total debit: <span className="text-white font-mono font-semibold">{currencySymbol}{formatNumber(imminentRenewals.reduce((a, b) => a + b.amount, 0), currencySymbol)}</span>
+                Total debit: <span className="text-text-primary font-mono font-semibold">{currencySymbol}{formatNumber(imminentRenewals.reduce((a, b) => a + b.amount, 0), currencySymbol)}</span>
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@ export default function SubscriptionsView({
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm">
         <div className="flex items-center justify-between pb-4 border-b border-border-subtle mb-5">
           <div>
-            <h2 className="text-[17px] font-bold text-white tracking-tight flex items-center gap-2">
+            <h2 className="text-[17px] font-bold text-text-primary tracking-tight flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-text-secondary" />
               <span>Active Subscriptions ({recurringSubscriptions.length})</span>
             </h2>
@@ -199,11 +199,11 @@ export default function SubscriptionsView({
                       </div>
 
                       <div className="min-w-0">
-                        <h3 className="text-sm font-semibold text-white truncate">
+                        <h3 className="text-sm font-semibold text-text-primary truncate">
                           {sub.title}
                         </h3>
                         <div className="flex items-center gap-2 mt-1">
-                          <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${categoryStyle.badgeBg} ${categoryStyle.text} ${categoryStyle.border}`}>
+                          <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${categoryStyle.badge}`}>
                             {sub.category}
                           </span>
                         </div>
@@ -220,18 +220,18 @@ export default function SubscriptionsView({
                   <div className="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between gap-2">
                     {/* Renewal Timing */}
                     <div className="flex items-center gap-1.5 text-xs">
-                      <div className={`h-1.5 w-1.5 rounded-full ${isUrgent ? 'bg-rose-400 animate-pulse' : 'bg-emerald-400'}`} />
-                      <span className={isUrgent ? 'text-rose-400 font-medium' : 'text-text-secondary'}>
+                      <div className={`h-1.5 w-1.5 rounded-full ${isUrgent ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'}`} />
+                      <span className={isUrgent ? 'text-rose-600 dark:text-rose-400 font-medium' : 'text-text-secondary'}>
                         {sub.nextBillingDate}
                       </span>
-                      <span className={isUrgent ? 'text-rose-400/80 font-medium' : 'text-text-muted'}>
+                      <span className={isUrgent ? 'text-rose-600/80 dark:text-rose-400/80 font-medium' : 'text-text-muted'}>
                         · {days === 0 ? "Today" : `In ${days}d`}
                       </span>
                     </div>
 
                     {/* Amount */}
                     <div className="flex items-baseline gap-1">
-                      <span className="text-[18px] font-bold text-white font-mono">
+                      <span className="text-[18px] font-bold text-text-primary font-mono">
                         {currencySymbol}{formatNumber(sub.amount, currencySymbol, 2, 2)}
                       </span>
                       <span className="text-xs text-text-secondary font-normal">/month</span>

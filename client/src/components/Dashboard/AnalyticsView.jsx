@@ -11,6 +11,7 @@ import FinancialHealthCard from "./FinancialHealthCard"
 import AnimatedCounter from "../ui/AnimatedCounter"
 import { formatNumber, formatCompactNumber } from "../../utils/formatUtils"
 import { getCategoryStyle } from "../../utils/categoryColors"
+import { useTheme } from "../../context/ThemeContext"
 
 export default function AnalyticsView({
   totalIncome,
@@ -30,6 +31,7 @@ export default function AnalyticsView({
   setActiveCategoryIndex,
   renderActiveShape: propRenderActiveShape
 }) {
+  const { isDark } = useTheme()
   const formatYAxis = (val) => {
     if (val === 0) return '0'
     if (val >= 100000 && currencySymbol === '₹') return `₹${Math.round(val / 100000)}L`
@@ -119,11 +121,11 @@ export default function AnalyticsView({
         <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Savings Rate</span>
-            <div className="p-1 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-800/40">
+            <div className="p-1 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800/40">
               <Percent className="h-3.5 w-3.5" />
             </div>
           </div>
-          <p className="text-[20px] sm:text-[26px] font-semibold text-emerald-400 font-mono mt-1 leading-tight">
+          <p className="text-[20px] sm:text-[26px] font-semibold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight">
             <AnimatedCounter value={savingsRate} decimals={1} suffix="%" />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">Surplus retention ratio</p>
@@ -133,11 +135,11 @@ export default function AnalyticsView({
         <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Average Expense</span>
-            <div className="p-1 rounded-lg bg-blue-950/60 text-blue-400 border border-blue-800/40">
+            <div className="p-1 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-400 dark:border-blue-800/40">
               <Activity className="h-3.5 w-3.5" />
             </div>
           </div>
-          <p className="text-[20px] sm:text-[26px] font-semibold text-white font-mono mt-1 leading-tight">
+          <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight">
             <AnimatedCounter value={avgTransaction} prefix={currencySymbol} />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">Average ticket per expense</p>
@@ -147,11 +149,11 @@ export default function AnalyticsView({
         <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Top Expense Category</span>
-            <div className="p-1 rounded-lg bg-rose-950/60 text-rose-400 border border-rose-800/40">
+            <div className="p-1 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-800/40">
               <TrendingDown className="h-3.5 w-3.5" />
             </div>
           </div>
-          <p className="text-[20px] sm:text-[26px] font-semibold text-rose-400 truncate mt-1 leading-tight">
+          <p className="text-[20px] sm:text-[26px] font-semibold text-rose-600 dark:text-rose-400 truncate mt-1 leading-tight">
             {topCategory.name}
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5 font-mono">
@@ -163,11 +165,11 @@ export default function AnalyticsView({
         <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Categories Used</span>
-            <div className="p-1 rounded-lg bg-indigo-950/60 text-indigo-400 border border-indigo-800/40">
+            <div className="p-1 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-400 dark:border-indigo-800/40">
               <PieIcon className="h-3.5 w-3.5" />
             </div>
           </div>
-          <p className="text-[20px] sm:text-[26px] font-semibold text-white font-mono mt-1 leading-tight">
+          <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight">
             {displayCategories.length}
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">Active partitions</p>
@@ -180,8 +182,8 @@ export default function AnalyticsView({
         <div className="lg:col-span-2 bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
           <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
             <div>
-              <h2 className="text-[16px] font-bold text-white tracking-tight flex items-center gap-2">
-                <Activity className="h-4 w-4 text-blue-400" />
+              <h2 className="text-[16px] font-bold text-text-primary tracking-tight flex items-center gap-2">
+                <Activity className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <span>Cashflow Trends</span>
               </h2>
               <p className="text-xs text-text-secondary font-normal mt-0.5">Income vs expense timeline</p>
@@ -201,11 +203,11 @@ export default function AnalyticsView({
           <div className="h-[185px] pt-2">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={trendData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }} barGap={4}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} opacity={0.6} />
-                <XAxis dataKey="date" stroke="#64748B" fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke="#64748B" fontSize={11} tickLine={false} axisLine={false} tickFormatter={formatYAxis} />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#1e293b" : "#e2e8f0"} vertical={false} opacity={0.7} />
+                <XAxis dataKey="date" stroke={isDark ? "#64748B" : "#94a3b8"} fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke={isDark ? "#64748B" : "#94a3b8"} fontSize={11} tickLine={false} axisLine={false} tickFormatter={formatYAxis} />
                 <Tooltip 
-                  cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                  cursor={{ fill: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)' }}
                   content={<CustomTooltip />}
                 />
                 <Bar 
@@ -232,8 +234,8 @@ export default function AnalyticsView({
         {/* Donut Chart with Centered Animated HUD & Breakdown List */}
         <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm flex flex-col justify-between">
           <div className="pb-2 border-b border-border-subtle">
-            <h2 className="text-sm font-semibold text-white tracking-tight flex items-center gap-2">
-              <PieIcon className="h-4 w-4 text-blue-400" />
+            <h2 className="text-sm font-semibold text-text-primary tracking-tight flex items-center gap-2">
+              <PieIcon className="h-4 w-4 text-brand" />
               <span>Category Allocation</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">Distribution of expenses</p>
@@ -252,7 +254,7 @@ export default function AnalyticsView({
                       outerRadius={68}
                       paddingAngle={2}
                       dataKey="value"
-                      stroke="#0f1523"
+                      stroke={isDark ? "#0f1523" : "#ffffff"}
                       strokeWidth={2}
                       activeIndex={activeCategoryIndex !== null ? activeCategoryIndex : -1}
                       activeShape={renderActiveShape}
@@ -298,7 +300,7 @@ export default function AnalyticsView({
                         >
                           {displayCategories[activeCategoryIndex].name}
                         </span>
-                        <span className="text-[14px] font-bold text-white font-mono leading-tight mt-0.5">
+                        <span className="text-[14px] font-bold text-text-primary font-mono leading-tight mt-0.5">
                           {currencySymbol}{formatNumber(Math.round(displayCategories[activeCategoryIndex].value), currencySymbol, 0, 0)}
                         </span>
                         <span 
@@ -323,7 +325,7 @@ export default function AnalyticsView({
                         <span className="text-[9px] font-semibold uppercase tracking-wider text-text-secondary">
                           TOTAL SPENT
                         </span>
-                        <span className="text-[15px] font-bold text-white font-mono leading-tight mt-0.5">
+                        <span className="text-[15px] font-bold text-text-primary font-mono leading-tight mt-0.5">
                           {currencySymbol}{formatNumber(Math.round(totalCatExpense), currencySymbol, 0, 0)}
                         </span>
                         <span className="text-[10px] text-text-secondary mt-0.5">
@@ -352,11 +354,11 @@ export default function AnalyticsView({
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: cat.color }} />
-                        <span className={`font-medium truncate ${isHovered ? 'text-white font-semibold' : 'text-text-primary'}`}>{cat.name}</span>
+                        <span className={`font-medium truncate ${isHovered ? 'text-text-primary font-semibold' : 'text-text-primary'}`}>{cat.name}</span>
                       </div>
                       <div className="flex items-center gap-3 font-mono shrink-0">
                         <span className="text-text-secondary text-[11px]">{cat.pct}</span>
-                        <span className="font-semibold text-white">
+                        <span className="font-semibold text-text-primary">
                           {currencySymbol}{formatNumber(Math.round(cat.value), currencySymbol, 0, 0)}
                         </span>
                       </div>

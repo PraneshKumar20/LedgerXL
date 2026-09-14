@@ -191,10 +191,10 @@ export default function SubscriptionRadarModal({
                           </div>
                           <div className="space-y-0.5">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-semibold text-white group-hover:text-blue-300 transition-colors">
+                              <span className="text-sm font-semibold text-text-primary group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
                                 {sub.title}
                               </span>
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${categoryStyle.badgeBg} ${categoryStyle.text} ${categoryStyle.border}`}>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${categoryStyle.badge}`}>
                                 {sub.category}
                               </span>
                             </div>
@@ -207,13 +207,13 @@ export default function SubscriptionRadarModal({
 
                         {/* Renewal Countdown Badge & Cost */}
                         <div className="text-right space-y-1">
-                          <p className="font-mono font-bold text-sm text-white">
+                          <p className="font-mono font-bold text-sm text-text-primary">
                             {currencySymbol}{formatNumber(sub.amount, currencySymbol, 2, 2)}
                             <span className="text-xs text-text-secondary font-normal ml-0.5">/month</span>
                           </p>
                           <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full border ${
                             sub.isImminent 
-                              ? 'bg-rose-950/60 border-rose-800/60 text-rose-400' 
+                              ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-950/60 dark:border-rose-800/60 dark:text-rose-400' 
                               : 'bg-surface-2/60 border-border-default/60 text-text-secondary'
                           }`}>
                             <Clock className="h-2.5 w-2.5" />

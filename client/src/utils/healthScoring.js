@@ -80,12 +80,12 @@ export function getGradeFromScore(score = 85) {
       score,
       grade: "A+",
       colorKey: "green",
-      sidebarBadge: "bg-emerald-950/80 border-emerald-800/60 text-emerald-400",
-      sidebarActiveBadge: "bg-emerald-950/90 border-emerald-400/50 text-emerald-300 shadow-sm",
-      badgeClass: "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.25)]",
+      sidebarBadge: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/80 dark:border-emerald-800/60 dark:text-emerald-400",
+      sidebarActiveBadge: "bg-emerald-100 text-emerald-800 border-emerald-300 dark:bg-emerald-950/90 dark:border-emerald-400/50 dark:text-emerald-300 shadow-sm",
+      badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30 shadow-[0_0_12px_rgba(16,185,129,0.25)]",
       barGradient: "bg-gradient-to-r from-emerald-600 via-teal-400 to-emerald-400 shadow-[0_0_14px_rgba(16,185,129,0.5)]",
-      dotColor: "bg-emerald-400",
-      textColor: "text-emerald-400",
+      dotColor: "bg-emerald-500 dark:bg-emerald-400",
+      textColor: "text-emerald-600 dark:text-emerald-400",
       title: "Exceptional Financial Standing",
       desc: "Outstanding savings velocity and cashflow resilience. You're in the top financial health bracket.",
       statusText: "Optimal Tier"
@@ -96,12 +96,12 @@ export function getGradeFromScore(score = 85) {
       score,
       grade: "B",
       colorKey: "yellow",
-      sidebarBadge: "bg-amber-950/80 border-amber-800/60 text-amber-400",
-      sidebarActiveBadge: "bg-amber-950/90 border-amber-400/50 text-amber-300 shadow-sm",
-      badgeClass: "bg-amber-500/15 text-amber-400 border border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.25)]",
+      sidebarBadge: "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/80 dark:border-amber-800/60 dark:text-amber-400",
+      sidebarActiveBadge: "bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/90 dark:border-amber-400/50 dark:text-amber-300 shadow-sm",
+      badgeClass: "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30 shadow-[0_0_12px_rgba(245,158,11,0.25)]",
       barGradient: "bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-400 shadow-[0_0_14px_rgba(245,158,11,0.5)]",
-      dotColor: "bg-amber-400",
-      textColor: "text-amber-400",
+      dotColor: "bg-amber-500 dark:bg-amber-400",
+      textColor: "text-amber-700 dark:text-amber-400",
       title: "Moderate Financial Resilience",
       desc: "Budget headroom is tightening. Consider trimming discretionary spend to strengthen savings buffer.",
       statusText: "Fair Tier"
@@ -111,12 +111,12 @@ export function getGradeFromScore(score = 85) {
     score,
     grade: "C",
     colorKey: "red",
-    sidebarBadge: "bg-rose-950/80 border-rose-800/60 text-rose-400",
-    sidebarActiveBadge: "bg-rose-950/90 border-rose-400/50 text-rose-300 shadow-sm",
-    badgeClass: "bg-rose-500/15 text-rose-400 border border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.25)]",
+    sidebarBadge: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/80 dark:border-rose-800/60 dark:text-rose-400",
+    sidebarActiveBadge: "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/90 dark:border-rose-400/50 dark:text-rose-300 shadow-sm",
+    badgeClass: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30 shadow-[0_0_12px_rgba(244,63,94,0.25)]",
     barGradient: "bg-gradient-to-r from-rose-600 via-red-500 to-rose-400 shadow-[0_0_14px_rgba(244,63,94,0.5)]",
-    dotColor: "bg-rose-400",
-    textColor: "text-rose-400",
+    dotColor: "bg-rose-500 dark:bg-rose-400",
+    textColor: "text-rose-600 dark:text-rose-400",
     title: "High Financial Burn Rate",
     desc: "Expenses exceed recommended thresholds. Audit high recurring burdens and establish budget limits.",
     statusText: "Critical Tier"
@@ -161,22 +161,22 @@ export function getGradeBadgeStyle(gradeOrScore = "A+", isActive = false, scoreV
     return {
       gradeText,
       badgeClass: isActive
-        ? "bg-emerald-950/90 border border-emerald-400/50 text-emerald-300 shadow-sm"
-        : "bg-emerald-950/80 border border-emerald-800/60 text-emerald-400"
+        ? "bg-emerald-100 border border-emerald-300 text-emerald-800 dark:bg-emerald-950/90 dark:border-emerald-400/50 dark:text-emerald-300 shadow-sm"
+        : "bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-950/80 dark:border-emerald-800/60 dark:text-emerald-400"
     }
   }
   if (colorKey === "yellow") {
     return {
       gradeText,
       badgeClass: isActive
-        ? "bg-amber-950/90 border border-amber-400/50 text-amber-300 shadow-sm"
-        : "bg-amber-950/80 border border-amber-800/60 text-amber-400"
+        ? "bg-amber-100 border border-amber-300 text-amber-800 dark:bg-amber-950/90 dark:border-amber-400/50 dark:text-amber-300 shadow-sm"
+        : "bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-950/80 dark:border-amber-800/60 dark:text-amber-400"
     }
   }
   return {
     gradeText,
     badgeClass: isActive
-      ? "bg-rose-950/90 border border-rose-400/50 text-rose-300 shadow-sm"
-      : "bg-rose-950/80 border border-rose-800/60 text-rose-400"
+      ? "bg-rose-100 border border-rose-300 text-rose-800 dark:bg-rose-950/90 dark:border-rose-400/50 dark:text-rose-300 shadow-sm"
+      : "bg-rose-50 border border-rose-200 text-rose-700 dark:bg-rose-950/80 dark:border-rose-800/60 dark:text-rose-400"
   }
 }

@@ -23,37 +23,37 @@ const getGoalStyle = (goal) => {
   const t = (goal.title || "").toLowerCase()
   if (t.includes("emergency") || t.includes("reserve") || t.includes("shield") || t.includes("safe")) {
     return {
-      icon: <Shield className="h-5 w-5 text-blue-400" />,
-      squircle: "bg-blue-500/10 border-blue-500/25 text-blue-400 shadow-[0_0_12px_rgba(59,130,246,0.15)]",
+      icon: <Shield className="h-5 w-5 text-blue-600 dark:text-blue-400" />,
+      squircle: "bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/25 text-blue-600 dark:text-blue-400 shadow-sm dark:shadow-[0_0_12px_rgba(59,130,246,0.15)]",
       barGradient: "bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 shadow-[0_0_10px_rgba(59,130,246,0.35)]",
-      percentBadge: "bg-blue-500/10 text-blue-400 border-blue-500/25",
-      accentColor: "text-blue-400",
+      percentBadge: "bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-500/25",
+      accentColor: "text-blue-600 dark:text-blue-400",
     }
   }
   if (t.includes("vacation") || t.includes("trip") || t.includes("tokyo") || t.includes("kyoto") || t.includes("travel") || t.includes("flight") || t.includes("holiday")) {
     return {
-      icon: <Plane className="h-5 w-5 text-sky-400" />,
-      squircle: "bg-sky-500/10 border-sky-500/25 text-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.15)]",
+      icon: <Plane className="h-5 w-5 text-sky-600 dark:text-sky-400" />,
+      squircle: "bg-sky-50 dark:bg-sky-500/10 border-sky-200 dark:border-sky-500/25 text-sky-600 dark:text-sky-400 shadow-sm dark:shadow-[0_0_12px_rgba(56,189,248,0.15)]",
       barGradient: "bg-gradient-to-r from-sky-600 via-cyan-500 to-blue-400 shadow-[0_0_10px_rgba(56,189,248,0.35)]",
-      percentBadge: "bg-sky-500/10 text-sky-400 border-sky-500/25",
-      accentColor: "text-sky-400",
+      percentBadge: "bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-500/25",
+      accentColor: "text-sky-600 dark:text-sky-400",
     }
   }
   if (t.includes("macbook") || t.includes("laptop") || t.includes("pc") || t.includes("computer") || t.includes("tech") || t.includes("phone")) {
     return {
-      icon: <Laptop className="h-5 w-5 text-indigo-400" />,
-      squircle: "bg-indigo-500/10 border-indigo-500/25 text-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.15)]",
+      icon: <Laptop className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />,
+      squircle: "bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/25 text-indigo-600 dark:text-indigo-400 shadow-sm dark:shadow-[0_0_12px_rgba(99,102,241,0.15)]",
       barGradient: "bg-gradient-to-r from-indigo-600 via-purple-500 to-blue-400 shadow-[0_0_10px_rgba(99,102,241,0.35)]",
-      percentBadge: "bg-indigo-500/10 text-indigo-400 border-indigo-500/25",
-      accentColor: "text-indigo-400",
+      percentBadge: "bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-200 dark:border-indigo-500/25",
+      accentColor: "text-indigo-600 dark:text-indigo-400",
     }
   }
   return {
-    icon: goal.emoji ? <span className="text-lg leading-none">{goal.emoji}</span> : <Target className="h-5 w-5 text-emerald-400" />,
-    squircle: "bg-emerald-500/10 border-emerald-500/25 text-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.15)]",
+    icon: goal.emoji ? <span className="text-lg leading-none">{goal.emoji}</span> : <Target className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />,
+    squircle: "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/25 text-emerald-600 dark:text-emerald-400 shadow-sm dark:shadow-[0_0_12px_rgba(16,185,129,0.15)]",
     barGradient: "bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.35)]",
-    percentBadge: "bg-emerald-500/10 text-emerald-400 border-emerald-500/25",
-    accentColor: "text-emerald-400",
+    percentBadge: "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-500/25",
+    accentColor: "text-emerald-600 dark:text-emerald-400",
   }
 }
 
@@ -164,8 +164,8 @@ export default function BudgetsView({
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
           <div>
-            <h2 className="text-[19px] font-bold text-white tracking-tight flex items-center gap-2">
-              <Layers className="h-5 w-5 text-blue-400" />
+            <h2 className="text-[19px] font-bold text-text-primary tracking-tight flex items-center gap-2">
+              <Layers className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               <span>Overall Monthly Budget</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -200,7 +200,7 @@ export default function BudgetsView({
                     setEditingMonthlyLimit(null)
                   }
                 }}
-                className="w-24 bg-transparent text-xs font-mono font-bold text-white text-right outline-none placeholder:text-text-muted"
+                className="w-24 bg-transparent text-xs font-mono font-bold text-text-primary text-right outline-none placeholder:text-text-muted"
               />
               {editingMonthlyLimit !== null && (
                 <button
@@ -219,9 +219,9 @@ export default function BudgetsView({
             </div>
             <button
               onClick={() => setIsEnvelopeModalOpen(true)}
-              className="px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-slate-700 text-text-primary hover:text-white border border-border-default/60 text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-colors shadow-elevation-sm"
+              className="px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-hover text-text-primary border border-border-default text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-colors shadow-elevation-sm"
             >
-              <Sliders className="h-3.5 w-3.5 text-blue-400" />
+              <Sliders className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               <span>Envelope Manager</span>
             </button>
           </div>
@@ -230,7 +230,7 @@ export default function BudgetsView({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 pt-4">
           <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Total Spent</span>
-            <p className="text-[22px] sm:text-[26px] font-extrabold text-white font-mono leading-tight">
+            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight">
               <AnimatedCounter value={totalExpense} prefix={currSym} />
             </p>
             <p className="text-xs text-text-secondary font-normal">Active month outlays</p>
@@ -241,7 +241,7 @@ export default function BudgetsView({
             <p className={`text-[22px] sm:text-[26px] font-extrabold font-mono leading-tight ${
               budgetLimit <= 0
                 ? "text-text-muted"
-                : (budgetLimit * multiplier - totalExpense) >= 0 ? 'text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.25)]' : 'text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.25)]'
+                : (budgetLimit * multiplier - totalExpense) >= 0 ? 'text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.25)]' : 'text-rose-600 dark:text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.25)]'
             }`}>
               {budgetLimit <= 0 ? "—" : <AnimatedCounter value={Math.max(0, (budgetLimit * multiplier) - totalExpense)} prefix={currSym} />}
             </p>
@@ -250,7 +250,7 @@ export default function BudgetsView({
 
           <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Quota Utilized</span>
-            <p className="text-[22px] sm:text-[26px] font-extrabold text-white font-mono leading-tight">
+            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight">
               {budgetLimit <= 0 ? "0%" : <AnimatedCounter value={budgetPercent} decimals={0} suffix="%" />}
             </p>
             <p className="text-xs text-text-secondary font-normal">{budgetLimit <= 0 ? "Of monthly allowance" : "Of monthly limit"}</p>
@@ -259,7 +259,7 @@ export default function BudgetsView({
 
         {/* Progress Bar */}
         <div className="mt-4 space-y-1.5">
-          <div className="h-2.5 w-full bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
+          <div className="h-2.5 w-full bg-slate-200 dark:bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
             <div
               style={{ width: `${budgetPercent}%` }}
               className={`h-full rounded-full transition-all duration-500 ${
@@ -272,7 +272,7 @@ export default function BudgetsView({
             />
           </div>
           {budgetPercent > 90 && (
-            <p className="text-xs text-rose-400 font-medium flex items-center gap-1.5 pt-0.5">
+            <p className="text-xs text-rose-600 dark:text-rose-400 font-medium flex items-center gap-1.5 pt-0.5">
               <AlertTriangle className="h-3.5 w-3.5" />
               <span>Notice: Monthly budget limit exceeded</span>
             </p>
@@ -284,8 +284,8 @@ export default function BudgetsView({
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
         <div className="flex items-center justify-between pb-4 border-b border-border-subtle mb-5">
           <div>
-            <h2 className="text-[18px] font-bold text-white tracking-tight flex items-center gap-2">
-              <Sliders className="h-5 w-5 text-blue-400" />
+            <h2 className="text-[18px] font-bold text-text-primary tracking-tight flex items-center gap-2">
+              <Sliders className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               <span>Category Budgets</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -309,7 +309,7 @@ export default function BudgetsView({
             return (
               <div
                 key={cat}
-                className="p-4 sm:p-5 rounded-xl bg-gradient-to-b from-surface-2 to-surface-inset border border-border-subtle hover:border-border-strong transition-all duration-200 space-y-3.5 group hover:shadow-xl hover:shadow-black/40 hover:-translate-y-0.5"
+                className="p-4 sm:p-5 rounded-xl bg-gradient-to-b from-surface-2 to-surface-inset border border-border-subtle hover:border-border-strong transition-all duration-200 space-y-3.5 group hover:shadow-elevation-md dark:hover:shadow-black/40 hover:-translate-y-0.5"
               >
                 {/* Header: Category Badge with colored dot + Percentage Badge */}
                 <div className="flex items-center justify-between">
@@ -327,7 +327,7 @@ export default function BudgetsView({
                   <div className="flex justify-between items-baseline pt-0.5">
                     <div className="flex items-baseline gap-0.5">
                       <span className="text-xs font-semibold font-mono text-text-secondary">{currSym}</span>
-                      <span className="text-[21px] sm:text-[22px] font-bold text-white font-mono tracking-tight leading-none">
+                      <span className="text-[21px] sm:text-[22px] font-bold text-text-primary font-mono tracking-tight leading-none">
                         {formatNumber(spent, currSym, 0, 0)}
                       </span>
                     </div>
@@ -340,7 +340,7 @@ export default function BudgetsView({
                   </div>
 
                   {/* High fidelity progress bar */}
-                  <div className="h-2 w-full bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
+                  <div className="h-2 w-full bg-slate-200 dark:bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${barGradient}`}
                       style={{ width: `${percent}%` }}
@@ -353,15 +353,15 @@ export default function BudgetsView({
                   <div className="flex items-center gap-1.5 font-mono">
                     {remaining >= 0 ? (
                       <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block shrink-0" />
-                        <span className="text-emerald-400 font-semibold">{currSym}{formatNumber(remaining, currSym, 0, 0)}</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 inline-block shrink-0" />
+                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{currSym}{formatNumber(remaining, currSym, 0, 0)}</span>
                         <span className="text-text-secondary font-normal text-[11px]">left</span>
                       </>
                     ) : (
                       <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-400 inline-block shrink-0" />
-                        <span className="text-rose-400 font-bold">-{currSym}{formatNumber(Math.abs(remaining), currSym, 0, 0)}</span>
-                        <span className="text-rose-400/80 font-normal text-[11px]">over</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 dark:bg-rose-400 inline-block shrink-0" />
+                        <span className="text-rose-600 dark:text-rose-400 font-bold">-{currSym}{formatNumber(Math.abs(remaining), currSym, 0, 0)}</span>
+                        <span className="text-rose-600/80 dark:text-rose-400/80 font-normal text-[11px]">over</span>
                       </>
                     )}
                   </div>
@@ -382,7 +382,7 @@ export default function BudgetsView({
                             setEditingCategory(null)
                           }
                         }}
-                        className="w-20 bg-slate-900 border border-blue-500/70 rounded-md px-2 py-0.5 text-white text-xs font-mono text-right outline-none ring-1 ring-blue-500/50"
+                        className="w-20 bg-surface-3 border border-blue-500/70 rounded-md px-2 py-0.5 text-text-primary text-xs font-mono text-right outline-none ring-1 ring-blue-500/50"
                       />
                       <button
                         type="button"
@@ -400,9 +400,9 @@ export default function BudgetsView({
                   ) : (
                     <button
                       onClick={() => handleStartEdit(cat, rawLimit)}
-                      className="px-2 py-0.5 rounded-md text-[11px] font-medium text-text-secondary hover:text-white bg-surface-2/40 hover:bg-surface-hover border border-border-default/40 hover:border-border-strong transition-all flex items-center gap-1 cursor-pointer group/btn shadow-elevation-sm"
+                      className="px-2 py-0.5 rounded-md text-[11px] font-medium text-text-secondary hover:text-text-primary bg-surface-2/40 hover:bg-surface-hover border border-border-default/40 hover:border-border-strong transition-all flex items-center gap-1 cursor-pointer group/btn shadow-elevation-sm"
                     >
-                      <Edit3 className="h-2.5 w-2.5 text-text-secondary group-hover/btn:text-blue-400 transition-colors" />
+                      <Edit3 className="h-2.5 w-2.5 text-text-secondary group-hover/btn:text-blue-500 dark:group-hover/btn:text-blue-400 transition-colors" />
                       <span>Edit Limit</span>
                     </button>
                   )}
@@ -417,8 +417,8 @@ export default function BudgetsView({
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
         <div className="flex items-center justify-between pb-4 border-b border-border-subtle mb-5">
           <div>
-            <h2 className="text-[18px] font-bold text-white tracking-tight flex items-center gap-2">
-              <Target className="h-5 w-5 text-emerald-400" />
+            <h2 className="text-[18px] font-bold text-text-primary tracking-tight flex items-center gap-2">
+              <Target className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               <span>Savings Goals & Milestones</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -436,11 +436,11 @@ export default function BudgetsView({
 
         {savingsGoals.length === 0 ? (
           <div className="text-center py-14 px-4 rounded-xl bg-surface-inset border border-dashed border-border-default space-y-3">
-            <div className="p-3 rounded-xl bg-surface-2 border border-border-default/60 inline-flex text-emerald-400">
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-surface-2 border border-emerald-200 dark:border-border-default/60 inline-flex text-emerald-600 dark:text-emerald-400">
               <Target className="h-6 w-6" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white">No savings goals created yet</p>
+              <p className="text-sm font-semibold text-text-primary">No savings goals created yet</p>
               <p className="text-xs text-text-secondary max-w-sm mx-auto mt-1">
                 Define savings targets for upcoming trips, emergency funds, or gadgets and track them in real time.
               </p>
@@ -465,7 +465,7 @@ export default function BudgetsView({
               return (
                 <div
                   key={goal.id}
-                  className="bg-gradient-to-b from-surface-2 to-surface-inset border border-border-subtle hover:border-border-strong rounded-xl p-4 sm:p-5 transition-all duration-200 flex flex-col justify-between space-y-4 group hover:shadow-xl hover:shadow-black/40 hover:-translate-y-0.5"
+                  className="bg-gradient-to-b from-surface-2 to-surface-inset border border-border-subtle hover:border-border-strong rounded-xl p-4 sm:p-5 transition-all duration-200 flex flex-col justify-between space-y-4 group hover:shadow-elevation-md dark:hover:shadow-black/40 hover:-translate-y-0.5"
                 >
                   {/* Top Header: Icon Squircle + Title & Target Date */}
                   <div className="flex items-start justify-between gap-3">
@@ -474,7 +474,7 @@ export default function BudgetsView({
                         {style.icon}
                       </div>
                       <div className="min-w-0">
-                        <h3 className="text-sm sm:text-[15px] font-bold text-white leading-snug truncate group-hover:text-blue-300 transition-colors">
+                        <h3 className="text-sm sm:text-[15px] font-bold text-text-primary leading-snug truncate group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
                           {goal.title}
                         </h3>
                         {goal.targetDate && (
@@ -487,7 +487,7 @@ export default function BudgetsView({
                     </div>
 
                     {isCompleted ? (
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shrink-0 uppercase">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 shrink-0 uppercase">
                         Completed
                       </span>
                     ) : (
@@ -504,7 +504,7 @@ export default function BudgetsView({
                     <div className="flex justify-between items-baseline pt-0.5">
                       <div className="flex items-baseline gap-0.5">
                         <span className="text-xs font-semibold font-mono text-text-secondary">{currSym}</span>
-                        <span className="text-[21px] sm:text-[22px] font-bold text-white font-mono tracking-tight leading-none">
+                        <span className="text-[21px] sm:text-[22px] font-bold text-text-primary font-mono tracking-tight leading-none">
                           {formatNumber(current, currSym, 0, 0)}
                         </span>
                       </div>
@@ -519,7 +519,7 @@ export default function BudgetsView({
                       </div>
                     </div>
 
-                    <div className="h-2 w-full bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
+                    <div className="h-2 w-full bg-slate-200 dark:bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
                       <div
                         style={{ width: `${percent}%` }}
                         className={`h-full rounded-full transition-all duration-500 ${
@@ -542,7 +542,7 @@ export default function BudgetsView({
                         onClick={() => handleQuickDeposit(goal.id, 100)}
                         className="px-2.5 py-1 text-xs font-semibold bg-surface-2 hover:bg-blue-600 hover:text-white active:scale-95 text-text-primary border border-border-default/60 hover:border-blue-500 rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-elevation-sm group/dep"
                       >
-                        <Plus className="h-3 w-3 text-blue-400 group-hover/dep:text-white transition-colors" />
+                        <Plus className="h-3 w-3 text-blue-600 dark:text-blue-400 group-hover/dep:text-white transition-colors" />
                         <span>Deposit {currSym}100</span>
                       </button>
                     )}

@@ -12,6 +12,7 @@ import {
   X, 
   LogOut 
 } from "lucide-react"
+import ThemeToggle from "../ui/ThemeToggle"
 
 export default function MobileNav({
   activeTab,
@@ -54,7 +55,10 @@ export default function MobileNav({
           <span className="font-bold text-sm tracking-tight text-text-primary">LedgerFlow</span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {/* Theme Toggle */}
+          <ThemeToggle className="p-1 text-text-secondary hover:text-text-primary rounded-control" />
+
           {/* Quick Currency Switcher */}
           <div className="flex bg-surface-inset p-0.5 rounded-control border border-border-subtle">
             {["INR", "USD"].map((c) => {
@@ -165,11 +169,16 @@ export default function MobileNav({
                       setIsDrawerOpen(false)
                       onOpenQuickAdd()
                     }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-control text-xs font-medium text-brand bg-brand/10 border border-brand/20 cursor-pointer transition-colors"
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-control text-xs font-medium text-brand bg-brand/10 border border-brand/20 mb-2 cursor-pointer transition-colors"
                   >
                     <Command className="h-4 w-4" />
                     <span>Quick Add Dialog</span>
                   </button>
+
+                  <div className="flex items-center justify-between p-2 rounded-control bg-surface-2 border border-border-default">
+                    <span className="text-xs font-medium text-text-primary pl-1">Theme</span>
+                    <ThemeToggle variant="outline" showLabel={true} className="!py-1 !px-2.5 !h-7 text-xs" />
+                  </div>
                 </div>
               </div>
 

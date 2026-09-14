@@ -24,6 +24,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import AnimatedCounter from "../ui/AnimatedCounter"
 import { formatNumber } from "../../utils/formatUtils"
 import { getCategoryStyle } from "../../utils/categoryColors"
+import { useTheme } from "../../context/ThemeContext"
 
 export default function OverviewView({
   balance,
@@ -51,6 +52,7 @@ export default function OverviewView({
   avgTransaction,
   topCategory
 }) {
+  const { isDark } = useTheme()
   const [internalActiveIndex, setInternalActiveIndex] = useState(null)
   const activeCategoryIndex = propActiveCategoryIndex !== undefined ? propActiveCategoryIndex : internalActiveIndex
   const setActiveCategoryIndex = propSetActiveCategoryIndex || setInternalActiveIndex
@@ -95,6 +97,7 @@ export default function OverviewView({
   const effectiveLimit = budgetLimit * multiplier
   const remainingBuffer = Math.max(0, effectiveLimit - totalExpense)
   const expenseRatio = 100 - incomeShare
+  const safePercent = Number.isFinite(budgetPercent) ? Math.max(0, budgetPercent) : 0
 
   // Spend Breakdown computed directly from live categoryData with canonical styling
   const computedCategoryExpense = useMemo(() => {
@@ -184,14 +187,18 @@ export default function OverviewView({
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-text-secondary">
                 TOTAL NET BALANCE
               </span>
-              <div className="h-8 w-8 rounded-lg bg-surface-2/60 border border-border-default/50 flex items-center justify-center text-text-secondary">
+              <div className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-surface-2/60 dark:border-border-default/50 dark:text-text-secondary flex items-center justify-center">
                 <Wallet className="h-4 w-4" />
               </div>
             </div>
 
             <div className="mt-4">
-              <div className="text-3xl sm:text-[38px] font-bold text-white font-mono tracking-tight leading-none">
-                <AnimatedCounter value={balance} prefix={currSym} decimals={2} />
+              <div className="text-3xl sm:text-[38px] font-bold text-text-primary font-mono tracking-tight leading-none">
+                <AnimatedCounter 
+                  value={balance * multiplier} 
+                  currencySymbol={currSym}
+                  decimals={2} 
+                />
               </div>
               <p className="text-xs sm:text-[13px] text-text-secondary font-normal mt-2">
                 Current net position across active accounts
@@ -201,18 +208,18 @@ export default function OverviewView({
             {/* Income vs Expense Progress Bar */}
             <div className="mt-6 space-y-2">
               <div className="flex justify-between text-xs font-medium">
-                <span className="text-emerald-400 flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
                   Income • {Math.round(incomeShare)}%
                 </span>
-                <span className="text-rose-400 flex items-center gap-1.5">
+                <span className="text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
                   Expense • {Math.round(expenseRatio)}%
                 </span>
               </div>
               <div className="h-1.5 w-full bg-surface-2 rounded-full overflow-hidden flex">
                 <div 
                   style={{ width: `${incomeShare}%` }} 
-                  className="bg-emerald-400 h-full rounded-l-full transition-all duration-500" 
+                  className="bg-emerald-500 dark:bg-emerald-400 h-full rounded-l-full transition-all duration-500" 
                 />
                 <div 
                   style={{ width: `${expenseRatio}%` }} 
@@ -226,17 +233,17 @@ export default function OverviewView({
           <div className="grid grid-cols-2 gap-4 pt-5 mt-5 border-t border-border-default">
             <div>
               <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-emerald-400" /> Monthly Income
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> Monthly Income
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-400 font-mono mt-1 leading-tight">
+              <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight">
                 <AnimatedCounter value={totalIncome} prefix={currSym} decimals={2} />
               </p>
             </div>
             <div>
               <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
-                <TrendingDown className="h-3.5 w-3.5 text-rose-400" /> Monthly Expenses
+                <TrendingDown className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" /> Monthly Expenses
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-rose-400 font-mono mt-1 leading-tight">
+              <p className="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400 font-mono mt-1 leading-tight">
                 <AnimatedCounter value={totalExpense} prefix={currSym} decimals={2} />
               </p>
             </div>
@@ -250,14 +257,14 @@ export default function OverviewView({
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-text-secondary">
                 MONTHLY BUDGET USAGE
               </span>
-              <div className="h-8 w-8 rounded-lg bg-surface-2/60 border border-border-default/50 flex items-center justify-center text-text-secondary">
+              <div className="h-8 w-8 rounded-lg bg-amber-50 text-amber-600 border border-amber-200 dark:bg-surface-2/60 dark:border-border-default/50 dark:text-text-secondary flex items-center justify-center">
                 <Gauge className="h-4 w-4" />
               </div>
             </div>
 
             <div className="mt-4">
-              <div className="text-3xl sm:text-[38px] font-bold text-white tracking-tight leading-none">
-                <AnimatedCounter value={budgetPercent} decimals={0} suffix="%" />
+              <div className="text-3xl sm:text-[38px] font-bold text-text-primary tracking-tight leading-none">
+                <AnimatedCounter value={safePercent} decimals={0} />%
               </div>
               <p className="text-xs sm:text-[13px] text-text-secondary font-normal mt-2">
                 {currSym}{formatNumber(Math.round(totalExpense), currSym, 0, 0)} spent of {currSym}{formatNumber(Math.round(effectiveLimit), currSym, 0, 0)} monthly allowance
@@ -267,7 +274,7 @@ export default function OverviewView({
             {/* Budget Progress Bar */}
             <div className="mt-6 space-y-2">
               <div className="flex justify-between text-xs font-medium">
-                <span className="text-emerald-400">Within budget limit</span>
+                <span className="text-emerald-600 dark:text-emerald-400">Within budget limit</span>
                 <span className="text-text-secondary font-mono">
                   {currSym}{formatNumber(Math.round(remainingBuffer), currSym, 0, 0)} remaining
                 </span>
@@ -275,7 +282,7 @@ export default function OverviewView({
               <div className="h-1.5 w-full bg-surface-2 rounded-full overflow-hidden">
                 <div 
                   style={{ width: `${Math.min(100, budgetPercent)}%` }} 
-                  className="bg-emerald-400 h-full rounded-full transition-all duration-500" 
+                  className="bg-emerald-500 dark:bg-emerald-400 h-full rounded-full transition-all duration-500" 
                 />
               </div>
             </div>
@@ -285,26 +292,26 @@ export default function OverviewView({
           <div className="grid grid-cols-2 gap-4 pt-5 mt-5 border-t border-border-default">
             <div>
               <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-emerald-400" /> Remaining Buffer
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> Remaining Buffer
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-400 font-mono mt-1 leading-tight">
+              <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight">
                 +{currSym}{formatNumber(Math.round(remainingBuffer), currSym, 0, 0)}
               </p>
             </div>
             <div>
               <div className="flex items-center justify-between">
                 <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
-                  <span className="text-xs text-blue-400">◎</span> Monthly Limit
+                  <span className="text-xs text-blue-600 dark:text-blue-400">◎</span> Monthly Limit
                 </p>
                 <button
                   onClick={() => setActiveTab("budgets")}
-                  className="text-xs text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-0.5 cursor-pointer"
+                  className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5 cursor-pointer"
                 >
                   <span>manage</span>
                   <ChevronRight className="h-3 w-3" />
                 </button>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-white font-mono mt-1 leading-tight">
+              <p className="text-xl sm:text-2xl font-bold text-text-primary font-mono mt-1 leading-tight">
                 {currSym}{formatNumber(Math.round(effectiveLimit), currSym, 0, 0)}
               </p>
             </div>
@@ -319,22 +326,31 @@ export default function OverviewView({
         <div className="lg:col-span-7 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <div className="p-1 rounded bg-blue-950/60 text-blue-400">
+              <div className="p-1 rounded bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-400 dark:border-transparent">
                 <Activity className="h-3.5 w-3.5" />
               </div>
-              <span className="text-sm font-semibold text-white tracking-tight">
+              <span className="text-sm font-semibold text-text-primary tracking-tight">
                 7-Day Cashflow Velocity
               </span>
             </div>
-            <div className="flex items-center gap-4 text-xs font-medium">
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                <span className="text-text-secondary">Income</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-rose-500" />
-                <span className="text-text-secondary">Expense</span>
-              </div>
+            <div>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-muted">
+                Velocity (Avg/Day)
+              </span>
+              <p className="text-xl sm:text-2xl font-bold text-text-primary font-mono mt-1 leading-tight">
+                {currSym}{formatNumber(Math.round(trendData.reduce((acc, curr) => acc + (curr.expense || 0), 0) / (trendData.length || 7)), currSym, 0, 0)}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between gap-4 text-xs font-medium pb-2">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+              <span className="text-text-secondary">Income</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-rose-500" />
+              <span className="text-text-secondary">Expense</span>
             </div>
           </div>
 
@@ -345,23 +361,23 @@ export default function OverviewView({
                 margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
                 barGap={4}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} opacity={0.6} />
+                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#1e293b" : "#e2e8f0"} vertical={false} opacity={0.7} />
                 <XAxis 
                   dataKey="date" 
-                  stroke="#64748b" 
+                  stroke={isDark ? "#64748b" : "#94a3b8"} 
                   fontSize={11} 
                   tickLine={false} 
                   axisLine={false} 
                 />
                 <YAxis 
-                  stroke="#64748b" 
+                  stroke={isDark ? "#64748b" : "#94a3b8"} 
                   fontSize={11} 
                   tickLine={false} 
                   axisLine={false} 
                   tickFormatter={formatYAxis}
                 />
                 <Tooltip 
-                  cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                  cursor={{ fill: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)' }}
                   content={<CustomBarTooltip />}
                 />
                 <Bar 
@@ -389,15 +405,15 @@ export default function OverviewView({
         <div className="lg:col-span-5 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <div className="p-1 rounded bg-blue-950/60 text-blue-400">
+              <div className="p-1 rounded bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-400 dark:border-transparent">
                 <Clock className="h-3.5 w-3.5" />
               </div>
-              <span className="text-sm font-semibold text-white tracking-tight">
+              <span className="text-sm font-semibold text-text-primary tracking-tight">
                 Spend Breakdown
               </span>
             </div>
             <button 
-              className="p-1.5 rounded-lg text-text-secondary hover:text-white hover:bg-surface-hover transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors cursor-pointer"
               title="Filter"
             >
               <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -417,7 +433,7 @@ export default function OverviewView({
                     outerRadius={68}
                     paddingAngle={2}
                     dataKey="value"
-                    stroke="#0f1523"
+                    stroke={isDark ? "#0f1523" : "#ffffff"}
                     strokeWidth={2}
                     activeIndex={activeCategoryIndex !== null ? activeCategoryIndex : -1}
                     activeShape={renderActiveShape}
@@ -463,16 +479,7 @@ export default function OverviewView({
                       >
                         {displayCategories[activeCategoryIndex].name}
                       </span>
-                      <span className="text-[14px] font-bold text-white font-mono leading-tight mt-0.5">
-                        {currSym}{formatNumber(Math.round(displayCategories[activeCategoryIndex].value), currSym, 0, 0)}
-                      </span>
-                      <span 
-                        className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full mt-0.5"
-                        style={{ 
-                          backgroundColor: `${displayCategories[activeCategoryIndex].color}25`,
-                          color: displayCategories[activeCategoryIndex].color 
-                        }}
-                      >
+                      <span className="text-[14px] font-bold text-text-primary font-mono leading-tight mt-0.5">
                         {displayCategories[activeCategoryIndex].pct}
                       </span>
                     </motion.div>
@@ -485,10 +492,10 @@ export default function OverviewView({
                       transition={{ duration: 0.15 }}
                       className="flex flex-col items-center justify-center text-center"
                     >
-                      <span className="text-[9px] font-semibold uppercase tracking-wider text-text-secondary">
-                        TOTAL SPENT
+                      <span className="text-[9px] uppercase tracking-wider text-text-muted font-medium">
+                        Total Outflow
                       </span>
-                      <span className="text-[15px] font-bold text-white font-mono leading-tight mt-0.5">
+                      <span className="text-[15px] font-bold text-text-primary font-mono leading-tight mt-0.5">
                         {currSym}{formatNumber(Math.round(totalCatExpense), currSym, 0, 0)}
                       </span>
                       <span className="text-[10px] text-text-secondary mt-0.5">
@@ -526,7 +533,7 @@ export default function OverviewView({
                           boxShadow: isHovered ? `0 0 8px ${cat.color}` : undefined
                         }} 
                       />
-                      <span className={`text-[13px] font-medium truncate transition-colors ${isHovered ? 'text-white font-semibold' : 'text-text-primary'}`}>
+                      <span className={`text-[13px] font-medium truncate transition-colors ${isHovered ? 'text-text-primary font-semibold' : 'text-text-primary'}`}>
                         {cat.name}
                       </span>
                     </div>
@@ -537,8 +544,8 @@ export default function OverviewView({
                     </span>
 
                     {/* Amount */}
-                    <span className="text-[12px] font-mono font-bold text-white text-right">
-                      {currSym}{formatNumber(Math.round(cat.value), currSym, 0, 0)}
+                    <span className="text-[12px] font-mono font-bold text-text-primary text-right">
+                      {currSym}{formatNumber(cat.value, currSym, 0, 0)}
                     </span>
                   </div>
                 )
@@ -548,113 +555,109 @@ export default function OverviewView({
         </div>
       </div>
 
-      {/* 3. Bottom Row: Financial Health (Single Row Horizontal Card) */}
+      {/* 3. Bottom Row: Financial Health & Audit */}
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
-        <div className="flex items-center gap-2 pb-3 border-b border-border-subtle">
-          <Heart className="h-4 w-4 text-blue-400" />
-          <span className="text-sm font-semibold text-white tracking-tight">
-            Financial Health
-          </span>
+        <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-2">
+            <Heart className="h-4 w-4 text-blue-400" />
+            <span className="text-sm font-semibold text-text-primary tracking-tight">
+              Financial Health & Audit
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <span className={`h-2 w-2 rounded-full ${healthScore >= 80 ? 'bg-emerald-400' : healthScore >= 60 ? 'bg-amber-400' : 'bg-rose-500'}`} />
+              <span className="text-xs font-semibold text-text-secondary">{healthGrade} Grade</span>
+            </div>
+            <button 
+              onClick={() => setActiveTab("analytics")}
+              className="text-xs text-blue-400 hover:underline cursor-pointer"
+            >
+              Details
+            </button>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 pt-4 items-center">
-          
-          {/* Column 1: Score Circular Ring */}
-          <div className="flex items-center gap-3">
-            <div className="relative h-14 w-14 flex items-center justify-center shrink-0">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 60 60">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 pt-4">
+          {/* Health Score Metric */}
+          <div className="flex items-center gap-3.5 p-3 rounded-lg bg-surface-2 border border-border-default/60">
+            <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
+              <svg className="w-12 h-12 -rotate-90" viewBox="0 0 56 56">
                 <circle
-                  cx="30"
-                  cy="30"
+                  cx="28"
+                  cy="28"
                   r={circleRadius}
-                  stroke="#1e293b"
+                  fill="none"
+                  stroke="var(--border-subtle)"
                   strokeWidth="4"
-                  fill="transparent"
                 />
                 <circle
-                  cx="30"
-                  cy="30"
+                  cx="28"
+                  cy="28"
                   r={circleRadius}
+                  fill="none"
                   stroke={healthColor}
                   strokeWidth="4"
-                  fill="transparent"
                   strokeDasharray={circumference}
                   strokeDashoffset={strokeDashoffset}
                   strokeLinecap="round"
+                  className="transition-all duration-1000 ease-out"
                 />
               </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-base font-bold text-white font-mono">
-                  {healthScore}
-                </span>
-              </div>
+              <span className="absolute text-xs font-bold font-mono text-text-primary">
+                {healthScore}
+              </span>
+            </div>
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Audit Score</span>
+              <span className={`text-xs font-bold ${healthTextColor}`}>{healthTitle}</span>
             </div>
           </div>
 
-          {/* Column 2: Health Score Status */}
-          <div>
-            <p className="text-xs text-text-secondary font-medium flex items-center gap-1.5">
-              <ShieldCheck className={`h-3.5 w-3.5 ${healthTextColor}`} /> Health Score
-            </p>
-            <button 
-              onClick={() => setActiveTab("analytics")}
-              className="text-left mt-1 cursor-pointer group flex flex-col"
-            >
-              <div className="flex items-center gap-1">
-                <span className={`text-sm font-bold font-mono ${healthTextColor}`}>
-                  Grade {healthGrade}
-                </span>
-                <ChevronRight className="h-3 w-3 text-text-muted group-hover:text-white transition-colors shrink-0" />
-              </div>
-              <span className="text-[10px] text-text-muted group-hover:text-text-primary transition-colors truncate max-w-[120px] leading-tight mt-0.5">
-                {healthTitle}
-              </span>
-            </button>
+          {/* Savings Rate Card */}
+          <div 
+            onClick={() => setActiveTab("budgets")}
+            className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
+          >
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Savings Rate</span>
+              <span className="text-base font-bold text-text-primary font-mono">{liveSavingsRate}%</span>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block mt-0.5">Optimal buffer</span>
+            </div>
+            <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-surface-3 dark:border-transparent dark:text-emerald-400 group-hover:scale-105 transition-transform">
+              <PiggyBank className="h-4 w-4" />
+            </div>
           </div>
 
-          {/* Column 3: Savings Rate */}
-          <div>
-            <p className="text-xs text-text-secondary font-medium flex items-center gap-1.5">
-              <PiggyBank className="h-3.5 w-3.5 text-text-secondary" /> Savings Rate
-            </p>
-            <p className="text-sm font-bold text-emerald-400 font-mono mt-1 flex items-center gap-1">
-              <span>↗</span>
-              <span>{liveSavingsRate}%</span>
-            </p>
+          {/* Avg. Ticket Size Card */}
+          <div 
+            onClick={() => setActiveTab("transactions")}
+            className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
+          >
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Avg. Ticket Size</span>
+              <span className="text-base font-bold text-text-primary font-mono">{currSym}{formatNumber(liveAvgTicket, currSym, 2, 2)}</span>
+              <span className="text-[10px] text-blue-600 dark:text-blue-400 block mt-0.5">Per expense</span>
+            </div>
+            <div className="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-surface-3 dark:border-transparent dark:text-blue-400 group-hover:scale-105 transition-transform">
+              <CreditCard className="h-4 w-4" />
+            </div>
           </div>
 
-          {/* Column 4: Avg Ticket Size */}
-          <div>
-            <p className="text-xs text-text-secondary font-medium flex items-center gap-1.5">
-              <CreditCard className="h-3.5 w-3.5 text-text-secondary" /> Avg. Ticket Size
-            </p>
-            <p className="text-sm font-bold text-blue-400 font-mono mt-1">
-              {currSym}{formatNumber(liveAvgTicket, currSym, 2, 2)}
-            </p>
+          {/* Top Expense Card */}
+          <div 
+            onClick={() => setActiveTab("analytics")}
+            className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
+          >
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Top Expense</span>
+              <span className="text-base font-bold text-text-primary truncate max-w-[120px] block">{liveTopExpenseName}</span>
+              <span className="text-[10px] text-purple-600 dark:text-purple-400 block mt-0.5">Highest outflow</span>
+            </div>
+            <div className="p-2 rounded-lg bg-purple-50 text-purple-600 border border-purple-200 dark:bg-surface-3 dark:border-transparent dark:text-purple-400 group-hover:scale-105 transition-transform">
+              <Plane className="h-4 w-4" />
+            </div>
           </div>
-
-          {/* Column 5: Top Expense */}
-          <div>
-            <p className="text-xs text-text-secondary font-medium flex items-center gap-1.5">
-              <Plane className="h-3.5 w-3.5 text-text-secondary" /> Top Expense
-            </p>
-            <p className="text-sm font-bold text-purple-400 mt-1 flex items-center gap-1">
-              <span>↗</span>
-              <span>{liveTopExpenseName}</span>
-            </p>
-          </div>
-
-          {/* Column 6: Categories Used */}
-          <div>
-            <p className="text-xs text-text-secondary font-medium flex items-center gap-1.5">
-              <Grid className="h-3.5 w-3.5 text-text-secondary" /> Categories Used
-            </p>
-            <p className="text-sm font-bold text-white font-mono mt-1 flex items-center gap-1">
-              <span className="text-text-muted">•</span>
-              <span>{categoriesCount}</span>
-            </p>
-          </div>
-
         </div>
       </div>
 
@@ -662,7 +665,7 @@ export default function OverviewView({
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
         <div className="flex items-center justify-between pb-3">
           <div>
-            <h3 className="text-base font-semibold text-white tracking-tight">
+            <h3 className="text-base font-semibold text-text-primary tracking-tight">
               Recent Transactions
             </h3>
             <p className="text-xs text-text-secondary mt-0.5 font-normal">
@@ -699,8 +702,8 @@ export default function OverviewView({
                     <div
                       className={`h-8 w-8 rounded-lg flex items-center justify-center shrink-0 border ${
                         isIncome
-                          ? "bg-emerald-950/40 border-emerald-800/40 text-emerald-400"
-                          : "bg-rose-950/40 border-rose-800/40 text-rose-400"
+                          ? "bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/40 dark:text-emerald-400"
+                          : "bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-950/40 dark:border-rose-800/40 dark:text-rose-400"
                       }`}
                     >
                       {isIncome ? (
@@ -712,18 +715,18 @@ export default function OverviewView({
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-sm font-medium text-white truncate">
+                        <span className="text-sm font-medium text-text-primary truncate">
                           {tx.title}
                         </span>
                         {tx.isRecurring && (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
                             <Repeat className="h-2.5 w-2.5" /> RECURRING
                           </span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-0.5">
                         <span
-                          className={`px-2 py-0.5 rounded text-[11px] font-medium border ${categoryStyle.badgeBg} ${categoryStyle.text} ${categoryStyle.border}`}
+                          className={`px-2 py-0.5 rounded text-[11px] font-medium border ${categoryStyle.badge}`}
                         >
                           {tx.category}
                         </span>
@@ -734,14 +737,16 @@ export default function OverviewView({
                     </div>
                   </div>
 
-                  {/* Right Side: Amount + Actions on Hover */}
-                  <div className="flex items-center gap-2.5 shrink-0">
+                  {/* Right Side: Amount + Actions */}
+                  <div className="flex items-center gap-3 shrink-0">
                     <span
-                      className={`text-sm font-mono font-bold ${
-                        isIncome ? "text-emerald-400" : "text-rose-400"
+                      className={`text-sm font-semibold font-mono whitespace-nowrap flex items-center gap-1 ${
+                        isIncome ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
                       }`}
                     >
-                      {isIncome ? "+" : "-"}{currSym}{formatNumber(tx.amount, currSym, 2, 2)}
+                      {isIncome ? "+" : "-"}
+                      {currSym}
+                      {formatNumber(tx.amount, currSym, 2, 2)}
                     </span>
 
                     <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -751,7 +756,7 @@ export default function OverviewView({
                             e.stopPropagation()
                             openEditModal(tx)
                           }}
-                          className="p-1 text-text-secondary hover:text-white transition-colors cursor-pointer rounded"
+                          className="p-1 text-text-secondary hover:text-text-primary transition-colors cursor-pointer rounded"
                           title="Edit transaction"
                         >
                           <Edit2 className="h-3.5 w-3.5" />

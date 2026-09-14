@@ -4,7 +4,67 @@
 
 @layer base {
   :root {
-    /* Surfaces */
+    /* Surfaces - Light Fintech Theme */
+    --background: #F6F8FC;
+    --surface-1: #FFFFFF;
+    --surface-2: #F8FAFC;
+    --surface-3: #F1F5F9;
+    --surface-inset: #F1F5F9;
+    --surface-hover: #F1F5F9;
+    --surface-selected: #EEF3FF;
+    --surface-overlay: rgba(15, 23, 42, 0.45);
+
+    /* Borders */
+    --border-subtle: #E2E8F0;
+    --border-default: #CBD5E1;
+    --border-strong: #94A3B8;
+
+    /* Brand - Sapphire */
+    --brand-primary: #3E63DD;
+    --brand-primary-hover: #3554C4;
+    --brand-primary-active: #2C468F;
+    --brand-primary-subtle: #EEF3FF;
+    --brand-primary-focus: #5B82F5;
+
+    /* Semantic Financial */
+    --positive: #16A34A;
+    --positive-subtle: rgba(22, 163, 74, 0.10);
+    --positive-border: rgba(22, 163, 74, 0.22);
+    --negative: #E11D48;
+    --negative-subtle: rgba(225, 29, 72, 0.10);
+    --negative-border: rgba(225, 29, 72, 0.22);
+    --warning: #D97706;
+    --warning-subtle: rgba(217, 119, 6, 0.10);
+    --warning-border: rgba(217, 119, 6, 0.22);
+    --info: #0284C7;
+    --info-subtle: rgba(2, 132, 199, 0.10);
+    --info-border: rgba(2, 132, 199, 0.22);
+
+    /* Text Hierarchy */
+    --text-primary: #0F172A;
+    --text-secondary: #334155;
+    --text-muted: #64748B;
+    --text-disabled: #94A3B8;
+    --text-inverse: #FFFFFF;
+
+    /* Elevations */
+    --elevation-none: none;
+    --elevation-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+    --elevation-md: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+    --elevation-lg: 0 12px 28px -6px rgba(15, 23, 42, 0.10);
+    --elevation-modal: 0 20px 48px -10px rgba(15, 23, 42, 0.16);
+
+    /* Radii */
+    --radius-badge: 4px;
+    --radius-control: 6px;
+    --radius-card: 10px;
+    --radius-modal: 14px;
+    --radius-hero: 20px;
+    --radius-full: 9999px;
+  }
+
+  .dark {
+    /* Surfaces - Authoritative Dark Baseline */
     --background: #090D16;
     --surface-1: #0F1523;
     --surface-2: #141B2C;
@@ -53,14 +113,6 @@
     --elevation-md: 0 4px 12px -2px rgba(0,0,0,0.45);
     --elevation-lg: 0 12px 32px -8px rgba(0,0,0,0.55);
     --elevation-modal: 0 24px 64px -12px rgba(0,0,0,0.65);
-
-    /* Radii */
-    --radius-badge: 4px;
-    --radius-control: 6px;
-    --radius-card: 10px;
-    --radius-modal: 14px;
-    --radius-hero: 20px;
-    --radius-full: 9999px;
   }
 
   * {

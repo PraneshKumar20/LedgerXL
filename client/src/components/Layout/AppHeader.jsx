@@ -8,6 +8,8 @@ import {
   PanelLeftOpen
 } from "lucide-react"
 
+import ThemeToggle from "../ui/ThemeToggle"
+
 export default function AppHeader({
   activeTab,
   onOpenAddModal,
@@ -49,20 +51,20 @@ export default function AppHeader({
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleSidebar}
-            className="p-2 rounded-lg bg-surface-1 hover:bg-surface-hover border border-border-default text-text-secondary hover:text-white transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-surface-1 hover:bg-surface-hover border border-border-default text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
             title={isSidebarCollapsed ? "Expand sidebar (Ctrl+B)" : "Collapse sidebar (Ctrl+B)"}
           >
             {isSidebarCollapsed ? (
-              <PanelLeftOpen className="h-4 w-4 text-blue-400" />
+              <PanelLeftOpen className="h-4 w-4 text-brand" />
             ) : (
               <PanelLeftClose className="h-4 w-4" />
             )}
           </button>
-          <h1 className="text-2xl sm:text-[28px] font-bold text-white tracking-tight leading-tight">
+          <h1 className="text-2xl sm:text-[28px] font-bold text-text-primary tracking-tight leading-tight">
             {current.title}
           </h1>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-950/80 text-emerald-400 border border-emerald-800/60">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/80 dark:text-emerald-400 dark:border-emerald-800/60">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]" />
             <span>LIVE</span>
           </div>
         </div>
@@ -72,10 +74,13 @@ export default function AppHeader({
       </div>
 
       <div className="flex items-center gap-3">
+        {/* Theme Toggle Button */}
+        <ThemeToggle variant="outline" />
+
         {/* New Transaction Button */}
         <button
           onClick={onOpenAddModal}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-sm font-semibold tracking-wide transition-all shadow-md shadow-blue-500/20 cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm font-semibold tracking-wide transition-all shadow-md shadow-brand/20 cursor-pointer"
         >
           <Plus className="h-4 w-4 stroke-[2.5]" />
           <span>New Transaction</span>
@@ -101,17 +106,17 @@ export default function AppHeader({
                 className="absolute right-0 mt-2 w-52 rounded-xl bg-surface-1 border border-border-default shadow-elevation-lg p-1.5 z-50 space-y-1"
               >
                 <div className="px-2.5 py-1.5 border-b border-border-subtle">
-                  <p className="text-xs font-semibold text-white truncate">{currentUser?.name || "Demo Explorer"}</p>
+                  <p className="text-xs font-semibold text-text-primary truncate">{currentUser?.name || "Demo Explorer"}</p>
                   <p className="text-[10px] text-text-secondary truncate">{currentUser?.email || "guest@ledgerflow.app"}</p>
                   {currentUser?.isGuest && (
-                    <span className="inline-block mt-1 px-1.5 py-0.2 rounded bg-blue-950/80 text-blue-400 border border-blue-800/60 text-[9px] font-medium">
+                    <span className="inline-block mt-1 px-1.5 py-0.2 rounded bg-brand-subtle text-brand border border-brand/20 text-[9px] font-medium">
                       Guest Mode
                     </span>
                   )}
                 </div>
                 <button
                   onClick={onLogout}
-                  className="w-full px-2.5 py-1.5 rounded-lg text-left text-xs font-medium text-rose-400 hover:bg-rose-950/30 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-2.5 py-1.5 rounded-lg text-left text-xs font-medium text-negative hover:bg-negative/10 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   <span>Sign Out</span>
