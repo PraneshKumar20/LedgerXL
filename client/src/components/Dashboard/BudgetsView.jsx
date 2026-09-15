@@ -436,7 +436,7 @@ export default function BudgetsView({
 
         {savingsGoals.length === 0 ? (
           <div className="text-center py-14 px-4 rounded-xl bg-surface-inset border border-dashed border-border-default space-y-3">
-            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-surface-2 border border-emerald-200 dark:border-border-default/60 inline-flex text-emerald-600 dark:text-emerald-400">
+            <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 inline-flex text-emerald-600 dark:text-emerald-400">
               <Target className="h-6 w-6" />
             </div>
             <div>
@@ -487,7 +487,7 @@ export default function BudgetsView({
                     </div>
 
                     {isCompleted ? (
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 shrink-0 uppercase">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 shrink-0 uppercase dark:border-emerald-800/40">
                         Completed
                       </span>
                     ) : (

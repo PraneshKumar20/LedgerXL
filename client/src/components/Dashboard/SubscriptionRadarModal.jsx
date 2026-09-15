@@ -197,6 +197,9 @@ export default function SubscriptionRadarModal({
                               <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${categoryStyle.badge}`}>
                                 {sub.category}
                               </span>
+                              <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40">
+                                <Repeat className="h-2.5 w-2.5" /> RECURRING
+                              </span>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-text-secondary">
                               <Calendar className="h-3 w-3 text-text-muted" />

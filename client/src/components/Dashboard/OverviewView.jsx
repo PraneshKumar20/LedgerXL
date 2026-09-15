@@ -187,7 +187,7 @@ export default function OverviewView({
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-text-secondary">
                 TOTAL NET BALANCE
               </span>
-              <div className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-surface-2/60 dark:border-border-default/50 dark:text-text-secondary flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400 flex items-center justify-center">
                 <Wallet className="h-4 w-4" />
               </div>
             </div>
@@ -257,7 +257,7 @@ export default function OverviewView({
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-text-secondary">
                 MONTHLY BUDGET USAGE
               </span>
-              <div className="h-8 w-8 rounded-lg bg-amber-50 text-amber-600 border border-amber-200 dark:bg-surface-2/60 dark:border-border-default/50 dark:text-text-secondary flex items-center justify-center">
+              <div className="h-8 w-8 rounded-lg bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-800/40 dark:text-amber-400 flex items-center justify-center">
                 <Gauge className="h-4 w-4" />
               </div>
             </div>
@@ -326,7 +326,7 @@ export default function OverviewView({
         <div className="lg:col-span-7 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <div className="p-1 rounded bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/60 dark:text-indigo-400 dark:border-transparent">
+              <div className="p-1 rounded bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/40">
                 <Activity className="h-3.5 w-3.5" />
               </div>
               <span className="text-sm font-semibold text-text-primary tracking-tight">
@@ -405,7 +405,7 @@ export default function OverviewView({
         <div className="lg:col-span-5 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <div className="p-1 rounded bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-400 dark:border-transparent">
+              <div className="p-1 rounded bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40">
                 <Clock className="h-3.5 w-3.5" />
               </div>
               <span className="text-sm font-semibold text-text-primary tracking-tight">
@@ -624,7 +624,7 @@ export default function OverviewView({
               <span className="text-base font-bold text-text-primary font-mono">{liveSavingsRate}%</span>
               <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block mt-0.5">Optimal buffer</span>
             </div>
-            <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-surface-3 dark:border-transparent dark:text-emerald-400 group-hover:scale-105 transition-transform">
+            <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/40 dark:text-emerald-400 group-hover:scale-105 transition-transform">
               <PiggyBank className="h-4 w-4" />
             </div>
           </div>
@@ -639,7 +639,7 @@ export default function OverviewView({
               <span className="text-base font-bold text-text-primary font-mono">{currSym}{formatNumber(liveAvgTicket, currSym, 2, 2)}</span>
               <span className="text-[10px] text-blue-600 dark:text-blue-400 block mt-0.5">Per expense</span>
             </div>
-            <div className="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-surface-3 dark:border-transparent dark:text-blue-400 group-hover:scale-105 transition-transform">
+            <div className="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400 group-hover:scale-105 transition-transform">
               <CreditCard className="h-4 w-4" />
             </div>
           </div>
@@ -654,7 +654,7 @@ export default function OverviewView({
               <span className="text-base font-bold text-text-primary truncate max-w-[120px] block">{liveTopExpenseName}</span>
               <span className="text-[10px] text-purple-600 dark:text-purple-400 block mt-0.5">Highest outflow</span>
             </div>
-            <div className="p-2 rounded-lg bg-purple-50 text-purple-600 border border-purple-200 dark:bg-surface-3 dark:border-transparent dark:text-purple-400 group-hover:scale-105 transition-transform">
+            <div className="p-2 rounded-lg bg-purple-50 text-purple-600 border border-purple-200 dark:bg-purple-950/40 dark:border-purple-800/40 dark:text-purple-400 group-hover:scale-105 transition-transform">
               <Plane className="h-4 w-4" />
             </div>
           </div>
@@ -719,7 +719,7 @@ export default function OverviewView({
                           {tx.title}
                         </span>
                         {tx.isRecurring && (
-                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-500/10 dark:border-blue-500/20 dark:text-blue-400">
+                          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400">
                             <Repeat className="h-2.5 w-2.5" /> RECURRING
                           </span>
                         )}

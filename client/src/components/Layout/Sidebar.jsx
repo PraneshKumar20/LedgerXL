@@ -79,7 +79,7 @@ export default function Sidebar({
     switch (itemId) {
       case "transactions":
         return (
-          <div className="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/80 dark:border-rose-800/60 dark:text-rose-400 font-mono text-xs shrink-0 flex items-center justify-center min-w-[24px]">
+          <div className="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:border-rose-800/40 dark:text-rose-400 font-mono text-xs shrink-0 flex items-center justify-center min-w-[24px]">
             {transactionCount || 12}
           </div>
         )
@@ -95,7 +95,7 @@ export default function Sidebar({
 
       case "budgets":
         return (
-          <div className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/80 dark:border-emerald-800/60 dark:text-emerald-400 text-xs font-medium shrink-0 flex items-center gap-1">
+          <div className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/40 dark:text-emerald-400 text-xs font-medium shrink-0 flex items-center gap-1">
             <span>🎯</span>
             <span>{goalsCount || 3} Goals</span>
           </div>
@@ -103,7 +103,7 @@ export default function Sidebar({
 
       case "subscriptions":
         return (
-          <div className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/80 dark:border-amber-800/60 dark:text-amber-400 font-mono text-xs shrink-0 flex items-center gap-1.5">
+          <div className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-800/40 dark:text-amber-400 font-mono text-xs shrink-0 flex items-center gap-1.5">
             <span>{recurringCount || 5}</span>
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 shadow-[0_0_6px_rgba(245,158,11,0.9)] animate-pulse" />
           </div>
@@ -410,7 +410,7 @@ export default function Sidebar({
                         className="w-full bg-transparent text-[13px] text-text-primary placeholder:text-text-muted outline-none pr-6"
                       />
                       {quickAddSuccess ? (
-                        <div className="absolute right-2 flex items-center gap-1 text-emerald-700 bg-emerald-50 border border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded text-[9px] dark:border-emerald-800/40">
+                        <div className="absolute right-2 flex items-center gap-1 text-emerald-700 bg-emerald-50 border border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/40 px-1.5 py-0.5 rounded text-[9px] dark:border-emerald-800/40">
                           <CheckCircle2 className="h-3 w-3" />
                           <span>Added</span>
                         </div>

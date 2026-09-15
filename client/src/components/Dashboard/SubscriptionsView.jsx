@@ -8,9 +8,11 @@ import {
   Plus, 
   AlertTriangle, 
   CreditCard, 
-  Bell
+  Bell,
+  Repeat
 } from "lucide-react"
 import AnimatedCounter from "../ui/AnimatedCounter"
+
 
 export default function SubscriptionsView({
   displayExpenses = [],
@@ -73,7 +75,7 @@ export default function SubscriptionsView({
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
               Monthly Subscription Costs
             </span>
-            <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-surface-2 dark:border-border-default/60 dark:text-blue-400">
+            <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400">
               <Radio className="h-4 w-4" />
             </div>
           </div>
@@ -91,7 +93,7 @@ export default function SubscriptionsView({
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
               Annual Projected Costs
             </span>
-            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-surface-2 dark:border-border-default/60 dark:text-text-secondary">
+            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:border-indigo-800/40 dark:text-indigo-400">
               <Clock className="h-4 w-4" />
             </div>
           </div>
@@ -211,8 +213,8 @@ export default function SubscriptionsView({
                     </div>
 
                     {/* Recurring Badge (matches Recent Transactions badge) */}
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider bg-surface-2 border border-border-default/60 text-text-primary shrink-0">
-                      RECURRING
+                    <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40 shrink-0">
+                      <Repeat className="h-2.5 w-2.5" /> RECURRING
                     </span>
                   </div>
 
