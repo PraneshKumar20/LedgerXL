@@ -64,7 +64,6 @@ export default function FinancialHealthCard({
 
     const netSurplus = Math.max(0, totalIncome - totalExpense)
 
-    // 4 Pillars Breakdown with rich palette, gradient progress bars, and dot indicators
     const pillarList = [
       {
         name: "Savings Ratio",
@@ -72,14 +71,13 @@ export default function FinancialHealthCard({
           ? `${currencySymbol}${formatNumber(netSurplus, currencySymbol, 0, 0)}` 
           : `${savingsScore} pts`,
         targetValue: totalIncome > 0 
-          ? `of ${currencySymbol}${formatNumber(totalIncome, currencySymbol, 0, 0)}` 
-          : `of 35 max`,
+          ? <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">{currencySymbol}{formatNumber(totalIncome, currencySymbol, 0, 0)}</span></>
+          : <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">35 max</span></>,
         percent: Math.min(100, Math.max(0, savingsRate || (savingsScore / 35) * 100)),
         detail: `${savingsRate.toFixed(0)}% retained`,
         badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
         dotBg: "bg-emerald-500 dark:bg-emerald-400",
-        barGradient: "bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.35)]",
-        percentBadgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/15 dark:text-emerald-400 dark:border-emerald-500/30",
+        barGradient: "bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400",
         statusDot: "bg-emerald-500 dark:bg-emerald-400",
         statusLabel: savingsScore >= 28 ? "Optimal" : "Pacing",
         statusTextClass: savingsScore >= 28 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
@@ -90,14 +88,13 @@ export default function FinancialHealthCard({
           ? `${currencySymbol}${formatNumber(totalExpense, currencySymbol, 0, 0)}` 
           : `${budgetScore} pts`,
         targetValue: budgetLimit > 0 
-          ? `of ${currencySymbol}${formatNumber(budgetLimit, currencySymbol, 0, 0)}` 
-          : `of 30 max`,
+          ? <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">{currencySymbol}{formatNumber(budgetLimit, currencySymbol, 0, 0)}</span></>
+          : <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">30 max</span></>,
         percent: Math.min(100, Math.max(0, budgetUsage)),
         detail: `${Math.max(0, Math.round(100 - budgetUsage))}% headroom`,
         badgeClass: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20",
         dotBg: "bg-sky-500 dark:bg-sky-400",
-        barGradient: "bg-gradient-to-r from-sky-600 via-blue-500 to-cyan-400 shadow-[0_0_10px_rgba(56,189,248,0.35)]",
-        percentBadgeClass: budgetScore >= 25 ? "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/15 dark:text-sky-400 dark:border-sky-500/30" : "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30",
+        barGradient: "bg-gradient-to-r from-sky-600 via-blue-500 to-cyan-400",
         statusDot: budgetScore >= 25 ? "bg-sky-500 dark:bg-sky-400" : "bg-amber-500 dark:bg-amber-400",
         statusLabel: budgetScore >= 25 ? "Safe Limit" : budgetScore >= 18 ? "Moderate" : "Tight",
         statusTextClass: budgetScore >= 25 ? "text-sky-600 dark:text-sky-400" : budgetScore >= 18 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400"
@@ -108,14 +105,13 @@ export default function FinancialHealthCard({
           ? `${currencySymbol}${formatNumber(Math.abs(totalIncome - totalExpense), currencySymbol, 0, 0)}` 
           : `${stabilityScore} pts`,
         targetValue: totalIncome > 0 || totalExpense > 0 
-          ? `net ${totalIncome >= totalExpense ? "surplus" : "deficit"}` 
-          : `of 20 max`,
+          ? <><span className="text-text-muted">net</span> <span className="font-semibold text-text-primary">{totalIncome >= totalExpense ? "surplus" : "deficit"}</span></>
+          : <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">20 max</span></>,
         percent: Math.min(100, Math.max(10, (stabilityScore / 20) * 100)),
         detail: hasSurplus ? "Cashflow Positive" : "Deficit Warning",
         badgeClass: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
         dotBg: "bg-indigo-500 dark:bg-indigo-400",
-        barGradient: "bg-gradient-to-r from-indigo-600 via-blue-500 to-cyan-400 shadow-[0_0_10px_rgba(99,102,241,0.35)]",
-        percentBadgeClass: hasSurplus ? "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/15 dark:text-indigo-400 dark:border-indigo-500/30" : "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-500/15 dark:text-rose-400 dark:border-rose-500/30",
+        barGradient: "bg-gradient-to-r from-indigo-600 via-blue-500 to-cyan-400",
         statusDot: hasSurplus ? "bg-emerald-500 dark:bg-emerald-400" : "bg-rose-500 dark:bg-rose-400",
         statusLabel: hasSurplus ? "Stable" : "Deficit",
         statusTextClass: hasSurplus ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
@@ -123,13 +119,12 @@ export default function FinancialHealthCard({
       {
         name: "Fixed Burden",
         scoreValue: `${currencySymbol}${formatNumber(recurringExpense, currencySymbol, 0, 0)}`,
-        targetValue: `of ${currencySymbol}${formatNumber(totalExpense, currencySymbol, 0, 0)}`,
+        targetValue: <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">{currencySymbol}{formatNumber(totalExpense, currencySymbol, 0, 0)}</span></>,
         percent: Math.min(100, Math.max(0, recurringRatio)),
         detail: `${recurringRatio.toFixed(0)}% recurring`,
         badgeClass: "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
         dotBg: "bg-amber-500 dark:bg-amber-400",
-        barGradient: "bg-gradient-to-r from-amber-600 via-orange-500 to-amber-400 shadow-[0_0_10px_rgba(245,158,11,0.35)]",
-        percentBadgeClass: recurringScore >= 11 ? "bg-surface-2 text-text-primary border-border-default/60" : "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/15 dark:text-amber-400 dark:border-amber-500/30",
+        barGradient: "bg-gradient-to-r from-amber-600 via-orange-500 to-amber-400",
         statusDot: recurringScore >= 11 ? "bg-brand" : "bg-amber-500 dark:bg-amber-400",
         statusLabel: recurringScore >= 11 ? "Low Burden" : "High Burn",
         statusTextClass: recurringScore >= 11 ? "text-brand" : "text-amber-600 dark:text-amber-400"
@@ -357,34 +352,34 @@ export default function FinancialHealthCard({
         {pillars.map((pillar) => (
           <div
             key={pillar.name}
-            className="p-4 sm:p-5 rounded-xl bg-gradient-to-b from-surface-2 to-surface-inset border border-border-subtle hover:border-border-strong transition-all duration-200 space-y-3.5 group hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/40 hover:-translate-y-0.5"
+            className="p-4 sm:p-5 rounded-xl bg-surface-1 border border-border-default hover:border-border-strong transition-all duration-200 space-y-3.5 group hover:shadow-elevation-sm dark:hover:shadow-black/20"
           >
             {/* Header: Pillar Badge with colored dot + Percentage */}
             <div className="flex items-center justify-between">
-              <span className={`inline-flex items-center gap-1.5 text-[11px] font-semibold px-2 py-0.5 rounded border ${pillar.badgeClass}`}>
+              <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded border ${pillar.badgeClass}`}>
                 <span className={`w-1.5 h-1.5 rounded-full ${pillar.dotBg}`} />
                 <span>{pillar.name}</span>
               </span>
-              <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border ${pillar.percentBadgeClass}`}>
+              <span className="text-[13px] font-mono font-bold text-text-primary">
                 {pillar.percent.toFixed(0)}%
               </span>
             </div>
 
             {/* Amount & Target Row */}
             <div className="space-y-2">
-              <div className="flex justify-between items-baseline pt-0.5">
-                <span className="text-[20px] sm:text-[21px] font-bold text-text-primary font-mono tracking-tight leading-none">
+              <div className="flex justify-between items-baseline pt-0.5 gap-2">
+                <span className="text-[20px] font-bold text-text-primary font-mono tracking-tight leading-none truncate">
                   {pillar.scoreValue}
                 </span>
-                <span className="font-semibold text-text-primary text-xs font-mono px-1.5 py-0.5 rounded bg-surface-2/60 border border-border-strong/50">
+                <span className="text-[11px] font-mono text-text-muted shrink-0">
                   {pillar.targetValue}
                 </span>
               </div>
 
               {/* High fidelity progress bar */}
-              <div className="h-2 w-full bg-slate-200 dark:bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
+              <div className="h-1.5 w-full bg-surface-inset border border-border-subtle rounded-full overflow-hidden flex">
                 <div
-                  className={`h-full rounded-full transition-all duration-500 ${pillar.barGradient}`}
+                  className={`h-full rounded-full transition-all duration-500 opacity-90 ${pillar.barGradient}`}
                   style={{ width: `${pillar.percent}%` }}
                 />
               </div>
@@ -392,7 +387,7 @@ export default function FinancialHealthCard({
 
             {/* Bottom Row: Detail + Status */}
             <div className="flex items-center justify-between pt-3 border-t border-border-default/70 text-xs font-mono">
-              <span className="text-text-secondary">
+              <span className="text-text-muted">
                 {pillar.detail}
               </span>
               <div className="flex items-center gap-1.5">
