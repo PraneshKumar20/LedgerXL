@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useEffect } from "react"
 
 const ThemeContext = createContext({
-  theme: "dark",
-  isDark: true,
+  theme: "light",
+  isDark: false,
   toggleTheme: () => {},
   setTheme: () => {}
 })
@@ -15,7 +15,7 @@ export function ThemeProvider({ children }) {
         if (saved === "light" || saved === "dark") return saved
       } catch (e) {}
     }
-    return "dark"
+    return "light"
   })
 
   useEffect(() => {
