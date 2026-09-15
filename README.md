@@ -1,8 +1,8 @@
 <div align="center">
 
-  <img src="client/public/ledgerflow-logo.png" alt="LedgerFlow Logo" width="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);" />
+  <img src="client/public/ledgerxl-logo.png" alt="LedgerXL Logo" width="120" style="border-radius: 24px; box-shadow: 0 10px 30px rgba(62, 99, 221, 0.25);" />
 
-  # ⚡ LedgerFlow
+  # ⚡ LedgerXL
   ### Enterprise-Grade Personal Wealth & Financial Intelligence Command Center
 
   <p align="center">
@@ -61,7 +61,7 @@
 
 ## 🌌 Overview & Philosophy
 
-**LedgerFlow** is crafted for individuals who want complete clarity, velocity, and command over their net worth and cashflow. Rather than static spreadsheets or sluggish accounting software, LedgerFlow treats personal wealth like an operations flight deck:
+**LedgerXL** is crafted for individuals who want complete clarity, velocity, and command over their net worth and cashflow. Rather than static spreadsheets or sluggish accounting software, LedgerXL treats personal wealth like an operations flight deck:
 
 - **Isolated Multi-User Security**: Complete data isolation across accounts via JWT / User ID tenancy.
 - **Glassmorphism 2.0 & Cyber Aesthetics**: Designed with ambient glowing meshes, radial gradient backdrops, frosted cards, and dynamic spring physics.
@@ -127,7 +127,7 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                       LEDGERFLOW UI                         │
+│                       LEDGERXL UI                         │
 │   React 19 + Vite + Tailwind CSS + Framer Motion + Recharts  │
 └──────────────────────────────┬──────────────────────────────┘
                                │ Axios REST API (JSON)
@@ -179,7 +179,7 @@
 ExpenseTracker/
 ├── client/                             # React 19 Frontend
 │   ├── public/
-│   │   ├── ledgerflow-logo.png         # Official logo & favicon asset
+│   │   ├── ledgerxl-logo.png         # Official logo & favicon asset
 │   │   └── vite.svg
 │   ├── src/
 │   │   ├── api/                        # Axios HTTP client configuration
@@ -237,7 +237,7 @@ ExpenseTracker/
 
 ## 🚀 Getting Started
 
-Follow these steps to set up and run LedgerFlow on your local development machine.
+Follow these steps to set up and run LedgerXL on your local development machine.
 
 ### Prerequisites
 
@@ -250,8 +250,8 @@ Ensure you have the following installed:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/PraneshKumar20/Expense-Tracker.git
-   cd Expense-Tracker
+   git clone https://github.com/PraneshKumar20/LedgerFlow.git
+   cd LedgerFlow
    ```
 
 2. **Install all dependencies (Root, Client & Server):**

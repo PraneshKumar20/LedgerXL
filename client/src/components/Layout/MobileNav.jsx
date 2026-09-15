@@ -51,8 +51,8 @@ export default function MobileNav({
           >
             <Menu className="h-5 w-5" />
           </button>
-          <img src="/ledgerflow-logo.png?v=2" alt="LedgerFlow Logo" className="h-7 w-7 object-contain drop-shadow-sm" />
-          <span className="font-bold text-sm tracking-tight text-text-primary">LedgerFlow</span>
+          <img src="/ledgerxl-logo.png" alt="LedgerXL Logo" className="h-8 w-8 object-contain drop-shadow-sm rounded-lg" />
+          <span className="font-bold text-sm tracking-tight text-text-primary">Ledger<span className="text-brand">XL</span></span>
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -112,10 +112,10 @@ export default function MobileNav({
               {/* Drawer Header */}
               <div className="flex items-center justify-between pb-4 border-b border-border-default">
                 <div className="flex items-center gap-2.5">
-                  <img src="/ledgerflow-logo.png?v=2" alt="LedgerFlow Logo" className="h-7 w-7 object-contain" />
+                  <img src="/ledgerxl-logo.png" alt="LedgerXL Logo" className="h-9 w-9 object-contain rounded-lg" />
                   <div>
-                    <span className="font-bold text-sm tracking-tight text-text-primary block">LedgerFlow</span>
-                    <p className="text-[10px] text-text-secondary">Financial Command</p>
+                    <span className="font-bold text-sm tracking-tight text-text-primary block">Ledger<span className="text-brand">XL</span></span>
+                    <p className="text-[10px] text-text-secondary">Personal Financial Command</p>
                   </div>
                 </div>
                 <button

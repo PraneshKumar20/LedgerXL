@@ -32,8 +32,8 @@ const Signup = () => {
         <div className="min-h-screen flex items-center justify-center bg-background p-4">
             <Card className="w-full max-w-md bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal">
                 <CardHeader className="space-y-2 text-center pb-4">
-                    <img src="/ledgerflow-logo.png?v=2" alt="LedgerFlow Logo" className="h-12 w-12 object-contain mx-auto mb-1 drop-shadow-sm" />
-                    <CardTitle className="text-xl font-bold tracking-tight text-text-primary">Join LedgerFlow</CardTitle>
+                    <img src="/ledgerxl-logo.png" alt="LedgerXL Logo" className="h-14 w-14 object-contain mx-auto mb-1 drop-shadow-sm rounded-xl" />
+                    <CardTitle className="text-xl font-bold tracking-tight text-text-primary">Join Ledger<span className="text-brand">XL</span></CardTitle>
                     <CardDescription className="text-text-secondary text-xs">
                         Start managing your wealth, envelopes, and bills today
                     </CardDescription>

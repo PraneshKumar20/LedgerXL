@@ -173,12 +173,12 @@ export default function Sidebar({
                 <button
                   onClick={() => setActiveTab("overview")}
                   className="hover:scale-105 transition-transform cursor-pointer"
-                  title="LedgerFlow Overview"
+                  title="LedgerXL Overview"
                 >
                   <img 
-                    src="/ledgerflow-logo.png" 
-                    alt="LedgerFlow Logo" 
-                    className="h-8 w-8 object-contain drop-shadow-md rounded-lg" 
+                    src="/ledgerxl-logo.png" 
+                    alt="LedgerXL Logo" 
+                    className="h-10 w-10 object-contain drop-shadow-md rounded-xl" 
                   />
                 </button>
                 <button
@@ -326,16 +326,16 @@ export default function Sidebar({
                 <button
                   onClick={() => setActiveTab("overview")}
                   className="flex items-center gap-2.5 min-w-0 cursor-pointer group text-left"
-                  title="LedgerFlow Overview"
+                  title="LedgerXL Overview"
                 >
                   <img 
-                    src="/ledgerflow-logo.png" 
-                    alt="LedgerFlow Logo" 
-                    className="h-8 w-8 object-contain shrink-0 drop-shadow-elevation-sm rounded-lg group-hover:scale-105 transition-transform" 
+                    src="/ledgerxl-logo.png" 
+                    alt="LedgerXL Logo" 
+                    className="h-10 w-10 object-contain shrink-0 drop-shadow-elevation-sm rounded-xl group-hover:scale-105 transition-transform" 
                   />
                   <div className="min-w-0">
-                    <span className="font-bold text-[15px] leading-tight tracking-tight text-text-primary block truncate font-sans group-hover:text-brand transition-colors">
-                      LedgerFlow
+                    <span className="font-bold text-[15px] leading-tight tracking-tight text-text-primary block truncate font-sans">
+                      Ledger<span className="text-brand">XL</span>
                     </span>
                     <p className="text-[11px] leading-tight text-text-secondary font-normal truncate mt-0.5 font-sans">
                       Personal Financial Command
