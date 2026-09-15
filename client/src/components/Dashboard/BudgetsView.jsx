@@ -304,20 +304,19 @@ export default function BudgetsView({
             const colors = getCategoryStyle(cat)
             const isEditing = editingCategory === cat
             const barGradient = getCategoryBarGradient(cat, percent)
-            const percentBadgeClass = getPercentBadge(percent)
 
             return (
               <div
                 key={cat}
-                className="p-4 sm:p-5 rounded-xl bg-gradient-to-b from-surface-2 to-surface-inset border border-border-subtle hover:border-border-strong transition-all duration-200 space-y-3.5 group hover:shadow-elevation-md dark:hover:shadow-black/40 hover:-translate-y-0.5"
+                className="p-4 sm:p-5 rounded-xl bg-surface-1 border border-border-default hover:border-border-strong transition-all duration-200 space-y-3.5 group hover:shadow-elevation-sm dark:hover:shadow-black/20"
               >
-                {/* Header: Category Badge with colored dot + Percentage Badge */}
+                {/* Header: Category Badge + Percentage */}
                 <div className="flex items-center justify-between">
                   <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded border ${colors.badge}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${colors.bg}`} />
                     <span>{cat}</span>
                   </span>
-                  <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded border ${percentBadgeClass}`}>
+                  <span className="text-[13px] font-mono font-semibold text-text-secondary">
                     {percent.toFixed(0)}%
                   </span>
                 </div>
@@ -326,23 +325,23 @@ export default function BudgetsView({
                 <div className="space-y-2">
                   <div className="flex justify-between items-baseline pt-0.5">
                     <div className="flex items-baseline gap-0.5">
-                      <span className="text-xs font-semibold font-mono text-text-secondary">{currSym}</span>
-                      <span className="text-[21px] sm:text-[22px] font-bold text-text-primary font-mono tracking-tight leading-none">
+                      <span className="text-[11px] font-semibold font-mono text-text-muted mr-0.5">{currSym}</span>
+                      <span className="text-[20px] font-bold text-text-primary font-mono tracking-tight leading-none">
                         {formatNumber(spent, currSym, 0, 0)}
                       </span>
                     </div>
-                    <div className="text-xs font-mono text-text-secondary flex items-center gap-1">
-                      <span className="text-[11px]">of</span>
-                      <span className="font-semibold text-text-primary px-1.5 py-0.5 rounded bg-surface-2/60 border border-border-strong/50">
+                    <div className="text-[11px] font-mono text-text-muted flex items-center gap-1.5">
+                      <span>of</span>
+                      <span className="font-semibold text-text-primary">
                         {currSym}{formatNumber(limit, currSym, 0, 0)}
                       </span>
                     </div>
                   </div>
 
                   {/* High fidelity progress bar */}
-                  <div className="h-2 w-full bg-slate-200 dark:bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
+                  <div className="h-1.5 w-full bg-surface-inset border border-border-subtle rounded-full overflow-hidden flex">
                     <div
-                      className={`h-full rounded-full transition-all duration-500 ${barGradient}`}
+                      className={`h-full rounded-full transition-all duration-500 opacity-90 ${barGradient}`}
                       style={{ width: `${percent}%` }}
                     />
                   </div>
@@ -353,15 +352,15 @@ export default function BudgetsView({
                   <div className="flex items-center gap-1.5 font-mono">
                     {remaining >= 0 ? (
                       <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 inline-block shrink-0" />
-                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{currSym}{formatNumber(remaining, currSym, 0, 0)}</span>
-                        <span className="text-text-secondary font-normal text-[11px]">left</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-positive inline-block shrink-0" />
+                        <span className="text-text-primary font-medium">{currSym}{formatNumber(remaining, currSym, 0, 0)}</span>
+                        <span className="text-text-muted font-normal text-[11px]">left</span>
                       </>
                     ) : (
                       <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 dark:bg-rose-400 inline-block shrink-0" />
-                        <span className="text-rose-600 dark:text-rose-400 font-bold">-{currSym}{formatNumber(Math.abs(remaining), currSym, 0, 0)}</span>
-                        <span className="text-rose-600/80 dark:text-rose-400/80 font-normal text-[11px]">over</span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-negative inline-block shrink-0" />
+                        <span className="text-negative font-semibold">-{currSym}{formatNumber(Math.abs(remaining), currSym, 0, 0)}</span>
+                        <span className="text-negative font-normal text-[11px] opacity-80">over</span>
                       </>
                     )}
                   </div>
@@ -382,7 +381,7 @@ export default function BudgetsView({
                             setEditingCategory(null)
                           }
                         }}
-                        className="w-20 bg-surface-3 border border-blue-500/70 rounded-md px-2 py-0.5 text-text-primary text-xs font-mono text-right outline-none ring-1 ring-blue-500/50"
+                        className="w-20 bg-surface-2 border border-brand/70 rounded-md px-2 py-0.5 text-text-primary text-[11px] font-mono font-bold text-right outline-none ring-1 ring-brand/30"
                       />
                       <button
                         type="button"
@@ -391,7 +390,7 @@ export default function BudgetsView({
                           const val = tempLimit.replace(/[^0-9]/g, '')
                           handleUpdateCategoryBudget(cat, (Number(val) || 0) / multiplier)
                         }}
-                        className="px-1.5 py-0.5 rounded bg-blue-600 hover:bg-blue-500 text-white text-[10px] font-mono font-bold cursor-pointer transition-colors shadow-elevation-sm"
+                        className="px-2 py-1 rounded bg-brand hover:bg-brand-hover text-white text-[10px] font-mono font-bold cursor-pointer transition-colors shadow-elevation-sm"
                         title="Save Target (Enter)"
                       >
                         ↵
@@ -400,9 +399,9 @@ export default function BudgetsView({
                   ) : (
                     <button
                       onClick={() => handleStartEdit(cat, rawLimit)}
-                      className="px-2 py-0.5 rounded-md text-[11px] font-medium text-text-secondary hover:text-text-primary bg-surface-2/40 hover:bg-surface-hover border border-border-default/40 hover:border-border-strong transition-all flex items-center gap-1 cursor-pointer group/btn shadow-elevation-sm"
+                      className="px-2 py-1 rounded-md text-[11px] font-medium text-text-secondary hover:text-text-primary bg-surface-2/40 hover:bg-surface-hover border border-border-default/40 hover:border-border-strong transition-all flex items-center gap-1 cursor-pointer group/btn"
                     >
-                      <Edit3 className="h-2.5 w-2.5 text-text-secondary group-hover/btn:text-blue-500 dark:group-hover/btn:text-blue-400 transition-colors" />
+                      <Edit3 className="h-3 w-3 text-text-muted group-hover/btn:text-brand transition-colors" />
                       <span>Edit Limit</span>
                     </button>
                   )}
@@ -465,21 +464,21 @@ export default function BudgetsView({
               return (
                 <div
                   key={goal.id}
-                  className="bg-gradient-to-b from-surface-2 to-surface-inset border border-border-subtle hover:border-border-strong rounded-xl p-4 sm:p-5 transition-all duration-200 flex flex-col justify-between space-y-4 group hover:shadow-elevation-md dark:hover:shadow-black/40 hover:-translate-y-0.5"
+                  className="bg-surface-1 border border-border-default hover:border-border-strong rounded-xl p-4 sm:p-5 transition-all duration-200 flex flex-col justify-between space-y-4 group hover:shadow-elevation-sm dark:hover:shadow-black/20"
                 >
                   {/* Top Header: Icon Squircle + Title & Target Date */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform ${style.squircle}`}>
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform ${style.squircle}`}>
                         {style.icon}
                       </div>
                       <div className="min-w-0">
-                        <h3 className="text-sm sm:text-[15px] font-bold text-text-primary leading-snug truncate group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
+                        <h3 className="text-sm font-bold text-text-primary leading-snug truncate">
                           {goal.title}
                         </h3>
                         {goal.targetDate && (
-                          <p className="text-[11px] text-text-secondary mt-0.5 flex items-center gap-1.5 font-mono">
-                            <Calendar className="h-3 w-3 text-text-muted shrink-0" />
+                          <p className="text-[11px] text-text-muted mt-0.5 flex items-center gap-1 font-mono">
+                            <Calendar className="h-3 w-3 shrink-0" />
                             <span>{goal.targetDate}</span>
                           </p>
                         )}
@@ -487,13 +486,11 @@ export default function BudgetsView({
                     </div>
 
                     {isCompleted ? (
-                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide bg-emerald-50 dark:bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 shrink-0 uppercase dark:border-emerald-800/40">
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wide bg-positive/10 text-positive border border-positive/20 shrink-0 uppercase">
                         Completed
                       </span>
                     ) : (
-                      <span className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-bold border shrink-0 ${
-                        percent >= 75 ? style.percentBadge : 'bg-surface-2 text-text-primary border-border-default/60'
-                      }`}>
+                      <span className="text-[13px] font-mono font-semibold text-text-secondary shrink-0">
                         {percent.toFixed(0)}%
                       </span>
                     )}
@@ -503,29 +500,24 @@ export default function BudgetsView({
                   <div className="space-y-2">
                     <div className="flex justify-between items-baseline pt-0.5">
                       <div className="flex items-baseline gap-0.5">
-                        <span className="text-xs font-semibold font-mono text-text-secondary">{currSym}</span>
-                        <span className="text-[21px] sm:text-[22px] font-bold text-text-primary font-mono tracking-tight leading-none">
+                        <span className="text-[11px] font-semibold font-mono text-text-muted mr-0.5">{currSym}</span>
+                        <span className="text-[20px] font-bold text-text-primary font-mono tracking-tight leading-none">
                           {formatNumber(current, currSym, 0, 0)}
                         </span>
                       </div>
-                      <div className="text-xs font-mono text-text-secondary flex items-center gap-1">
-                        <span className="text-[11px]">of</span>
-                        <span className="font-semibold text-text-primary px-1.5 py-0.5 rounded bg-surface-2/60 border border-border-strong/50">
+                      <div className="text-[11px] font-mono text-text-muted flex items-center gap-1.5">
+                        <span>of</span>
+                        <span className="font-semibold text-text-primary">
                           {currSym}{formatNumber(target, currSym, 0, 0)}
-                        </span>
-                        <span className={`font-bold ml-1 ${style.accentColor}`}>
-                          · {percent.toFixed(0)}%
                         </span>
                       </div>
                     </div>
 
-                    <div className="h-2 w-full bg-slate-200 dark:bg-slate-950/80 border border-border-subtle rounded-full overflow-hidden p-[1px]">
+                    <div className="h-1.5 w-full bg-surface-inset border border-border-subtle rounded-full overflow-hidden flex">
                       <div
                         style={{ width: `${percent}%` }}
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          isCompleted 
-                            ? 'bg-gradient-to-r from-emerald-600 to-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.35)]' 
-                            : style.barGradient
+                        className={`h-full rounded-full transition-all duration-500 opacity-90 ${
+                          isCompleted ? 'bg-positive' : style.barGradient
                         }`}
                       />
                     </div>
@@ -533,16 +525,16 @@ export default function BudgetsView({
 
                   {/* Bottom Row: Remaining to target & Deposit button */}
                   <div className="flex items-center justify-between pt-3 border-t border-border-default/70 text-xs">
-                    <div className="flex items-center gap-1 font-mono">
-                      <span className="text-text-primary font-semibold">{currSym}{formatNumber(Math.max(0, target - current), currSym, 0, 0)}</span>
-                      <span className="text-text-secondary font-normal text-[11px]">to target</span>
+                    <div className="flex items-center gap-1.5 font-mono">
+                      <span className="text-text-primary font-medium">{currSym}{formatNumber(Math.max(0, target - current), currSym, 0, 0)}</span>
+                      <span className="text-text-muted font-normal text-[11px]">to target</span>
                     </div>
                     {!isCompleted && (
                       <button
                         onClick={() => handleQuickDeposit(goal.id, 100)}
-                        className="px-2.5 py-1 text-xs font-semibold bg-surface-2 hover:bg-blue-600 hover:text-white active:scale-95 text-text-primary border border-border-default/60 hover:border-blue-500 rounded-lg transition-all cursor-pointer flex items-center gap-1 shadow-elevation-sm group/dep"
+                        className="px-2.5 py-1 text-[11px] font-medium bg-surface-2 hover:bg-brand hover:text-white active:scale-95 text-text-secondary border border-border-default/60 hover:border-brand rounded-md transition-all cursor-pointer flex items-center gap-1 group/dep"
                       >
-                        <Plus className="h-3 w-3 text-blue-600 dark:text-blue-400 group-hover/dep:text-white transition-colors" />
+                        <Plus className="h-3 w-3 text-text-muted group-hover/dep:text-white transition-colors" />
                         <span>Deposit {currSym}100</span>
                       </button>
                     )}
