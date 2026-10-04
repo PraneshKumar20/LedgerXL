@@ -19,6 +19,9 @@ const Login = () => {
 
         try {
             const response = await axios.post("/auth/login", { email, password });
+            if (response.data?.token) {
+                localStorage.setItem("token", response.data.token);
+            }
             const userData = response.data?.user || {
                 name: email.split('@')[0],
                 email: email
@@ -31,6 +34,7 @@ const Login = () => {
     };
 
     const handleGuestLogin = () => {
+        localStorage.removeItem("token");
         localStorage.setItem("user", JSON.stringify({
             name: "Demo Explorer",
             email: "guest@ledgerflow.app",

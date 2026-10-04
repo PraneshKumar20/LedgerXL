@@ -20,6 +20,9 @@ const Signup = () => {
 
         try {
             const response = await axios.post("/auth/signup", { name, email, password });
+            if (response.data?.token) {
+                localStorage.setItem("token", response.data.token);
+            }
             const userData = response.data?.user || { name, email };
             localStorage.setItem("user", JSON.stringify(userData));
             navigate("/expenses");

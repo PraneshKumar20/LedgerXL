@@ -64,6 +64,7 @@ export default function Dashboard() {
 
   const handleLogout = () => {
     localStorage.removeItem("user")
+    localStorage.removeItem("token")
     addToast({ title: "Signed Out", message: "You have been logged out.", type: "info" })
     navigate("/login")
   }
