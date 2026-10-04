@@ -18,6 +18,16 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// Ensure MongoDB connection is initialized / awaited before handling requests (eliminates cold-start race)
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+    } catch (err) {
+        console.warn("DB connection attempt failed:", err.message);
+    }
+    next();
+});
+
 // Public health check endpoint
 app.get("/health", (req, res) => {
     const isConnected = mongoose.connection.readyState === 1;
@@ -44,6 +54,11 @@ app.use("/api/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+// Only start HTTP listener if not running in serverless / test environment
+if (process.env.NODE_ENV !== "test" && !process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
+
+module.exports = app;
