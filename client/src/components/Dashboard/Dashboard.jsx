@@ -73,30 +73,30 @@ export default function Dashboard() {
     navigate("/login")
   }
 
-  // Transactions State (API + LocalStorage fallback)
+  // Transactions State: For authenticated users, MongoDB is the canonical source of truth.
+  // For demo/guest users, local storage is the intentional demo sandbox.
   const [expenses, setExpenses] = useState(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const key = currentUser?.email ? currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'guest'
-        const saved = localStorage.getItem(`expenses_${key}`)
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            // Auto-upgrade legacy demo transactions to match calibrated journal entries
-            if (isGuest && parsed.some(p => p.amount === 600000 || p.title === "Flight & Hotel Stay")) {
-              const upgraded = DEMO_TRANSACTIONS.map((t, index) => ({
-                ...t,
-                _id: `initial-${index}`
-              }))
-              try { localStorage.setItem(`expenses_${key}`, JSON.stringify(upgraded)) } catch (err) {}
-              return upgraded
-            }
-            return parsed
-          }
-        }
-      } catch (e) {}
-    }
     if (isGuest) {
+      if (typeof window !== 'undefined') {
+        try {
+          const key = 'guest'
+          const saved = localStorage.getItem(`expenses_${key}`)
+          if (saved) {
+            const parsed = JSON.parse(saved)
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              if (parsed.some(p => p.amount === 600000 || p.title === "Flight & Hotel Stay")) {
+                const upgraded = DEMO_TRANSACTIONS.map((t, index) => ({
+                  ...t,
+                  _id: `initial-${index}`
+                }))
+                try { localStorage.setItem(`expenses_${key}`, JSON.stringify(upgraded)) } catch (err) {}
+                return upgraded
+              }
+              return parsed
+            }
+          }
+        } catch (e) {}
+      }
       return DEMO_TRANSACTIONS.map((t, index) => ({
         ...t,
         _id: `initial-${index}`
@@ -343,6 +343,25 @@ export default function Dashboard() {
   }
 
   const fetchExpenses = async () => {
+    // Explicit Demo Guest: Local demo sandbox
+    if (isGuest) {
+      const localData = localStorage.getItem(`expenses_${userStorageKey}`)
+      if (localData) {
+        try {
+          const parsed = JSON.parse(localData)
+          if (Array.isArray(parsed)) {
+            setExpenses(parsed)
+            return
+          }
+        } catch {
+          // ignore malformed demo cache
+        }
+      }
+      seedDemoData()
+      return
+    }
+
+    // Authenticated User: Server (MongoDB) is the canonical source of truth
     try {
       const userId = currentUser?.id || currentUser?._id
       const url = userId ? `/expenses?userId=${userId}` : "/expenses"
@@ -354,22 +373,33 @@ export default function Dashboard() {
       }
       throw new Error("API response is not an array")
     } catch (error) {
-      console.warn("Using offline / local expenses:", error.message)
-      const localData = localStorage.getItem(`expenses_${userStorageKey}`)
-      if (localData) {
-        try {
-          const parsed = JSON.parse(localData)
-          if (Array.isArray(parsed)) {
-            setExpenses(parsed)
-            return
-          }
-        } catch (e) {}
+      const status = error.response?.status
+      if (status === 401) {
+        // Handled by axios response interceptor (session cleanup & redirect)
+        return
       }
-      if (isGuest) {
-        seedDemoData()
-      } else {
-        setExpenses([])
+      if (status === 403) {
+        addToast({
+          title: "Access Denied",
+          message: "You are not authorized to view these expenses.",
+          type: "error"
+        })
+        return
       }
+      if (status && status >= 400) {
+        addToast({
+          title: "Failed to Load Expenses",
+          message: error.response?.data?.message || "Server error while fetching expenses. Please refresh.",
+          type: "error"
+        })
+        return
+      }
+      // Network/offline error (no response)
+      addToast({
+        title: "Connection Error",
+        message: "Unable to reach server. Please check your network connection.",
+        type: "error"
+      })
     }
   }
 
@@ -398,6 +428,33 @@ export default function Dashboard() {
       amount: transaction.amount / multiplier
     }
 
+    // Explicit Demo Guest: Entirely local sandbox
+    if (isGuest) {
+      if (baseTransaction._id) {
+        setExpenses((prev) => {
+          const next = prev.map((e) => e._id === baseTransaction._id ? baseTransaction : e)
+          updateLocalStorage(next)
+          return next
+        })
+        addToast({ title: "Updated", message: `Saved changes to "${transaction.title}".`, type: "success" })
+      } else {
+        const demoId = `demo-${Date.now()}`
+        const demoTransaction = {
+          ...baseTransaction,
+          _id: demoId,
+          date: baseTransaction.date || new Date().toISOString()
+        }
+        setExpenses((prev) => {
+          const next = [demoTransaction, ...prev]
+          updateLocalStorage(next)
+          return next
+        })
+        addToast({ title: "Created", message: `Logged "${transaction.title}" to ledger.`, type: "success" })
+      }
+      return
+    }
+
+    // Authenticated User: Server (MongoDB) is the canonical source of truth
     try {
       if (baseTransaction._id) {
         const response = await axios.put(`/expenses/${baseTransaction._id}`, baseTransaction)
@@ -417,32 +474,49 @@ export default function Dashboard() {
         addToast({ title: "Created", message: `Logged "${transaction.title}" to ledger.`, type: "success" })
       }
     } catch (error) {
-      console.error("Save transaction failed, falling back to local state:", error.message)
-      if (baseTransaction._id) {
-        setExpenses((prev) => {
-          const next = prev.map((e) => e._id === baseTransaction._id ? baseTransaction : e)
-          updateLocalStorage(next)
-          return next
-        })
-        addToast({ title: "Saved Locally", message: `Updated "${transaction.title}".`, type: "info" })
-      } else {
-        const fallbackId = `local-${Date.now()}`
-        const fallbackTransaction = {
-          ...baseTransaction,
-          _id: fallbackId,
-          date: baseTransaction.date || new Date().toISOString()
-        }
-        setExpenses((prev) => {
-          const next = [fallbackTransaction, ...prev]
-          updateLocalStorage(next)
-          return next
-        })
-        addToast({ title: "Saved Locally", message: `Recorded "${transaction.title}".`, type: "info" })
+      const status = error.response?.status
+      if (status === 401) {
+        // Handled by axios response interceptor (session cleanup & redirect)
+        throw error
       }
+      if (status === 403) {
+        addToast({
+          title: "Access Denied",
+          message: "You are not authorized to perform this action.",
+          type: "error"
+        })
+        throw error
+      }
+      if (status) {
+        addToast({
+          title: "Save Failed",
+          message: error.response?.data?.message || "Couldn't save transaction. Please try again.",
+          type: "error"
+        })
+        throw error
+      }
+      addToast({
+        title: "Connection Error",
+        message: "Network error. Couldn't save transaction. Please check your connection and try again.",
+        type: "error"
+      })
+      throw error
     }
   }
 
   const handleDeleteTransaction = async (id) => {
+    // Explicit Demo Guest: Local sandbox
+    if (isGuest) {
+      setExpenses((prev) => {
+        const next = prev.filter((e) => e._id !== id)
+        updateLocalStorage(next)
+        return next
+      })
+      addToast({ title: "Deleted", message: "Transaction removed from ledger.", type: "info" })
+      return
+    }
+
+    // Authenticated User: Server is source of truth
     try {
       await axios.delete(`/expenses/${id}`)
       setExpenses((prev) => {
@@ -450,14 +524,25 @@ export default function Dashboard() {
         updateLocalStorage(next)
         return next
       })
-      addToast({ title: "Deleted", message: "Transaction removed from ledger.", type: "error" })
+      addToast({ title: "Deleted", message: "Transaction removed from ledger.", type: "info" })
     } catch (error) {
-      setExpenses((prev) => {
-        const next = prev.filter((e) => e._id !== id)
-        updateLocalStorage(next)
-        return next
+      const status = error.response?.status
+      if (status === 401) {
+        return
+      }
+      if (status === 403) {
+        addToast({
+          title: "Access Denied",
+          message: "You are not authorized to delete this transaction.",
+          type: "error"
+        })
+        return
+      }
+      addToast({
+        title: "Delete Failed",
+        message: error.response?.data?.message || "Couldn't delete transaction. Please try again.",
+        type: "error"
       })
-      addToast({ title: "Deleted Locally", message: "Transaction removed.", type: "error" })
     }
   }
 

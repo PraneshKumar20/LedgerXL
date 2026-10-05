@@ -87,10 +87,10 @@ export default function SubscriptionRadarModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}
             transition={{ duration: 0.15 }}
-            className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 p-5 space-y-4"
+            className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 flex flex-col max-h-[90dvh]"
           >
-            {/* Header */}
-            <div className="flex items-start justify-between border-b border-border-default pb-3">
+            {/* Header (Pinned) */}
+            <div className="flex items-start justify-between border-b border-border-default p-5 pb-4 shrink-0 bg-surface-2">
               <div>
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 rounded-control bg-surface-3 text-brand">
@@ -105,15 +105,19 @@ export default function SubscriptionRadarModal({
                 </p>
               </div>
               <button
+                type="button"
                 onClick={onClose}
-                className="p-1 text-text-secondary hover:text-text-primary rounded-control hover:bg-surface-hover transition-colors cursor-pointer"
+                className="p-1.5 text-text-secondary hover:text-text-primary rounded-control hover:bg-surface-hover transition-colors cursor-pointer"
+                aria-label="Close"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Key Burn Rate Metrics Banner */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-card bg-surface-1 border border-border-default">
+            {/* Scrollable Content Body */}
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 space-y-4">
+              {/* Key Burn Rate Metrics Banner */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-card bg-surface-1 border border-border-default">
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-[11px] uppercase font-semibold tracking-[0.06em] text-text-muted">
                   <Flame className="h-3.5 w-3.5 text-negative" />
@@ -169,7 +173,7 @@ export default function SubscriptionRadarModal({
                 </button>
               </div>
 
-              <div className="space-y-2.5 max-h-[300px] overflow-y-auto pr-1">
+              <div className="space-y-2.5">
                 {recurringSubscriptions.length === 0 ? (
                   <div className="text-center py-10 rounded-card bg-surface-1 border border-border-default text-text-secondary text-xs space-y-2">
                     <Radio className="h-6 w-6 text-text-muted mx-auto" />
@@ -229,15 +233,17 @@ export default function SubscriptionRadarModal({
                 )}
               </div>
             </div>
+            </div>
 
-            {/* Modal Footer */}
-            <div className="pt-2 border-t border-border-default flex items-center justify-between">
-              <p className="text-[11px] text-text-secondary">
+            {/* Modal Footer (Pinned) */}
+            <div className="p-4 border-t border-border-default bg-surface-2 shrink-0 flex items-center justify-between gap-4">
+              <p className="text-[11px] text-text-secondary hidden sm:block">
                 Canceling just one $15/mo subscription frees up ${formatNumber(15 * 12, "USD", 0, 0)} every year.
               </p>
               <button
+                type="button"
                 onClick={onClose}
-                className="px-4 py-1.5 rounded-control bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs font-medium transition-colors shadow-elevation-sm cursor-pointer"
+                className="px-5 py-2 rounded-control bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs font-semibold transition-colors shadow-elevation-sm cursor-pointer w-full sm:w-auto"
               >
                 Done
               </button>

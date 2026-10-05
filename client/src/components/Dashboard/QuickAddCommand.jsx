@@ -32,23 +32,27 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
     return parseQuickAdd(query)
   }, [query])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     if (e) e.preventDefault()
     if (!parsedResult || !parsedResult.isValid) return
 
-    onSave({
-      title: parsedResult.title,
-      amount: parsedResult.amount,
-      category: parsedResult.category,
-      type: parsedResult.type,
-      date: parsedResult.date,
-      isRecurring: parsedResult.isRecurring
-    })
+    try {
+      await onSave({
+        title: parsedResult.title,
+        amount: parsedResult.amount,
+        category: parsedResult.category,
+        type: parsedResult.type,
+        date: parsedResult.date,
+        isRecurring: parsedResult.isRecurring
+      })
 
-    setJustRecorded(parsedResult)
-    setTimeout(() => {
-      onClose()
-    }, 600)
+      setJustRecorded(parsedResult)
+      setTimeout(() => {
+        onClose()
+      }, 600)
+    } catch {
+      // Keep QuickAdd command open on save failure so user input is preserved for retry
+    }
   }
 
   const handleKeyDown = (e) => {
@@ -64,7 +68,7 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-20 sm:pt-28 px-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-8 sm:pt-28 px-4 overflow-y-auto">
           {/* Backdrop Blur */}
           <motion.div 
             initial={{ opacity: 0 }}
@@ -80,10 +84,10 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: -10 }}
             transition={{ duration: 0.15 }}
-            className="relative w-full max-w-xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10"
+            className="relative w-full max-w-xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 max-h-[90dvh] flex flex-col"
           >
             {/* Input Header */}
-            <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border-default">
+            <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border-default shrink-0">
               <div className="p-1.5 rounded-control bg-surface-3 text-brand">
                 <Command className="h-4 w-4" />
               </div>
@@ -96,15 +100,17 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
                 className="w-full bg-transparent text-sm sm:text-base text-text-primary font-medium placeholder:text-text-muted outline-none"
               />
               <button
+                type="button"
                 onClick={onClose}
                 className="text-text-secondary hover:text-text-primary p-1 rounded-control hover:bg-surface-hover transition-colors cursor-pointer"
+                aria-label="Close"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Live Parsing Preview Area */}
-            <div className="p-4 space-y-3">
+            <div className="p-4 space-y-3 flex-1 min-h-0 overflow-y-auto overscroll-contain">
               {parsedResult ? (
                 <div className="p-3.5 rounded-card bg-surface-3 border border-border-default space-y-2.5">
                   <div className="flex items-center justify-between">
@@ -185,7 +191,7 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
             </div>
 
             {/* Footer Bar with Keyboard Shortcuts */}
-            <div className="px-4 py-2.5 bg-surface-1 border-t border-border-default flex items-center justify-between text-xs text-text-muted">
+            <div className="px-4 py-2.5 bg-surface-1 border-t border-border-default flex items-center justify-between text-xs text-text-muted shrink-0">
               <div className="flex items-center gap-3">
                 <span className="flex items-center gap-1">
                   <kbd className="px-1.5 py-0.5 rounded-badge bg-surface-2 border border-border-default font-mono-nums text-[10px] text-text-secondary">↵ Enter</kbd>
@@ -199,6 +205,7 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
 
               {parsedResult?.isValid && (
                 <button
+                  type="button"
                   onClick={handleSubmit}
                   className="inline-flex items-center gap-1.5 px-3 py-1 rounded-control bg-brand hover:bg-brand-hover active:bg-brand-active text-white font-medium text-xs transition-colors shadow-elevation-sm cursor-pointer"
                 >

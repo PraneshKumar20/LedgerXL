@@ -160,10 +160,10 @@ export default function SavingsGoalsModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}
             transition={{ duration: 0.15 }}
-            className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 p-6 space-y-5 max-h-[90vh] flex flex-col"
+            className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 max-h-[90dvh] flex flex-col"
           >
-            {/* Header */}
-            <div className="flex items-start justify-between">
+            {/* Header (Pinned) */}
+            <div className="flex items-start justify-between p-5 sm:p-6 border-b border-border-default/60 bg-surface-2 shrink-0">
               <div className="space-y-1">
                 <div className="flex items-center gap-2.5">
                   <div className="p-2 rounded-control bg-positive/10 text-positive border border-positive/20 shadow-elevation-sm">
@@ -180,6 +180,7 @@ export default function SavingsGoalsModal({
 
               <div className="flex items-center gap-2">
                 <button
+                  type="button"
                   onClick={() => setIsCreating(!isCreating)}
                   className="px-3 py-1.5 rounded-control bg-brand hover:bg-brand-hover active:bg-brand-active text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-elevation-sm cursor-pointer"
                 >
@@ -187,16 +188,20 @@ export default function SavingsGoalsModal({
                   <span>{isCreating ? "Cancel" : "New Goal"}</span>
                 </button>
                 <button
+                  type="button"
                   onClick={onClose}
                   className="p-1.5 rounded-control bg-surface-3 hover:bg-surface-hover text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+                  aria-label="Close"
                 >
                   <X className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
-            {/* Summary Highlights */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {/* Scrollable Content Body */}
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 sm:p-6 space-y-5">
+              {/* Summary Highlights */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="p-3.5 rounded-card bg-surface-1 border border-border-default space-y-1">
                 <p className="text-[11px] uppercase font-semibold tracking-[0.06em] text-text-muted flex items-center gap-1.5">
                   <DollarSign className="h-3.5 w-3.5 text-positive" />
@@ -324,7 +329,7 @@ export default function SavingsGoalsModal({
             </AnimatePresence>
 
             {/* Goals List */}
-            <div className="overflow-y-auto space-y-3 pr-1 flex-1">
+            <div className="space-y-3">
               {savingsGoals.length === 0 ? (
                 <div className="text-center py-12 space-y-3">
                   <div className="p-3 rounded-control bg-surface-3 border border-border-default inline-block text-text-muted">
@@ -430,16 +435,17 @@ export default function SavingsGoalsModal({
                 })
               )}
             </div>
+            </div>
 
             {/* Quick Deposit Modal Popup */}
             <AnimatePresence>
               {depositModalGoal && (
-                <div className="absolute inset-0 z-20 bg-surface-overlay backdrop-blur-sm flex items-center justify-center p-6">
+                <div className="absolute inset-0 z-20 bg-surface-overlay backdrop-blur-sm flex items-center justify-center p-4 sm:p-6">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="w-full max-w-sm bg-surface-2 border border-border-default rounded-card p-5 space-y-4 shadow-elevation-modal"
+                    className="w-full max-w-sm bg-surface-2 border border-border-default rounded-card p-5 space-y-4 shadow-elevation-modal max-h-[90dvh] overflow-y-auto overscroll-contain"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">

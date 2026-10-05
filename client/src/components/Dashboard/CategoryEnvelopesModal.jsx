@@ -102,7 +102,7 @@ export default function CategoryEnvelopesModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 flex flex-col max-h-[85vh]"
+            className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 flex flex-col max-h-[90dvh]"
           >
             <div className="flex flex-col h-full min-h-0">
               
@@ -118,9 +118,10 @@ export default function CategoryEnvelopesModal({
                     </h2>
                   </div>
                   <button
+                    type="button"
                     onClick={onClose}
                     className="p-1.5 text-text-secondary hover:text-text-primary rounded-md hover:bg-surface-hover transition-colors cursor-pointer"
-                    title="Close"
+                    aria-label="Close"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -128,7 +129,7 @@ export default function CategoryEnvelopesModal({
               </div>
 
               {/* Scrollable Content */}
-              <div className="flex-1 min-h-0 overflow-y-auto p-5 sm:px-6 bg-background space-y-5">
+              <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 sm:px-6 bg-background space-y-5">
                 
                 {/* Summary Strip */}
                 <div className="flex flex-row items-center justify-between p-3.5 sm:px-5 sm:py-3.5 rounded-xl bg-surface-inset border border-border-subtle shrink-0">
@@ -271,6 +272,7 @@ export default function CategoryEnvelopesModal({
                   Press Enter or click Save next to an amount to update its target.
                 </p>
                 <button
+                  type="button"
                   onClick={handleDone}
                   className="px-6 py-2.5 rounded-control bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-[13px] font-semibold transition-colors shadow-elevation-sm cursor-pointer w-full sm:w-auto"
                 >

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 import axios from "../../api/axios";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../ui/card";
 import { Input } from "../ui/input";
@@ -11,6 +12,7 @@ const Login = () => {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
 
     const submitHandler = async (e) => {
@@ -74,15 +76,29 @@ const Login = () => {
                         </div>
                         <div className="space-y-1.5">
                             <Label htmlFor="password" className="text-xs text-text-secondary font-medium">Password</Label>
-                            <Input
-                                id="password"
-                                type="password"
-                                placeholder="••••••••"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                className="bg-surface-3 border-border-default text-text-primary text-xs placeholder:text-text-muted rounded-control focus-ring"
-                            />
+                            <div className="relative">
+                                <Input
+                                    id="password"
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className="bg-surface-3 border-border-default text-text-primary text-xs placeholder:text-text-muted rounded-control focus-ring pr-9"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                    className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-text-muted hover:text-text-primary transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand rounded-r-control cursor-pointer"
+                                >
+                                    {showPassword ? (
+                                        <EyeOff className="h-4 w-4" aria-hidden="true" />
+                                    ) : (
+                                        <Eye className="h-4 w-4" aria-hidden="true" />
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col space-y-3 pt-2">

@@ -232,19 +232,19 @@ export default function FinancialHealthCard({
           </div>
 
           {/* Right Side: Quick Stats / Bracket Summary */}
-          <div className="grid grid-cols-2 gap-3 min-w-[280px] lg:min-w-[320px] bg-background/70 p-4 rounded-xl border border-border-subtle">
-            <div className="space-y-1">
-              <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider">Health Bracket</span>
-              <p className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <ShieldCheck className="h-4 w-4" />
-                <span>{healthTier.statusText}</span>
+          <div className="grid grid-cols-2 gap-3 w-full min-w-0 lg:w-auto lg:min-w-[320px] bg-background/70 p-4 rounded-xl border border-border-subtle">
+            <div className="space-y-1 min-w-0">
+              <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider truncate block">Health Bracket</span>
+              <p className="text-sm font-bold font-mono text-emerald-600 dark:text-emerald-400 flex items-center gap-1 truncate">
+                <ShieldCheck className="h-4 w-4 shrink-0" />
+                <span className="truncate">{healthTier.statusText}</span>
               </p>
-              <p className="text-[11px] text-text-muted">Real-time audit</p>
+              <p className="text-[11px] text-text-muted truncate">Real-time audit</p>
             </div>
-            <div className="space-y-1">
-              <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider">Scoring Pillars</span>
-              <p className="text-sm font-bold font-mono text-text-primary">4 Dimensions</p>
-              <p className="text-[11px] text-text-muted">Savings, Budget, Flow, Debt</p>
+            <div className="space-y-1 min-w-0">
+              <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider truncate block">Scoring Pillars</span>
+              <p className="text-sm font-bold font-mono text-text-primary truncate">4 Dimensions</p>
+              <p className="text-[11px] text-text-muted truncate">Savings, Budget, Flow, Debt</p>
             </div>
           </div>
         </div>

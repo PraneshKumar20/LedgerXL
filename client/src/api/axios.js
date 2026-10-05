@@ -29,5 +29,29 @@ axiosInstance.interceptors.request.use(
   }
 );
 
+// Response interceptor for handling 401 Unauthorized
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.removeItem("token");
+          localStorage.removeItem("user");
+        } catch {
+          // Ignore localStorage errors
+        }
+        const pathname = window.location.pathname || "";
+        if (!pathname.startsWith("/login") && !pathname.startsWith("/signup")) {
+          window.location.href = "/login";
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export default axiosInstance;
 

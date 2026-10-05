@@ -111,10 +111,10 @@ export default function TransactionModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !isSubmitting && onClose(open)}>
-      <DialogContent className="sm:max-w-[460px] bg-surface-2 border border-border-default text-text-primary rounded-modal shadow-elevation-modal p-0 overflow-hidden">
+      <DialogContent className="w-[calc(100vw-2rem)] sm:w-full sm:max-w-[460px] bg-surface-2 border border-border-default text-text-primary rounded-modal shadow-elevation-modal p-0 overflow-hidden max-h-[90dvh] flex flex-col">
         
         {/* Header */}
-        <DialogHeader className="pt-5 px-5 pb-4 border-b border-border-default bg-surface-1/60">
+        <DialogHeader className="pt-5 px-5 pb-4 border-b border-border-default bg-surface-1/60 shrink-0">
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-control bg-brand/10 text-brand mt-0.5 shadow-elevation-sm">
               <Pencil className="h-4 w-4" />
@@ -130,7 +130,8 @@ export default function TransactionModal({
           </div>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-6">
+        <form onSubmit={handleSubmit} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+          <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 space-y-6">
           
           {/* Main Form Fields */}
           <div className="space-y-4">
@@ -289,9 +290,10 @@ export default function TransactionModal({
               </div>
             </div>
           )}
+          </div>
 
           {/* Save / Cancel Footer */}
-          <DialogFooter className="pt-5 border-t border-border-default flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 sm:gap-2 mt-2">
+          <DialogFooter className="px-5 py-4 border-t border-border-default bg-surface-1/40 shrink-0 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 sm:gap-2">
             <Button 
               type="button" 
               variant="ghost" 
