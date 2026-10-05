@@ -25,6 +25,7 @@ import SubscriptionRadarModal from "./SubscriptionRadarModal"
 import SavingsGoalsModal from "./SavingsGoalsModal"
 import { useToast } from "../ui/Toast"
 import { calculateFinancialHealth } from "../../utils/healthScoring"
+import { getAuthSession } from "../../utils/authUtils"
 
 const DEMO_TRANSACTIONS = [
   { title: "Monthly Salary", amount: 620839.06, category: "Salary", type: "income", isRecurring: true, date: "2026-09-11T10:00:00.000Z" },
@@ -49,18 +50,21 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState("overview")
 
   // User session state
-  const [currentUser, setCurrentUser] = useState(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const saved = localStorage.getItem("user")
-        if (saved) return JSON.parse(saved)
-      } catch (e) {}
-    }
-    return { name: "Demo Explorer", email: "guest@ledgerflow.app", isGuest: true }
+  const [currentUser] = useState(() => {
+    const session = getAuthSession()
+    return session.user
   })
 
   const isGuest = Boolean(currentUser?.isGuest)
   const userStorageKey = currentUser?.email ? currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'guest'
+
+  // Enforce session check: unauthenticated sessions must not run in Dashboard
+  useEffect(() => {
+    const { isAuthenticated, isDemo } = getAuthSession()
+    if (!isAuthenticated && !isDemo) {
+      navigate("/login", { replace: true })
+    }
+  }, [navigate])
 
   const handleLogout = () => {
     localStorage.removeItem("user")
