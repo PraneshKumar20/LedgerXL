@@ -907,11 +907,13 @@ export default function Dashboard({ defaultTab = "overview" }) {
               {activeTab === "guide" && (
                 <GuideView
                   onOpenAddModal={openAddModal}
+                  onOpenTransactions={() => setActiveTab("transactions")}
                   onOpenBudgets={() => setActiveTab("budgets")}
                   onOpenSavingsGoals={() => {
                     setActiveTab("budgets")
                     setIsSavingsGoalsOpen(true)
                   }}
+                  onOpenSubscriptions={() => setActiveTab("subscriptions")}
                   onOpenOverview={() => {
                     if (currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false) {
                       handleCompleteOnboarding()
@@ -923,6 +925,12 @@ export default function Dashboard({ defaultTab = "overview" }) {
                   onOpenCategoryEnvelopes={() => setIsEnvelopeModalOpen(true)}
                   onCompleteOnboarding={handleCompleteOnboarding}
                   isOnboarding={Boolean(currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false)}
+                  hasIncome={expenses.some(e => e.type === "income")}
+                  hasExpense={expenses.some(e => e.type === "expense")}
+                  hasBudgets={Object.values(categoryBudgets || {}).some(v => Number(v) > 0)}
+                  hasGoals={(savingsGoals || []).length > 0}
+                  hasSubscriptions={recurringCount > 0 || expenses.some(e => Boolean(e.isRecurring))}
+                  userStorageKey={userStorageKey}
                 />
               )}
             </Motion.div>
