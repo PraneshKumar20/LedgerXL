@@ -163,9 +163,9 @@ export default function GuideView({
   const progressPct = Math.round((completedCount / checklistItems.length) * 100)
 
   return (
-    <div className="space-y-8 max-w-5xl mx-auto pb-12">
+    <div className="space-y-6 pb-12">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-surface-1 border border-border-default rounded-2xl p-6 sm:p-8 md:p-10 shadow-elevation-sm">
+      <section className="relative overflow-hidden bg-surface-1 border border-border-default rounded-xl p-6 sm:p-8 shadow-elevation-sm">
         {/* Subtle decorative gradient background */}
         <div className="absolute top-0 right-0 -mt-12 -mr-12 w-64 h-64 rounded-full bg-brand/5 blur-3xl pointer-events-none" />
         <div className="relative z-10">
@@ -212,7 +212,7 @@ export default function GuideView({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {steps.map((step) => {
             const Icon = step.icon
             return (
@@ -265,7 +265,7 @@ export default function GuideView({
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {whereCards.map((card, idx) => (
             <div
               key={idx}
@@ -305,7 +305,7 @@ export default function GuideView({
       </section>
 
       {/* 4. QUICK START CHECKLIST */}
-      <section className="bg-surface-1 border border-border-default rounded-2xl p-6 sm:p-7 shadow-elevation-sm">
+      <section className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-border-subtle">
           <div>
             <div className="flex items-center gap-2">

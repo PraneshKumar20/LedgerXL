@@ -550,6 +550,11 @@ export default function Dashboard({ defaultTab = "overview" }) {
   }
 
   const seedDemoData = () => {
+    // Strictly protect authenticated users: only Demo Guests can seed or reset demo data
+    if (!isGuest) {
+      console.warn("Attempted to reset demo data in an authenticated session. Action blocked.")
+      return
+    }
     const seededData = DEMO_TRANSACTIONS.map((t, index) => ({
       ...t,
       _id: `demo-${Date.now()}-${index}`
@@ -704,7 +709,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
         setActiveTab={setActiveTab}
         onOpenAddModal={openAddModal}
         onOpenQuickAdd={() => setIsQuickAddOpen(true)}
-        onSeedDemo={seedDemoData}
+        onSeedDemo={isGuest ? seedDemoData : undefined}
         transactionCount={displayExpenses.length}
         recurringCount={recurringCount}
         healthGrade={financialHealth.grade}
@@ -739,7 +744,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
           }}
           currentUser={currentUser}
           onLogout={handleLogout}
-          onSeedDemo={seedDemoData}
+          onSeedDemo={isGuest ? seedDemoData : undefined}
         />
 
         <main className="flex-1 px-4 sm:px-6 lg:px-12 pt-8 lg:pt-10 max-w-[1440px] w-full mx-auto">

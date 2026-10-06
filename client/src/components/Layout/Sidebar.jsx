@@ -268,19 +268,21 @@ export default function Sidebar({
                     </div>
                   </div>
 
-                  {/* Reset Demo Data (Database Icon) */}
-                  <div className="relative group">
-                    <button
-                      onClick={onSeedDemo}
-                      className="w-11 h-11 rounded-2xl bg-surface-inset hover:bg-surface-2 border border-border-subtle hover:border-border-strong text-text-secondary hover:text-text-primary flex items-center justify-center transition-all cursor-pointer shadow-elevation-sm"
-                      title="Reset Demo Data"
-                    >
-                      <Database className="h-5 w-5" />
-                    </button>
-                    <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface-2 border border-border-strong text-text-primary text-xs font-semibold rounded-md shadow-elevation-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                      Reset Demo Data
+                  {/* Reset Demo Data (Database Icon) - Demo Guest Only */}
+                  {currentUser?.isGuest && onSeedDemo && (
+                    <div className="relative group">
+                      <button
+                        onClick={onSeedDemo}
+                        className="w-11 h-11 rounded-2xl bg-surface-inset hover:bg-surface-2 border border-border-subtle hover:border-border-strong text-text-secondary hover:text-text-primary flex items-center justify-center transition-all cursor-pointer shadow-elevation-sm"
+                        title="Reset Demo Data"
+                      >
+                        <Database className="h-5 w-5" />
+                      </button>
+                      <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface-2 border border-border-strong text-text-primary text-xs font-semibold rounded-md shadow-elevation-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                        Reset Demo Data
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* How to Use / Guide */}
                   <div className="relative group">
@@ -502,14 +504,16 @@ export default function Sidebar({
                       </div>
                     </div>
 
-                    {/* Seed Demo button */}
-                    <button
-                      onClick={onSeedDemo}
-                      className="w-full h-9 flex items-center gap-2.5 px-3 rounded-lg text-xs text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors duration-150 cursor-pointer group"
-                    >
-                      <RotateCcw className="h-3.5 w-3.5 text-text-secondary group-hover:text-text-primary transition-colors duration-150 shrink-0" />
-                      <span>Reset Demo Data</span>
-                    </button>
+                    {/* Seed Demo button - Demo Guest Only */}
+                    {currentUser?.isGuest && onSeedDemo && (
+                      <button
+                        onClick={onSeedDemo}
+                        className="w-full h-9 flex items-center gap-2.5 px-3 rounded-lg text-xs text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors duration-150 cursor-pointer group"
+                      >
+                        <RotateCcw className="h-3.5 w-3.5 text-text-secondary group-hover:text-text-primary transition-colors duration-150 shrink-0" />
+                        <span>Reset Demo Data</span>
+                      </button>
+                    )}
 
                     {/* How to Use / Guide button */}
                     <button
