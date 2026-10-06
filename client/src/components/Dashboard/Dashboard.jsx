@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react"
 import { formatNumber } from "../../utils/formatUtils"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { Sector } from "recharts"
 import axios from "../../api/axios"
@@ -16,6 +16,7 @@ import TransactionsView from "./TransactionsView"
 import AnalyticsView from "./AnalyticsView"
 import BudgetsView from "./BudgetsView"
 import SubscriptionsView from "./SubscriptionsView"
+import GuideView from "./GuideView"
 
 // Modals
 import TransactionModal from "./TransactionModal"
@@ -42,12 +43,12 @@ const DEMO_TRANSACTIONS = [
   { title: "Creative & Other Tools", amount: 3152.05, category: "Other", type: "expense", isRecurring: true, date: "2026-08-26T12:00:00.000Z" }
 ]
 
-export default function Dashboard() {
+export default function Dashboard({ defaultTab = "overview" }) {
   const navigate = useNavigate()
   const { addToast } = useToast()
 
   // Navigation tab state
-  const [activeTab, setActiveTab] = useState("overview")
+  const [activeTab, setActiveTab] = useState(defaultTab)
 
   // User session state
   const [currentUser] = useState(() => {
@@ -504,31 +505,32 @@ export default function Dashboard() {
     }
   }
 
-  const handleDeleteTransaction = async (id) => {
+  const handleDeleteTransaction = async (id, message = "Transaction removed from ledger.") => {
     // Explicit Demo Guest: Local sandbox
     if (isGuest) {
       setExpenses((prev) => {
-        const next = prev.filter((e) => e._id !== id)
+        const next = prev.filter((e) => e._id !== id && e.id !== id)
         updateLocalStorage(next)
         return next
       })
-      addToast({ title: "Deleted", message: "Transaction removed from ledger.", type: "info" })
-      return
+      addToast({ title: "Deleted", message, type: "info" })
+      return true
     }
 
     // Authenticated User: Server is source of truth
     try {
       await axios.delete(`/expenses/${id}`)
       setExpenses((prev) => {
-        const next = prev.filter((e) => e._id !== id)
+        const next = prev.filter((e) => e._id !== id && e.id !== id)
         updateLocalStorage(next)
         return next
       })
-      addToast({ title: "Deleted", message: "Transaction removed from ledger.", type: "info" })
+      addToast({ title: "Deleted", message, type: "info" })
+      return true
     } catch (error) {
       const status = error.response?.status
       if (status === 401) {
-        return
+        return false
       }
       if (status === 403) {
         addToast({
@@ -536,13 +538,14 @@ export default function Dashboard() {
           message: "You are not authorized to delete this transaction.",
           type: "error"
         })
-        return
+        return false
       }
       addToast({
         title: "Delete Failed",
         message: error.response?.data?.message || "Couldn't delete transaction. Please try again.",
         type: "error"
       })
+      return false
     }
   }
 
@@ -743,6 +746,7 @@ export default function Dashboard() {
           {/* Desktop App Header */}
           <AppHeader
             activeTab={activeTab}
+            setActiveTab={setActiveTab}
             onOpenAddModal={openAddModal}
             onOpenQuickAdd={() => setIsQuickAddOpen(true)}
             currentUser={currentUser}
@@ -760,7 +764,7 @@ export default function Dashboard() {
 
           {/* Dynamic Active Tab View */}
           <AnimatePresence mode="wait">
-            <motion.div
+            <Motion.div
               key={activeTab}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -856,9 +860,24 @@ export default function Dashboard() {
                   multiplier={multiplier}
                   openAddModal={openAddModal}
                   setIsSubscriptionRadarOpen={setIsSubscriptionRadarOpen}
+                  onDelete={handleDeleteTransaction}
                 />
               )}
-            </motion.div>
+
+              {activeTab === "guide" && (
+                <GuideView
+                  onOpenAddModal={openAddModal}
+                  onOpenBudgets={() => setActiveTab("budgets")}
+                  onOpenSavingsGoals={() => {
+                    setActiveTab("budgets")
+                    setIsSavingsGoalsOpen(true)
+                  }}
+                  onOpenOverview={() => setActiveTab("overview")}
+                  onOpenAnalytics={() => setActiveTab("analytics")}
+                  onOpenCategoryEnvelopes={() => setIsEnvelopeModalOpen(true)}
+                />
+              )}
+            </Motion.div>
           </AnimatePresence>
         </main>
       </div>

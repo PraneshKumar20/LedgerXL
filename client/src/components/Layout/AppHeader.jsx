@@ -1,17 +1,19 @@
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { 
   Plus, 
   ChevronDown, 
   LogOut,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  HelpCircle
 } from "lucide-react"
 
 import ThemeToggle from "../ui/ThemeToggle"
 
 export default function AppHeader({
   activeTab,
+  setActiveTab,
   onOpenAddModal,
   currentUser,
   onLogout,
@@ -40,6 +42,10 @@ export default function AppHeader({
     subscriptions: {
       title: "Recurring Subscriptions",
       subtitle: "Proactive tracking of active subscriptions and cycle renewals"
+    },
+    guide: {
+      title: "How to Use LedgerXL",
+      subtitle: "Your quick, simple guide to tracking spending, managing budgets, and savings goals"
     }
   }
 
@@ -74,6 +80,22 @@ export default function AppHeader({
       </div>
 
       <div className="flex items-center gap-3">
+        {/* Help / Guide Button */}
+        {setActiveTab && (
+          <button
+            onClick={() => setActiveTab("guide")}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+              activeTab === "guide"
+                ? "bg-brand text-white border-brand shadow-elevation-sm"
+                : "bg-surface-1 hover:bg-surface-hover border-border-default text-text-secondary hover:text-text-primary"
+            }`}
+            title="How to Use LedgerXL"
+          >
+            <HelpCircle className={`h-4 w-4 ${activeTab === "guide" ? "text-white" : "text-brand"}`} />
+            <span className="hidden xl:inline">How to Use</span>
+          </button>
+        )}
+
         {/* Theme Toggle Button */}
         <ThemeToggle variant="outline" />
 
@@ -98,7 +120,7 @@ export default function AppHeader({
 
           <AnimatePresence>
             {isMenuOpen && (
-              <motion.div
+              <Motion.div
                 initial={{ opacity: 0, y: 4, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 4, scale: 0.98 }}
@@ -114,6 +136,20 @@ export default function AppHeader({
                     </span>
                   )}
                 </div>
+
+                {setActiveTab && (
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false)
+                      setActiveTab("guide")
+                    }}
+                    className="w-full px-2.5 py-1.5 rounded-lg text-left text-xs font-medium text-text-primary hover:bg-surface-hover flex items-center gap-2 transition-colors cursor-pointer"
+                  >
+                    <HelpCircle className="h-3.5 w-3.5 text-brand" />
+                    <span>How to Use LedgerXL</span>
+                  </button>
+                )}
+
                 <button
                   onClick={onLogout}
                   className="w-full px-2.5 py-1.5 rounded-lg text-left text-xs font-medium text-negative hover:bg-negative/10 flex items-center gap-2 transition-colors cursor-pointer"
@@ -121,7 +157,7 @@ export default function AppHeader({
                   <LogOut className="h-3.5 w-3.5" />
                   <span>Sign Out</span>
                 </button>
-              </motion.div>
+              </Motion.div>
             )}
           </AnimatePresence>
         </div>

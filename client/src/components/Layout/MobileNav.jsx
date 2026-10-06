@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { 
   LayoutDashboard, 
   Receipt, 
@@ -10,7 +10,8 @@ import {
   Command, 
   Menu, 
   X, 
-  LogOut 
+  LogOut,
+  HelpCircle
 } from "lucide-react"
 import ThemeToggle from "../ui/ThemeToggle"
 
@@ -93,7 +94,7 @@ export default function MobileNav({
         {isDrawerOpen && (
           <div className="fixed inset-0 z-50 lg:hidden flex">
             {/* Backdrop */}
-            <motion.div
+            <Motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -102,7 +103,7 @@ export default function MobileNav({
             />
 
             {/* Drawer Sheet */}
-            <motion.div
+            <Motion.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -175,6 +176,21 @@ export default function MobileNav({
                     <span>Quick Add Dialog</span>
                   </button>
 
+                  <button
+                    onClick={() => {
+                      setIsDrawerOpen(false)
+                      setActiveTab("guide")
+                    }}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-control text-xs font-medium mb-2 cursor-pointer transition-colors ${
+                      activeTab === "guide"
+                        ? "text-brand bg-brand-subtle border border-brand/20 font-semibold"
+                        : "text-text-primary bg-surface-2 hover:bg-surface-hover border border-border-default"
+                    }`}
+                  >
+                    <HelpCircle className="h-4 w-4 text-brand" />
+                    <span>How to Use LedgerXL</span>
+                  </button>
+
                   <div className="flex items-center justify-between p-2 rounded-control bg-surface-2 border border-border-default">
                     <span className="text-xs font-medium text-text-primary pl-1">Theme</span>
                     <ThemeToggle variant="outline" showLabel={true} className="!py-1 !px-2.5 !h-7 text-xs" />
@@ -207,7 +223,7 @@ export default function MobileNav({
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
           </div>
         )}
       </AnimatePresence>

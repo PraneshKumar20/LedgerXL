@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useState, useMemo } from "react"
 import { formatNumber } from "../../utils/formatUtils"
 import { getCategoryStyle } from "../../utils/categoryColors"
 import { getSubscriptionBrand } from "../../utils/subscriptionLogos"
@@ -9,17 +9,31 @@ import {
   AlertTriangle, 
   CreditCard, 
   Bell,
-  Repeat
+  Repeat,
+  Trash2,
+  AlertCircle
 } from "lucide-react"
 import AnimatedCounter from "../ui/AnimatedCounter"
-
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "../ui/dialog"
+import { Button } from "../ui/button"
 
 export default function SubscriptionsView({
   displayExpenses = [],
   currencySymbol = "₹",
-  multiplier = 1,
-  openAddModal
+  openAddModal,
+  onDelete
 }) {
+  const [subscriptionToDelete, setSubscriptionToDelete] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState(null)
+
   const recurringSubscriptions = useMemo(() => {
     if (!Array.isArray(displayExpenses)) return []
 
@@ -64,6 +78,27 @@ export default function SubscriptionsView({
       imminentRenewals: imminent
     }
   }, [recurringSubscriptions])
+
+  const handleConfirmDelete = async () => {
+    if (!subscriptionToDelete || !onDelete) return
+
+    setIsDeleting(true)
+    setDeleteError(null)
+
+    try {
+      const subId = subscriptionToDelete._id || subscriptionToDelete.id
+      const success = await onDelete(subId, "Subscription removed from ledger.")
+      if (success !== false) {
+        setSubscriptionToDelete(null)
+      } else {
+        setDeleteError("Failed to delete subscription. Please try again.")
+      }
+    } catch (err) {
+      setDeleteError(err?.response?.data?.message || err?.message || "An unexpected error occurred. Please try again.")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -192,7 +227,7 @@ export default function SubscriptionsView({
                   key={sub._id || sub.id}
                   className="bg-surface-inset border border-border-subtle hover:border-border-strong rounded-xl p-4 sm:p-5 transition-colors flex flex-col justify-between min-h-[145px]"
                 >
-                  {/* Top Row: Logo + Title/Category + Recurring Badge */}
+                  {/* Top Row: Logo + Title/Category + Recurring Badge & Delete Action */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       {/* Logo Container (matches standard squircle container) */}
@@ -212,10 +247,27 @@ export default function SubscriptionsView({
                       </div>
                     </div>
 
-                    {/* Recurring Badge (matches Recent Transactions badge) */}
-                    <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40 shrink-0">
-                      <Repeat className="h-2.5 w-2.5" /> RECURRING
-                    </span>
+                    {/* Recurring Badge & Delete Action */}
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40 shrink-0">
+                        <Repeat className="h-2.5 w-2.5" /> RECURRING
+                      </span>
+                      {onDelete && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setDeleteError(null)
+                            setSubscriptionToDelete(sub)
+                          }}
+                          className="p-1.5 rounded-lg text-text-muted hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-200 dark:hover:border-rose-800/40 transition-colors cursor-pointer"
+                          aria-label="Delete subscription"
+                          title="Delete subscription"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
 
                   {/* Bottom Row: Renewal Countdown & Amount */}
@@ -245,6 +297,99 @@ export default function SubscriptionsView({
           </div>
         )}
       </div>
+
+      {/* Delete Subscription Confirmation Dialog */}
+      <Dialog 
+        open={Boolean(subscriptionToDelete)} 
+        onOpenChange={(open) => {
+          if (!open && !isDeleting) {
+            setSubscriptionToDelete(null)
+            setDeleteError(null)
+          }
+        }}
+      >
+        <DialogContent className="w-[calc(100vw-2rem)] sm:max-w-[440px] p-5 sm:p-6 bg-surface-2 border-border-default shadow-elevation-modal">
+          <DialogHeader className="gap-2 text-left sm:text-left">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/40 text-rose-600 dark:text-rose-400 shrink-0">
+                <AlertTriangle className="h-5 w-5" />
+              </div>
+              <div>
+                <DialogTitle className="text-base sm:text-lg font-bold text-text-primary">
+                  Delete subscription?
+                </DialogTitle>
+                <p className="text-xs text-text-secondary mt-0.5">
+                  Confirm permanent removal
+                </p>
+              </div>
+            </div>
+            <DialogDescription className="text-xs sm:text-sm text-text-secondary pt-1 leading-relaxed">
+              Do you want to permanently remove this subscription?
+            </DialogDescription>
+          </DialogHeader>
+
+          {subscriptionToDelete && (
+            <div className="p-3.5 rounded-xl bg-surface-3 border border-border-default/80 flex items-center justify-between gap-3">
+              <div className="min-w-0 flex items-center gap-2.5">
+                <div className="h-8 w-8 rounded-lg bg-surface-2 border border-border-default/60 flex items-center justify-center shrink-0">
+                  {getSubscriptionBrand(subscriptionToDelete.title, subscriptionToDelete.category).icon}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-text-primary truncate">
+                    {subscriptionToDelete.title}
+                  </p>
+                  <p className="text-xs text-text-muted">
+                    {subscriptionToDelete.category}
+                  </p>
+                </div>
+              </div>
+              <div className="text-right shrink-0">
+                <p className="text-sm font-bold text-text-primary font-mono">
+                  {currencySymbol}{formatNumber(subscriptionToDelete.amount, currencySymbol, 2, 2)}
+                </p>
+                <p className="text-[11px] text-text-muted">/month</p>
+              </div>
+            </div>
+          )}
+
+          <p className="text-xs text-text-muted leading-relaxed">
+            This action cannot be undone. Deleting this subscription will permanently remove the associated recurring transaction.
+          </p>
+
+          {deleteError && (
+            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800/40 text-rose-600 dark:text-rose-400 text-xs flex items-center gap-2">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <span>{deleteError}</span>
+            </div>
+          )}
+
+          <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (!isDeleting) {
+                  setSubscriptionToDelete(null)
+                  setDeleteError(null)
+                }
+              }}
+              disabled={isDeleting}
+              className="w-full sm:w-auto h-9 text-xs sm:text-sm font-medium border-border-default hover:bg-surface-3 cursor-pointer"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleConfirmDelete}
+              disabled={isDeleting}
+              className="w-full sm:w-auto h-9 text-xs sm:text-sm font-semibold bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white border-0 shadow-elevation-sm cursor-pointer disabled:opacity-50"
+            >
+              {isDeleting ? "Deleting..." : "Delete Permanently"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
+

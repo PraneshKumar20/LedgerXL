@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useState } from "react"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { 
   LayoutDashboard, 
   Receipt, 
@@ -13,7 +13,8 @@ import {
   ArrowRight,
   PanelLeftClose,
   PanelLeftOpen,
-  RotateCcw
+  RotateCcw,
+  HelpCircle
 } from "lucide-react"
 import { parseQuickAdd } from "../../utils/quickAddParser"
 import { getGradeBadgeStyle } from "../../utils/healthScoring"
@@ -22,7 +23,6 @@ import ThemeToggle from "../ui/ThemeToggle"
 export default function Sidebar({
   activeTab,
   setActiveTab,
-  onOpenAddModal,
   onOpenQuickAdd,
   onSeedDemo,
   transactionCount = 0,
@@ -43,12 +43,13 @@ export default function Sidebar({
   const [quickAddSuccess, setQuickAddSuccess] = useState(null)
   const currencySymbol = currency === "INR" ? "₹" : "$"
 
-  const userInitials = useMemo(() => {
-    if (!currentUser?.name || currentUser.name === "Demo Explorer") return "PE"
-    const parts = currentUser.name.trim().split(/\s+/)
+  const userInitials = (() => {
+    const name = currentUser?.name
+    if (!name || name === "Demo Explorer") return "PE"
+    const parts = name.trim().split(/\s+/)
     if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-    return currentUser.name.slice(0, 2).toUpperCase()
-  }, [currentUser?.name])
+    return name.slice(0, 2).toUpperCase()
+  })()
 
   const samplePrompts = [
     `Spent ${currencySymbol}45 on groceries yesterday`,
@@ -104,7 +105,7 @@ export default function Sidebar({
       case "subscriptions":
         return (
           <div className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-800/40 dark:text-amber-400 font-mono text-xs shrink-0 flex items-center gap-1.5">
-            <span>{recurringCount || 5}</span>
+            <span>{recurringCount ?? 0}</span>
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 dark:bg-amber-400 shadow-[0_0_6px_rgba(245,158,11,0.9)] animate-pulse" />
           </div>
         )
@@ -148,7 +149,7 @@ export default function Sidebar({
   ]
 
   return (
-    <motion.aside
+    <Motion.aside
       initial={false}
       animate={{ width: isCollapsed ? 68 : 280 }}
       transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
@@ -160,7 +161,7 @@ export default function Sidebar({
             /* =====================================================
                COLLAPSED STATE (Pixel-accurate matching reference)
                ===================================================== */
-            <motion.div
+            <Motion.div
               key="sidebar-collapsed"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -280,6 +281,24 @@ export default function Sidebar({
                       Reset Demo Data
                     </div>
                   </div>
+
+                  {/* How to Use / Guide */}
+                  <div className="relative group">
+                    <button
+                      onClick={() => setActiveTab("guide")}
+                      className={`w-11 h-11 rounded-2xl flex items-center justify-center transition-all cursor-pointer shadow-elevation-sm ${
+                        activeTab === "guide"
+                          ? "bg-brand text-white shadow-brand/30"
+                          : "bg-surface-inset hover:bg-surface-2 border border-border-subtle hover:border-border-strong text-text-secondary hover:text-text-primary"
+                      }`}
+                      title="How to Use LedgerXL"
+                    >
+                      <HelpCircle className={`h-5 w-5 ${activeTab === "guide" ? "text-white" : "text-brand"}`} />
+                    </button>
+                    <div className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-3 px-2.5 py-1 bg-surface-2 border border-border-strong text-text-primary text-xs font-semibold rounded-md shadow-elevation-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                      How to Use LedgerXL
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -308,12 +327,12 @@ export default function Sidebar({
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
           ) : (
             /* =====================================================
                EXPANDED STATE
                ===================================================== */
-            <motion.div
+            <Motion.div
               key="sidebar-expanded"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -491,6 +510,19 @@ export default function Sidebar({
                       <RotateCcw className="h-3.5 w-3.5 text-text-secondary group-hover:text-text-primary transition-colors duration-150 shrink-0" />
                       <span>Reset Demo Data</span>
                     </button>
+
+                    {/* How to Use / Guide button */}
+                    <button
+                      onClick={() => setActiveTab("guide")}
+                      className={`w-full h-9 flex items-center gap-2.5 px-3 rounded-lg text-xs transition-colors duration-150 cursor-pointer group ${
+                        activeTab === "guide"
+                          ? "bg-brand-subtle text-brand border border-brand/20 dark:bg-brand dark:text-white dark:border-transparent font-medium shadow-elevation-sm"
+                          : "text-text-secondary hover:text-text-primary hover:bg-surface-hover"
+                      }`}
+                    >
+                      <HelpCircle className={`h-3.5 w-3.5 shrink-0 transition-colors duration-150 ${activeTab === "guide" ? "text-brand dark:text-white" : "text-brand"}`} />
+                      <span>How to Use LedgerXL</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -520,10 +552,10 @@ export default function Sidebar({
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </Motion.div>
           )}
         </AnimatePresence>
       </div>
-    </motion.aside>
+    </Motion.aside>
   )
 }

@@ -17,14 +17,38 @@ import {
   ArrowRight,
   Edit2,
   Trash2,
-  Repeat
+  Repeat,
+  Sparkles
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Sector } from "recharts"
-import { motion, AnimatePresence } from "framer-motion"
 import AnimatedCounter from "../ui/AnimatedCounter"
 import { formatNumber } from "../../utils/formatUtils"
 import { getCategoryStyle } from "../../utils/categoryColors"
 import { useTheme } from "../../context/ThemeContext"
+
+// Custom Chart Tooltip declared outside render to ensure stable identity
+const CustomBarTooltip = ({ active, payload, label, currSym = "₹" }) => {
+  if (active && payload && payload.length) {
+    const inc = payload.find(p => p.dataKey === 'income')?.value || 0
+    const exp = payload.find(p => p.dataKey === 'expense')?.value || 0
+    return (
+      <div className="bg-surface-1 border border-border-default p-3 rounded-xl shadow-elevation-lg min-w-[150px]">
+        <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">{label}</p>
+        <div className="space-y-1.5 text-xs">
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-text-secondary">Income</span>
+            <span className="text-emerald-400 font-mono font-semibold">{currSym}{formatNumber(inc, currSym, 0, 0)}</span>
+          </div>
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-text-secondary">Expense</span>
+            <span className="text-rose-400 font-mono font-semibold">{currSym}{formatNumber(exp, currSym, 0, 0)}</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+  return null
+}
 
 export default function OverviewView({
   balance,
@@ -35,7 +59,6 @@ export default function OverviewView({
   incomeShare = 88,
   budgetPercent = 43,
   budgetLimit = 286541,
-  setBudgetLimit,
   trendData = [],
   categoryData = [],
   totalCategoryExpense = 123737,
@@ -45,7 +68,6 @@ export default function OverviewView({
   displayExpenses = [],
   openEditModal,
   handleDeleteTransaction,
-  setIsEnvelopeModalOpen,
   setActiveTab,
   financialHealth,
   savingsRate,
@@ -136,30 +158,6 @@ export default function OverviewView({
   const liveAvgTicket = avgTransaction !== undefined ? avgTransaction : (expenseCount > 0 ? (totalExpense / expenseCount) : 0)
   const liveTopExpenseName = topCategory?.name || (categoryData[0]?.name ?? "None")
 
-  // Custom Chart Tooltip
-  const CustomBarTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      const inc = payload.find(p => p.dataKey === 'income')?.value || 0
-      const exp = payload.find(p => p.dataKey === 'expense')?.value || 0
-      return (
-        <div className="bg-surface-1 border border-border-default p-3 rounded-xl shadow-elevation-lg min-w-[150px]">
-          <p className="text-text-secondary text-xs font-semibold uppercase tracking-wider mb-2">{label}</p>
-          <div className="space-y-1.5 text-xs">
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-text-secondary">Income</span>
-              <span className="text-emerald-400 font-mono font-semibold">{currSym}{formatNumber(inc, currSym, 0, 0)}</span>
-            </div>
-            <div className="flex items-center justify-between gap-4">
-              <span className="text-text-secondary">Expense</span>
-              <span className="text-rose-400 font-mono font-semibold">{currSym}{formatNumber(exp, currSym, 0, 0)}</span>
-            </div>
-          </div>
-        </div>
-      )
-    }
-    return null
-  }
-
   // Recent Transactions Formatting & Top 5 Slice
   const formatTxDate = (dateStr) => {
     if (!dateStr) return "Recent"
@@ -177,6 +175,30 @@ export default function OverviewView({
 
   return (
     <div className="space-y-5">
+      {/* Beginner Guide Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 rounded-xl bg-surface-1 border border-border-default shadow-elevation-sm">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="h-8 w-8 rounded-lg bg-brand-subtle flex items-center justify-center shrink-0">
+            <Sparkles className="h-4 w-4 text-brand" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-text-primary">
+              New to LedgerXL?
+            </p>
+            <p className="text-[11px] text-text-secondary truncate">
+              Learn how to track spending, set budgets, and understand your cash flow in 2 minutes.
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => setActiveTab("guide")}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-xs font-semibold text-brand transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
+        >
+          <span>How to use LedgerXL?</span>
+          <ArrowRight className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
       {/* 1. Top Row: Two Large Metric Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         
@@ -378,7 +400,7 @@ export default function OverviewView({
                 />
                 <Tooltip 
                   cursor={{ fill: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)' }}
-                  content={<CustomBarTooltip />}
+                  content={(props) => <CustomBarTooltip {...props} currSym={currSym} />}
                 />
                 <Bar 
                   dataKey="income" 

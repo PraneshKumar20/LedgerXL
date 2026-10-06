@@ -6,3 +6,4 @@ server/.env
 dist
 *.log
 .vscode/
+*.zip
