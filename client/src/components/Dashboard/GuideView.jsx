@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react"
+import { useState, useMemo, useEffect, useRef, useCallback } from "react"
 import confetti from "canvas-confetti"
 import { 
   Plus, 
@@ -50,9 +50,10 @@ export default function GuideView({
     }
   })
 
-  // Ref to track celebration firing in current session without causing cascading re-renders
-  const celebrationFiredRef = useRef(false)
+  // Refs to track celebration lifecycle without causing cascading re-renders
   const celebrationTimersRef = useRef([])
+  const prevCompletedCountRef = useRef(null)
+  const isInitialMountRef = useRef(true)
 
   const toggleStep = (stepNumber) => {
     setManualCompleted((prev) => {
@@ -324,38 +325,17 @@ export default function GuideView({
   const progressPct = Math.round((completedCount / checklistItems.length) * 100)
   const isAllCompleted = completedCount === checklistItems.length
 
-  // Trigger full Confetti Bomb celebration exactly once when reaching 6/6 for the first time
-  useEffect(() => {
-    if (!isAllCompleted) return
-
-    let alreadyCelebrated = false
-    try {
-      alreadyCelebrated = localStorage.getItem(celebrationStorageKey) === "true"
-    } catch {
-      // ignore storage access error
-    }
-
-    if (alreadyCelebrated || celebrationFiredRef.current) {
-      return
-    }
-
-    // Mark as celebrated so it fires only once for this user/session
-    celebrationFiredRef.current = true
-    try {
-      localStorage.setItem(celebrationStorageKey, "true")
-    } catch {
-      // ignore storage write errors
-    }
-
-    // Respect prefers-reduced-motion
+  // Coordinated Full Confetti Bomb Celebration Sequence
+  const triggerConfettiBomb = useCallback(() => {
+    // Respect prefers-reduced-motion (only skip if explicitly set by user's system)
     const prefersReducedMotion = typeof window !== "undefined" && 
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      window.matchMedia && 
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches === true
 
     if (prefersReducedMotion) {
       return
     }
 
-    // Coordinated Full Confetti Bomb Celebration Sequence
     const celebrationColors = [
       "#10b981", // Emerald
       "#3b82f6", // Blue
@@ -371,7 +351,6 @@ export default function GuideView({
     const fireBombBurst = (opts) => {
       try {
         confetti({
-          disableForReducedMotion: true,
           zIndex: 99999,
           ...opts
         })
@@ -379,6 +358,9 @@ export default function GuideView({
         // ignore canvas confetti errors
       }
     }
+
+    // Cancel any previous bursts before launching
+    celebrationTimersRef.current.forEach((id) => clearTimeout(id))
 
     // Wave 1: Immediate Central Super-Explosion (T = 0ms)
     fireBombBurst({
@@ -451,12 +433,54 @@ export default function GuideView({
     }, 1200)
 
     celebrationTimersRef.current = [t1, t2, t3, t4]
+  }, [])
 
+  // Trigger full Confetti Bomb celebration on transition to 6/6 or initial uncelebrated 6/6 mount
+  useEffect(() => {
+    // When checklist is incomplete (< 6), reset persisted state so completing tasks always celebrates
+    if (!isAllCompleted) {
+      try {
+        localStorage.removeItem(celebrationStorageKey)
+      } catch {
+        // ignore storage errors
+      }
+      prevCompletedCountRef.current = completedCount
+      isInitialMountRef.current = false
+      return
+    }
+
+    // Now completedCount === 6 (all tasks complete)
+    const wasIncomplete = prevCompletedCountRef.current !== null && prevCompletedCountRef.current < checklistItems.length
+    const isFirstMount = isInitialMountRef.current
+
+    isInitialMountRef.current = false
+    prevCompletedCountRef.current = completedCount
+
+    let alreadyCelebrated = false
+    try {
+      alreadyCelebrated = localStorage.getItem(celebrationStorageKey) === "true"
+    } catch {
+      // ignore storage access error
+    }
+
+    // Fire celebration if user just completed tasks (transition from < 6 to 6) OR on first eligible mount
+    if (wasIncomplete || (!alreadyCelebrated && isFirstMount)) {
+      try {
+        localStorage.setItem(celebrationStorageKey, "true")
+      } catch {
+        // ignore storage write errors
+      }
+      triggerConfettiBomb()
+    }
+  }, [isAllCompleted, completedCount, checklistItems.length, celebrationStorageKey, triggerConfettiBomb])
+
+  // Cleanup timers on component unmount
+  useEffect(() => {
     return () => {
       celebrationTimersRef.current.forEach((id) => clearTimeout(id))
       celebrationTimersRef.current = []
     }
-  }, [isAllCompleted, celebrationStorageKey])
+  }, [])
 
   return (
     <div className="space-y-8 pb-12 w-full">
@@ -747,9 +771,14 @@ export default function GuideView({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle">
           {isAllCompleted ? (
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
+              <button
+                type="button"
+                onClick={triggerConfettiBomb}
+                title="Click to celebrate again! 🎉"
+                className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 active:scale-95 flex items-center justify-center shrink-0 transition-all cursor-pointer"
+              >
                 <PartyPopper className="h-5 w-5" />
-              </div>
+              </button>
               <div>
                 <h3 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight flex items-center gap-2">
                   🎉 You&apos;re All Set!
