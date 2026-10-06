@@ -13,6 +13,10 @@ const userSchema = mongoose.Schema({
     password:{
         type: String,
         required: true
+    },
+    hasCompletedOnboarding:{
+        type: Boolean,
+        default: true
     }
 })
 

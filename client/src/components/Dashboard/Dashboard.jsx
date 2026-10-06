@@ -51,7 +51,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
   const [activeTab, setActiveTab] = useState(defaultTab)
 
   // User session state
-  const [currentUser] = useState(() => {
+  const [currentUser, setCurrentUser] = useState(() => {
     const session = getAuthSession()
     return session.user
   })
@@ -574,6 +574,41 @@ export default function Dashboard({ defaultTab = "overview" }) {
     setIsModalOpen(true)
   }
 
+  const handleCompleteOnboarding = async () => {
+    if (isGuest) {
+      setActiveTab("overview")
+      navigate("/expenses", { replace: true })
+      return
+    }
+
+    try {
+      await axios.put("/auth/onboarding")
+    } catch (err) {
+      console.warn("Could not save onboarding status to server:", err?.message || err)
+    }
+
+    try {
+      const userStr = localStorage.getItem("user")
+      if (userStr) {
+        const userObj = JSON.parse(userStr)
+        userObj.hasCompletedOnboarding = true
+        localStorage.setItem("user", JSON.stringify(userObj))
+        setCurrentUser(userObj)
+      }
+    } catch {
+      // Ignore storage read/write errors
+    }
+
+    addToast({
+      title: "Welcome to LedgerXL!",
+      message: "Your financial dashboard is ready. Start by recording your first transaction.",
+      type: "success"
+    })
+
+    setActiveTab("overview")
+    navigate("/expenses", { replace: true })
+  }
+
   // --- Financial Calculations ---
   const { totalIncome, totalExpense, balance, topCategory, avgTransaction, budgetPercent } = useMemo(() => {
     let inc = 0, exp = 0
@@ -877,9 +912,17 @@ export default function Dashboard({ defaultTab = "overview" }) {
                     setActiveTab("budgets")
                     setIsSavingsGoalsOpen(true)
                   }}
-                  onOpenOverview={() => setActiveTab("overview")}
+                  onOpenOverview={() => {
+                    if (currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false) {
+                      handleCompleteOnboarding()
+                    } else {
+                      setActiveTab("overview")
+                    }
+                  }}
                   onOpenAnalytics={() => setActiveTab("analytics")}
                   onOpenCategoryEnvelopes={() => setIsEnvelopeModalOpen(true)}
+                  onCompleteOnboarding={handleCompleteOnboarding}
+                  isOnboarding={Boolean(currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false)}
                 />
               )}
             </Motion.div>

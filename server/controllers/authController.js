@@ -32,7 +32,8 @@ const Signup = async (req, res) => {
         const user = await User.create({
             name: name.trim(),
             email: normalizedEmail,
-            password: hashedPassword
+            password: hashedPassword,
+            hasCompletedOnboarding: false
         });
 
         const token = generateToken(user._id.toString(), user.email);
@@ -40,7 +41,12 @@ const Signup = async (req, res) => {
         res.status(201).json({
             message: "Signup Successful",
             token,
-            user: { id: user._id.toString(), name: user.name, email: user.email }
+            user: {
+                id: user._id.toString(),
+                name: user.name,
+                email: user.email,
+                hasCompletedOnboarding: false
+            }
         });
 
     } catch (error) {
@@ -69,10 +75,18 @@ const Login = async (req, res) => {
 
         const token = generateToken(user._id.toString(), user.email);
 
+        // Treat legacy users (where hasCompletedOnboarding is undefined) as onboarded (true)
+        const hasCompletedOnboarding = user.hasCompletedOnboarding !== false;
+
         res.status(200).json({
             message: "Login successful",
             token,
-            user: { id: user._id.toString(), name: user.name, email: user.email }
+            user: {
+                id: user._id.toString(),
+                name: user.name,
+                email: user.email,
+                hasCompletedOnboarding
+            }
         });
 
     } catch (error) {
@@ -80,4 +94,36 @@ const Login = async (req, res) => {
     }
 };
 
-module.exports = { Signup, Login };
+// Complete Onboarding
+const completeOnboarding = async (req, res) => {
+    try {
+        const userId = req.user?.id || req.userId;
+        if (!userId) {
+            return res.status(401).json({ message: "Access denied. Unauthorized." });
+        }
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { hasCompletedOnboarding: true },
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({
+            message: "Onboarding completed successfully",
+            user: {
+                id: user._id.toString(),
+                name: user.name,
+                email: user.email,
+                hasCompletedOnboarding: true
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { Signup, Login, completeOnboarding };

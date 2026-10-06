@@ -20,7 +20,9 @@ export default function GuideView({
   onOpenSavingsGoals,
   onOpenOverview,
   onOpenAnalytics,
-  onOpenCategoryEnvelopes
+  onOpenCategoryEnvelopes,
+  onCompleteOnboarding,
+  isOnboarding = false
 }) {
   const [completedSteps, setCompletedSteps] = useState(() => {
     try {
@@ -156,7 +158,7 @@ export default function GuideView({
     { id: 2, text: "Add your recent expenses.", action: onOpenAddModal, label: "Add Expense" },
     { id: 3, text: "Set budgets for the categories you spend the most on.", action: onOpenCategoryEnvelopes || onOpenBudgets, label: "Set Budgets" },
     { id: 4, text: "Create a savings goal.", action: onOpenSavingsGoals, label: "Create Goal" },
-    { id: 5, text: "Return to Financial Overview to understand your finances.", action: onOpenOverview, label: "Go to Overview" }
+    { id: 5, text: "Return to Financial Overview to understand your finances.", action: onCompleteOnboarding || onOpenOverview, label: "Go to Overview" }
   ]
 
   const completedCount = checklistItems.filter(item => completedSteps.includes(item.id)).length
@@ -191,10 +193,10 @@ export default function GuideView({
               <span>Add First Transaction</span>
             </button>
             <button
-              onClick={onOpenOverview}
+              onClick={onCompleteOnboarding || onOpenOverview}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-text-primary text-xs sm:text-sm font-medium transition-colors cursor-pointer"
             >
-              <span>Explore Overview</span>
+              <span>{isOnboarding ? "Get Started — Go to Dashboard" : "Explore Overview"}</span>
               <ArrowRight className="h-4 w-4" />
             </button>
           </div>
@@ -384,7 +386,32 @@ export default function GuideView({
         </div>
       </section>
 
-      {/* 5. SMALL DISCLAIMER / CLARITY */}
+      {/* 5. GET STARTED / COMPLETION ACTION */}
+      <section className="relative overflow-hidden bg-surface-1 border border-border-default hover:border-border-strong rounded-xl p-6 sm:p-8 shadow-elevation-sm transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="space-y-1.5 max-w-xl">
+          <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40 mb-1">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>Ready to Begin</span>
+          </div>
+          <h3 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
+            Ready to take command of your finances?
+          </h3>
+          <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+            You now know the essentials of LedgerXL. Jump straight into your personal Financial Overview to start tracking your cash flow, budgets, and savings.
+          </p>
+        </div>
+        <div className="shrink-0 w-full sm:w-auto">
+          <button
+            onClick={onCompleteOnboarding || onOpenOverview}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold transition-all shadow-md shadow-brand/25 cursor-pointer group"
+          >
+            <span>Go to My Dashboard</span>
+            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+      </section>
+
+      {/* 6. SMALL DISCLAIMER / CLARITY */}
       <section className="p-4 sm:p-5 rounded-xl bg-surface-2/80 border border-border-subtle flex items-start gap-3 text-text-secondary text-xs leading-relaxed">
         <Info className="h-4 w-4 text-brand shrink-0 mt-0.5" />
         <div className="space-y-1">

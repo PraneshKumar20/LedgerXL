@@ -23,9 +23,9 @@ const Signup = () => {
             if (response.data?.token) {
                 localStorage.setItem("token", response.data.token);
             }
-            const userData = response.data?.user || { name, email };
+            const userData = response.data?.user || { name, email, hasCompletedOnboarding: false };
             localStorage.setItem("user", JSON.stringify(userData));
-            navigate("/expenses");
+            navigate("/guide");
         } catch (error) {
             setError(error.response?.data?.message || "Signup failed. Please try again.");
         }

@@ -26,10 +26,15 @@ const Login = () => {
             }
             const userData = response.data?.user || {
                 name: email.split('@')[0],
-                email: email
+                email: email,
+                hasCompletedOnboarding: true
             };
             localStorage.setItem("user", JSON.stringify(userData));
-            navigate("/expenses");
+            if (userData.hasCompletedOnboarding === false) {
+                navigate("/guide");
+            } else {
+                navigate("/expenses");
+            }
         } catch (error) {
             setError(error.response?.data?.message || "Login failed. Please check your credentials.");
         }

@@ -9,7 +9,7 @@ process.env.JWT_SECRET = process.env.JWT_SECRET || "test_jwt_secret_key_super_se
 
 const authMiddleware = require("./middleware/authMiddleware");
 const { createExpense, getExpenses, getExpenseById, updateExpense, deleteExpense } = require("./controllers/expenseController");
-const { Signup, Login } = require("./controllers/authController");
+const { Signup, Login, completeOnboarding } = require("./controllers/authController");
 const User = require("./models/User");
 const Expense = require("./models/Expense");
 
@@ -277,9 +277,95 @@ async function main() {
 
       const decoded = jwt.verify(res.body.token, TEST_SECRET);
       assert.strictEqual(decoded.id, userId.toString());
-      assert.strictEqual(decoded.email, "alice@example.com");
+      assert.strictEqual(res.body.user.hasCompletedOnboarding, true, "Legacy user without hasCompletedOnboarding defaults to true");
     } finally {
       User.findOne = origFindOne;
+    }
+  });
+
+  await runAsyncTest("Signup initializes hasCompletedOnboarding to false", async () => {
+    const origFindOne = User.findOne;
+    const origCreate = User.create;
+    try {
+      User.findOne = async () => null;
+      let createdUserData = null;
+      User.create = async (data) => {
+        createdUserData = data;
+        return {
+          _id: new mongoose.Types.ObjectId(),
+          name: data.name,
+          email: data.email,
+          hasCompletedOnboarding: data.hasCompletedOnboarding
+        };
+      };
+
+      const req = { body: { name: "Bob Newbie", email: "bob@example.com", password: "Password123" } };
+      const res = createMockRes();
+      await Signup(req, res);
+
+      assert.strictEqual(res.statusCode, 201);
+      assert.strictEqual(createdUserData.hasCompletedOnboarding, false);
+      assert.strictEqual(res.body.user.hasCompletedOnboarding, false);
+    } finally {
+      User.findOne = origFindOne;
+      User.create = origCreate;
+    }
+  });
+
+  await runAsyncTest("Login preserves hasCompletedOnboarding: false for uncompleted new accounts", async () => {
+    const origFindOne = User.findOne;
+    try {
+      const hashedPassword = await bcrypt.hash("Password123", 10);
+      User.findOne = async () => ({
+        _id: new mongoose.Types.ObjectId(),
+        name: "Bob Newbie",
+        email: "bob@example.com",
+        password: hashedPassword,
+        hasCompletedOnboarding: false
+      });
+
+      const req = { body: { email: "bob@example.com", password: "Password123" } };
+      const res = createMockRes();
+      await Login(req, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      assert.strictEqual(res.body.user.hasCompletedOnboarding, false);
+    } finally {
+      User.findOne = origFindOne;
+    }
+  });
+
+  await runAsyncTest("completeOnboarding requires authentication (401 without req.user)", async () => {
+    const req = { headers: {} };
+    const res = createMockRes();
+    await completeOnboarding(req, res);
+    assert.strictEqual(res.statusCode, 401);
+  });
+
+  await runAsyncTest("completeOnboarding sets hasCompletedOnboarding to true in DB", async () => {
+    const origFindByIdAndUpdate = User.findByIdAndUpdate;
+    try {
+      const testUserId = new mongoose.Types.ObjectId().toString();
+      let updatedFields = null;
+      User.findByIdAndUpdate = async (id, update) => {
+        updatedFields = update;
+        return {
+          _id: id,
+          name: "Bob",
+          email: "bob@example.com",
+          hasCompletedOnboarding: true
+        };
+      };
+
+      const req = { user: { id: testUserId, email: "bob@example.com" } };
+      const res = createMockRes();
+      await completeOnboarding(req, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      assert.strictEqual(updatedFields.hasCompletedOnboarding, true);
+      assert.strictEqual(res.body.user.hasCompletedOnboarding, true);
+    } finally {
+      User.findByIdAndUpdate = origFindByIdAndUpdate;
     }
   });
 

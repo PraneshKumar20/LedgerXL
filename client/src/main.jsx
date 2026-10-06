@@ -18,7 +18,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="/" element={<RootRedirect />} />
             <Route path="/login" element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
             <Route path="/signup" element={<PublicOnlyRoute><Signup /></PublicOnlyRoute>} />
-            <Route path="/expenses" element={<ProtectedRoute><App /></ProtectedRoute>} />
+            <Route path="/expenses" element={<ProtectedRoute requireOnboarding><App /></ProtectedRoute>} />
             <Route path="/guide" element={<ProtectedRoute><App defaultTab="guide" /></ProtectedRoute>} />
             <Route path="/about" element={<ProtectedRoute><App defaultTab="guide" /></ProtectedRoute>} />
             <Route path="*" element={<RootRedirect />} />
