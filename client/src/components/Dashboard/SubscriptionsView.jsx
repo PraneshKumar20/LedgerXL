@@ -105,16 +105,16 @@ export default function SubscriptionsView({
       {/* Top Recurring KPI Cards (Matching Overview design system) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Monthly Subscription Costs */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
               Monthly Subscription Costs
             </span>
-            <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400">
+            <div className="p-1.5 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400 shrink-0">
               <Radio className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-[22px] sm:text-[26px] font-bold text-text-primary font-mono mt-2 leading-tight">
+          <p className="text-[22px] sm:text-[26px] font-bold text-text-primary font-mono mt-2 leading-tight truncate">
             <AnimatedCounter value={monthlyBurn} prefix={currencySymbol} />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -123,16 +123,16 @@ export default function SubscriptionsView({
         </div>
 
         {/* Projected Annual Burn */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
               Annual Projected Costs
             </span>
-            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:border-indigo-800/40 dark:text-indigo-400">
+            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:border-indigo-800/40 dark:text-indigo-400 shrink-0">
               <Clock className="h-4 w-4" />
             </div>
           </div>
-          <p className="text-[22px] sm:text-[26px] font-bold text-text-primary font-mono mt-2 leading-tight">
+          <p className="text-[22px] sm:text-[26px] font-bold text-text-primary font-mono mt-2 leading-tight truncate">
             <AnimatedCounter value={annualBurn} prefix={currencySymbol} />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -141,12 +141,12 @@ export default function SubscriptionsView({
         </div>
 
         {/* Imminent Renewals Alert */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">
               Renewals in &le; 3 Days
             </span>
-            <div className={`p-1.5 rounded-lg border ${
+            <div className={`p-1.5 rounded-lg border shrink-0 ${
               imminentRenewals.length > 0 
                 ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-950/40 dark:border-rose-800/40 dark:text-rose-400' 
                 : 'bg-surface-2 border-border-default/60 text-text-secondary'
@@ -154,7 +154,7 @@ export default function SubscriptionsView({
               <Bell className="h-4 w-4" />
             </div>
           </div>
-          <p className={`text-[22px] sm:text-[26px] font-bold font-mono mt-2 leading-tight ${
+          <p className={`text-[22px] sm:text-[26px] font-bold font-mono mt-2 leading-tight truncate ${
             imminentRenewals.length > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-text-primary'
           }`}>
             {imminentRenewals.length}
@@ -186,10 +186,10 @@ export default function SubscriptionsView({
 
       {/* Active Subscriptions Grid Card */}
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm">
-        <div className="flex items-center justify-between pb-4 border-b border-border-subtle mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border-subtle mb-5">
           <div>
             <h2 className="text-[17px] font-bold text-text-primary tracking-tight flex items-center gap-2">
-              <CreditCard className="h-4 w-4 text-text-secondary" />
+              <CreditCard className="h-4 w-4 text-text-secondary shrink-0" />
               <span>Active Subscriptions ({recurringSubscriptions.length})</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -199,7 +199,7 @@ export default function SubscriptionsView({
 
           <button
             onClick={openAddModal}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-elevation-sm cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold transition-colors shadow-elevation-sm cursor-pointer w-full sm:w-auto"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Add Recurring Bill</span>
@@ -215,7 +215,7 @@ export default function SubscriptionsView({
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {recurringSubscriptions.map((sub) => {
               const days = sub.daysUntilRenewal
               const isUrgent = days <= 3
@@ -229,13 +229,13 @@ export default function SubscriptionsView({
                 >
                   {/* Top Row: Logo + Title/Category + Recurring Badge & Delete Action */}
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
                       {/* Logo Container (matches standard squircle container) */}
                       <div className="h-10 w-10 rounded-xl bg-surface-2 border border-border-default/60 flex items-center justify-center shrink-0">
                         {brand.icon}
                       </div>
 
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <h3 className="text-sm font-semibold text-text-primary truncate">
                           {sub.title}
                         </h3>
@@ -271,7 +271,7 @@ export default function SubscriptionsView({
                   </div>
 
                   {/* Bottom Row: Renewal Countdown & Amount */}
-                  <div className="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between gap-2">
+                  <div className="mt-4 pt-3 border-t border-border-subtle flex items-center justify-between gap-2 flex-wrap sm:flex-nowrap">
                     {/* Renewal Timing */}
                     <div className="flex items-center gap-1.5 text-xs">
                       <div className={`h-1.5 w-1.5 rounded-full ${isUrgent ? 'bg-rose-500 animate-pulse' : 'bg-emerald-500'}`} />

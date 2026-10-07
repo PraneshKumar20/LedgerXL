@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { Command, ArrowRight, CornerDownLeft, X, CheckCircle2, Calendar, Tag, DollarSign, Repeat } from "lucide-react"
 import { parseQuickAdd, CATEGORY_COLORS } from "../../utils/quickAddParser"
 import { formatNumber } from "../../utils/formatUtils"
@@ -20,10 +20,16 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
   // Focus input when opened
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50)
-      setJustRecorded(null)
+      const timer = setTimeout(() => {
+        inputRef.current?.focus()
+        setJustRecorded(null)
+      }, 50)
+      return () => clearTimeout(timer)
     } else {
-      setQuery("")
+      const timer = setTimeout(() => {
+        setQuery("")
+      }, 0)
+      return () => clearTimeout(timer)
     }
   }, [isOpen])
 
@@ -68,9 +74,9 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-8 sm:pt-28 px-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-6 sm:pt-28 px-3 sm:px-4 overflow-y-auto">
           {/* Backdrop Blur */}
-          <motion.div 
+          <Motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -79,7 +85,7 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
           />
 
           {/* Omnibar Dialog Card */}
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, scale: 0.98, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: -10 }}
@@ -88,7 +94,7 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
           >
             {/* Input Header */}
             <div className="flex items-center gap-3 px-4 py-3.5 border-b border-border-default shrink-0">
-              <div className="p-1.5 rounded-control bg-surface-3 text-brand">
+              <div className="p-1.5 rounded-control bg-surface-3 text-brand shrink-0">
                 <Command className="h-4 w-4" />
               </div>
               <input
@@ -97,7 +103,7 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Type naturally... e.g. 'Spent $45 on groceries yesterday'"
-                className="w-full bg-transparent text-sm sm:text-base text-text-primary font-medium placeholder:text-text-muted outline-none"
+                className="w-full bg-transparent text-base sm:text-base text-text-primary font-medium placeholder:text-xs sm:placeholder:text-sm placeholder:text-text-muted outline-none min-w-0"
               />
               <button
                 type="button"
@@ -191,15 +197,15 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
             </div>
 
             {/* Footer Bar with Keyboard Shortcuts */}
-            <div className="px-4 py-2.5 bg-surface-1 border-t border-border-default flex items-center justify-between text-xs text-text-muted shrink-0">
-              <div className="flex items-center gap-3">
+            <div className="px-4 py-2.5 bg-surface-1 border-t border-border-default flex items-center justify-between gap-2 flex-wrap text-xs text-text-muted shrink-0">
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                 <span className="flex items-center gap-1">
                   <kbd className="px-1.5 py-0.5 rounded-badge bg-surface-2 border border-border-default font-mono-nums text-[10px] text-text-secondary">↵ Enter</kbd>
-                  to save
+                  <span className="hidden xs:inline">to save</span>
                 </span>
                 <span className="flex items-center gap-1">
                   <kbd className="px-1.5 py-0.5 rounded-badge bg-surface-2 border border-border-default font-mono-nums text-[10px] text-text-secondary">Esc</kbd>
-                  to close
+                  <span className="hidden xs:inline">to close</span>
                 </span>
               </div>
 
@@ -207,14 +213,14 @@ export default function QuickAddCommand({ isOpen, onClose, onSave, currencySymbo
                 <button
                   type="button"
                   onClick={handleSubmit}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-control bg-brand hover:bg-brand-hover active:bg-brand-active text-white font-medium text-xs transition-colors shadow-elevation-sm cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-control bg-brand hover:bg-brand-hover active:bg-brand-active text-white font-medium text-xs transition-colors shadow-elevation-sm cursor-pointer ml-auto sm:ml-0"
                 >
                   <span>Confirm Entry</span>
                   <CornerDownLeft className="h-3 w-3" />
                 </button>
               )}
             </div>
-          </motion.div>
+          </Motion.div>
         </div>
       )}
     </AnimatePresence>

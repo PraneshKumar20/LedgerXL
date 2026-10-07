@@ -342,10 +342,10 @@ export default function TransactionTable({ transactions = [], onEdit, onDelete, 
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="font-medium text-sm text-text-primary truncate">{tx.title}</span>
                       {tx.isRecurring && (
-                        <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40">
+                        <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40 shrink-0">
                           <Repeat className="h-2.5 w-2.5" /> Recurring
                         </span>
                       )}

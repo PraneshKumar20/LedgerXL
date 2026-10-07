@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
 import { formatNumber } from "../../utils/formatUtils"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
 import { 
   Target, Plus, Trash2, 
@@ -146,7 +146,7 @@ export default function SavingsGoalsModal({
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
           {/* Backdrop */}
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -155,7 +155,7 @@ export default function SavingsGoalsModal({
           />
 
           {/* Modal Container */}
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}
@@ -163,22 +163,22 @@ export default function SavingsGoalsModal({
             className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 max-h-[90dvh] flex flex-col"
           >
             {/* Header (Pinned) */}
-            <div className="flex items-start justify-between p-5 sm:p-6 border-b border-border-default/60 bg-surface-2 shrink-0">
-              <div className="space-y-1">
+            <div className="flex items-start justify-between p-4 sm:p-6 border-b border-border-default/60 bg-surface-2 shrink-0 gap-3">
+              <div className="space-y-1 min-w-0 flex-1">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-control bg-positive/10 text-positive border border-positive/20 shadow-elevation-sm">
+                  <div className="p-2 rounded-control bg-positive/10 text-positive border border-positive/20 shadow-elevation-sm shrink-0">
                     <Target className="h-4 w-4" />
                   </div>
-                  <h2 className="text-lg font-bold text-text-primary tracking-tight">
+                  <h2 className="text-base sm:text-lg font-bold text-text-primary tracking-tight truncate">
                     Savings Goals & Milestones
                   </h2>
                 </div>
-                <p className="text-xs text-text-secondary font-normal pl-9">
+                <p className="text-xs text-text-secondary font-normal pl-8 sm:pl-9 truncate">
                   Track target funds, allocate savings, and unlock milestone celebrations.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   type="button"
                   onClick={() => setIsCreating(!isCreating)}
@@ -303,7 +303,7 @@ export default function SavingsGoalsModal({
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
                     {/* Emoji picker */}
-                    <div className="flex items-center gap-1">
+                    <div className="flex flex-wrap items-center gap-1">
                       <span className="text-[11px] text-text-secondary mr-1">Icon:</span>
                       {EMOJI_OPTIONS.map(emoji => (
                         <button
@@ -347,7 +347,7 @@ export default function SavingsGoalsModal({
                   const theme = COLOR_THEMES[goal.colorIndex || 0] || COLOR_THEMES[0]
 
                   return (
-                    <motion.div
+                    <Motion.div
                       key={goal.id}
                       layout
                       initial={{ opacity: 0, y: 10 }}
@@ -355,32 +355,32 @@ export default function SavingsGoalsModal({
                       exit={{ opacity: 0, scale: 0.95 }}
                       className={`p-4 rounded-card bg-surface-1 border ${isComplete ? 'border-positive/30 bg-positive/[0.02]' : 'border-border-default'} hover:border-border-strong transition-colors space-y-3 group`}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-2.5">
-                          <span className="text-xl p-2 rounded-control bg-surface-3 border border-border-default">
+                      <div className="flex items-start justify-between gap-2.5">
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <span className="text-xl p-2 rounded-control bg-surface-3 border border-border-default shrink-0">
                             {goal.emoji || "🎯"}
                           </span>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <h4 className="text-sm font-semibold text-text-primary tracking-wide">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h4 className="text-sm font-semibold text-text-primary tracking-wide truncate">
                                 {goal.title}
                               </h4>
                               {isComplete && (
-                                <span className="px-2 py-0.5 rounded-badge text-[10px] font-semibold bg-positive/10 text-positive border border-positive/20 flex items-center gap-1">
+                                <span className="px-2 py-0.5 rounded-badge text-[10px] font-semibold bg-positive/10 text-positive border border-positive/20 flex items-center gap-1 shrink-0">
                                   <PartyPopper className="h-3 w-3" /> Reached 100%
                                 </span>
                               )}
                             </div>
                             {goal.targetDate && (
-                              <p className="text-[10px] text-text-secondary flex items-center gap-1 mt-0.5">
-                                <Calendar className="h-3 w-3 text-text-muted" />
-                                Target Date: {new Date(goal.targetDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                              <p className="text-[10px] text-text-secondary flex items-center gap-1 mt-0.5 font-mono">
+                                <Calendar className="h-3 w-3 text-text-muted shrink-0" />
+                                <span>Target Date: {new Date(goal.targetDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                               </p>
                             )}
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 shrink-0">
                           <button
                             onClick={() => {
                               setDepositModalGoal(goal)
@@ -430,7 +430,7 @@ export default function SavingsGoalsModal({
                           <span className={isComplete ? "text-positive font-semibold" : ""}>100%</span>
                         </div>
                       </div>
-                    </motion.div>
+                    </Motion.div>
                   )
                 })
               )}
@@ -441,7 +441,7 @@ export default function SavingsGoalsModal({
             <AnimatePresence>
               {depositModalGoal && (
                 <div className="absolute inset-0 z-20 bg-surface-overlay backdrop-blur-sm flex items-center justify-center p-4 sm:p-6">
-                  <motion.div
+                  <Motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
@@ -500,11 +500,11 @@ export default function SavingsGoalsModal({
                         Confirm Deposit
                       </button>
                     </div>
-                  </motion.div>
+                  </Motion.div>
                 </div>
               )}
             </AnimatePresence>
-          </motion.div>
+          </Motion.div>
         </div>
       )}
     </AnimatePresence>

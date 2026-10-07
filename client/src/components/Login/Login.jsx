@@ -51,7 +51,7 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
+        <div className="min-h-screen flex items-center justify-center bg-background p-3 sm:p-4">
             <Card className="w-full max-w-md bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal">
                 <CardHeader className="space-y-2 text-center pb-4">
                     <img src="/ledgerxl-logo.png" alt="LedgerXL Logo" className="h-14 w-14 object-contain mx-auto mb-1 drop-shadow-sm rounded-xl" />
@@ -76,7 +76,7 @@ const Login = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
-                                className="bg-surface-3 border-border-default text-text-primary text-xs placeholder:text-text-muted rounded-control focus-ring"
+                                className="bg-surface-3 border-border-default text-text-primary text-base sm:text-xs placeholder:text-text-muted rounded-control focus-ring"
                             />
                         </div>
                         <div className="space-y-1.5">
@@ -89,7 +89,7 @@ const Login = () => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     required
-                                    className="bg-surface-3 border-border-default text-text-primary text-xs placeholder:text-text-muted rounded-control focus-ring pr-9"
+                                    className="bg-surface-3 border-border-default text-text-primary text-base sm:text-xs placeholder:text-text-muted rounded-control focus-ring pr-9"
                                 />
                                 <button
                                     type="button"

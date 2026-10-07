@@ -173,7 +173,7 @@ export default function BudgetsView({
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5 flex-wrap">
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-inset border border-border-default focus-within:border-blue-500/70 transition-colors">
               <span className="text-xs text-text-secondary font-medium">Limit:</span>
               <span className="text-xs font-semibold text-text-primary font-mono">{currSym}</span>
@@ -228,17 +228,17 @@ export default function BudgetsView({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 pt-4">
-          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1">
+          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Total Spent</span>
-            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight">
+            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight truncate">
               <AnimatedCounter value={totalExpense} prefix={currSym} />
             </p>
             <p className="text-xs text-text-secondary font-normal">Active month outlays</p>
           </div>
 
-          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1">
+          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Remaining Buffer</span>
-            <p className={`text-[22px] sm:text-[26px] font-extrabold font-mono leading-tight ${
+            <p className={`text-[22px] sm:text-[26px] font-extrabold font-mono leading-tight truncate ${
               budgetLimit <= 0
                 ? "text-text-muted"
                 : (budgetLimit * multiplier - totalExpense) >= 0 ? 'text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.25)]' : 'text-rose-600 dark:text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.25)]'
@@ -248,9 +248,9 @@ export default function BudgetsView({
             <p className="text-xs text-text-secondary font-normal">{budgetLimit <= 0 ? "No limit configured" : "Remaining before limit"}</p>
           </div>
 
-          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1">
+          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Quota Utilized</span>
-            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight">
+            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight truncate">
               {budgetLimit <= 0 ? "0%" : <AnimatedCounter value={budgetPercent} decimals={0} suffix="%" />}
             </p>
             <p className="text-xs text-text-secondary font-normal">{budgetLimit <= 0 ? "Of monthly allowance" : "Of monthly limit"}</p>
@@ -294,7 +294,7 @@ export default function BudgetsView({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3.5">
           {categories.map((cat) => {
             const rawLimit = categoryBudgets[cat] || 0
             const limit = rawLimit * multiplier
@@ -414,10 +414,10 @@ export default function BudgetsView({
 
       {/* Savings Goals & Milestones */}
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
-        <div className="flex items-center justify-between pb-4 border-b border-border-subtle mb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border-subtle mb-5">
           <div>
             <h2 className="text-[18px] font-bold text-text-primary tracking-tight flex items-center gap-2">
-              <Target className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <Target className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span>Savings Goals & Milestones</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">
@@ -426,7 +426,7 @@ export default function BudgetsView({
           </div>
           <button
             onClick={() => setIsSavingsGoalsOpen(true)}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold transition-all shadow-elevation-md shadow-blue-600/30 cursor-pointer"
+            className="flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 active:bg-blue-700 text-white text-xs font-semibold transition-all shadow-elevation-md shadow-blue-600/30 cursor-pointer w-full sm:w-auto"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Manage Goals</span>
@@ -453,7 +453,7 @@ export default function BudgetsView({
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {savingsGoals.map((goal) => {
               const target = (goal.targetAmount || 1) * multiplier
               const current = (goal.currentAmount || 0) * multiplier

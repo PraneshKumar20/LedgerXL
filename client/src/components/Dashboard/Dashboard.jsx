@@ -782,7 +782,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
           onSeedDemo={isGuest ? seedDemoData : undefined}
         />
 
-        <main className="flex-1 px-4 sm:px-6 lg:px-12 pt-8 lg:pt-10 max-w-[1440px] w-full mx-auto">
+        <main className="flex-1 px-4 sm:px-6 lg:px-6 xl:px-10 pt-8 lg:pt-10 max-w-[1440px] w-full mx-auto">
           {/* Desktop App Header */}
           <AppHeader
             activeTab={activeTab}

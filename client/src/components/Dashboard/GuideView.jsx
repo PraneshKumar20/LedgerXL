@@ -508,14 +508,14 @@ export default function GuideView({
           <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-border-subtle mt-4">
             <button
               onClick={onOpenAddModal}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm font-semibold transition-all shadow-md shadow-brand/20 cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm font-semibold transition-all shadow-md shadow-brand/20 cursor-pointer w-full sm:w-auto"
             >
               <Plus className="h-4 w-4 stroke-[2.5]" />
               <span>Add Your First Transaction</span>
             </button>
             <button
               onClick={onCompleteOnboarding || onOpenOverview}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-text-primary text-sm font-medium transition-colors cursor-pointer"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-text-primary text-sm font-medium transition-colors cursor-pointer w-full sm:w-auto"
             >
               <span>{isOnboarding ? "Get Started — Go to Dashboard" : "Go to Financial Overview"}</span>
               <ArrowRight className="h-4 w-4" />
@@ -802,11 +802,11 @@ export default function GuideView({
             </div>
           )}
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center justify-between sm:justify-end gap-3 flex-wrap w-full sm:w-auto">
             {isAllCompleted && (
               <button
                 onClick={onCompleteOnboarding || onOpenOverview}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-md shadow-emerald-600/20 cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-md shadow-emerald-600/20 cursor-pointer w-full sm:w-auto"
               >
                 <span>Start Managing Your Finances</span>
                 <ArrowRight className="h-3.5 w-3.5" />

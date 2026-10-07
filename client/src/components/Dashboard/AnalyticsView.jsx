@@ -6,7 +6,6 @@ import {
   Percent
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Sector } from "recharts"
-import { motion, AnimatePresence } from "framer-motion"
 import FinancialHealthCard from "./FinancialHealthCard"
 import AnimatedCounter from "../ui/AnimatedCounter"
 import { formatNumber, formatCompactNumber } from "../../utils/formatUtils"
@@ -116,37 +115,37 @@ export default function AnalyticsView({
   return (
     <div className="space-y-5">
       {/* Top Analytics KPI Bar */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5">
         {/* Savings Rate */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Savings Rate</span>
             <div className="p-1 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40">
               <Percent className="h-3.5 w-3.5" />
             </div>
           </div>
-          <p className="text-[20px] sm:text-[26px] font-semibold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight">
+          <p className="text-[20px] sm:text-[26px] font-semibold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight truncate">
             <AnimatedCounter value={savingsRate} decimals={1} suffix="%" />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">Surplus retention ratio</p>
         </div>
 
         {/* Avg Transaction */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Average Expense</span>
             <div className="p-1 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40">
               <Activity className="h-3.5 w-3.5" />
             </div>
           </div>
-          <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight">
+          <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight truncate">
             <AnimatedCounter value={avgTransaction} prefix={currencySymbol} />
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">Average ticket per expense</p>
         </div>
 
         {/* Top Outflow Category */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Top Expense Category</span>
             <div className="p-1 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/40">
@@ -156,20 +155,20 @@ export default function AnalyticsView({
           <p className="text-[20px] sm:text-[26px] font-semibold text-rose-600 dark:text-rose-400 truncate mt-1 leading-tight">
             {topCategory.name}
           </p>
-          <p className="text-xs text-text-secondary font-normal mt-0.5 font-mono">
+          <p className="text-xs text-text-secondary font-normal mt-0.5 font-mono truncate">
             {currencySymbol}{formatNumber(topCategory.amount, currencySymbol, 0, 0)} total
           </p>
         </div>
 
         {/* Category Count */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Categories Used</span>
             <div className="p-1 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/40">
               <PieIcon className="h-3.5 w-3.5" />
             </div>
           </div>
-          <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight">
+          <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight truncate">
             {displayCategories.length}
           </p>
           <p className="text-xs text-text-secondary font-normal mt-0.5">Active partitions</p>
@@ -177,9 +176,9 @@ export default function AnalyticsView({
       </div>
 
       {/* Cashflow Velocity + Donut Breakdown */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         {/* Cashflow Velocity */}
-        <div className="lg:col-span-2 bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
+        <div className="xl:col-span-2 bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
           <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
             <div>
               <h2 className="text-[16px] font-bold text-text-primary tracking-tight flex items-center gap-2">
@@ -232,7 +231,7 @@ export default function AnalyticsView({
         </div>
 
         {/* Donut Chart with Centered Animated HUD & Breakdown List */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm flex flex-col justify-between">
+        <div className="xl:col-span-1 bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm flex flex-col justify-between">
           <div className="pb-2 border-b border-border-subtle">
             <h2 className="text-sm font-semibold text-text-primary tracking-tight flex items-center gap-2">
               <PieIcon className="h-4 w-4 text-brand" />

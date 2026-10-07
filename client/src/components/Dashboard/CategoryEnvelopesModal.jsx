@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { Layers, X, CheckCircle2, ShieldAlert } from "lucide-react"
 import { formatNumber } from "../../utils/formatUtils"
 import { getCategoryStyle } from "../../utils/categoryColors"
@@ -88,7 +88,7 @@ export default function CategoryEnvelopesModal({
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           {/* Backdrop */}
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -97,7 +97,7 @@ export default function CategoryEnvelopesModal({
           />
 
           {/* Modal Container */}
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}
@@ -132,7 +132,7 @@ export default function CategoryEnvelopesModal({
               <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 sm:px-6 bg-background space-y-5">
                 
                 {/* Summary Strip */}
-                <div className="flex flex-row items-center justify-between p-3.5 sm:px-5 sm:py-3.5 rounded-xl bg-surface-inset border border-border-subtle shrink-0">
+                <div className="grid grid-cols-2 sm:grid-cols-3 items-center justify-between p-3.5 sm:px-5 sm:py-3.5 rounded-xl bg-surface-inset border border-border-subtle gap-3 shrink-0">
                   <div className="flex flex-col">
                     <span className="text-[10px] uppercase font-semibold tracking-wider text-text-muted">Total Allocated</span>
                     <p className="text-[17px] leading-tight font-bold text-text-primary font-mono-nums mt-0.5">
@@ -147,9 +147,9 @@ export default function CategoryEnvelopesModal({
                     </p>
                   </div>
                   <div className="w-px h-8 bg-border-subtle mx-2 hidden sm:block"></div>
-                  <div className="flex flex-col items-end sm:items-start text-right sm:text-left">
+                  <div className="flex flex-col items-start text-left col-span-2 sm:col-span-1 pt-2 sm:pt-0 border-t sm:border-t-0 border-border-subtle/60">
                     <span className="text-[10px] uppercase font-semibold tracking-wider text-text-muted">Threshold Status</span>
-                    <p className={`text-[12px] font-semibold mt-1 flex items-center justify-end sm:justify-start gap-1.5 ${envelopeStats.overCount > 0 ? 'text-negative' : 'text-positive'}`}>
+                    <p className={`text-[12px] font-semibold mt-1 flex items-center justify-start gap-1.5 ${envelopeStats.overCount > 0 ? 'text-negative' : 'text-positive'}`}>
                       {envelopeStats.overCount > 0 ? (
                         <>
                           <span className="h-2 w-2 rounded-full bg-negative"></span>
@@ -281,7 +281,7 @@ export default function CategoryEnvelopesModal({
               </div>
               
             </div>
-          </motion.div>
+          </Motion.div>
         </div>
       )}
     </AnimatePresence>

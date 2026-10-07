@@ -53,11 +53,11 @@ export default function AppHeader({
 
   return (
     <header className="hidden lg:flex items-center justify-between mb-6">
-      <div>
-        <div className="flex items-center gap-3">
+      <div className="min-w-0 mr-4">
+        <div className="flex items-center gap-2 xl:gap-3">
           <button
             onClick={onToggleSidebar}
-            className="p-2 rounded-lg bg-surface-1 hover:bg-surface-hover border border-border-default text-text-secondary hover:text-text-primary transition-colors cursor-pointer"
+            className="p-2 rounded-lg bg-surface-1 hover:bg-surface-hover border border-border-default text-text-secondary hover:text-text-primary transition-colors cursor-pointer shrink-0"
             title={isSidebarCollapsed ? "Expand sidebar (Ctrl+B)" : "Collapse sidebar (Ctrl+B)"}
           >
             {isSidebarCollapsed ? (
@@ -66,25 +66,25 @@ export default function AppHeader({
               <PanelLeftClose className="h-4 w-4" />
             )}
           </button>
-          <h1 className="text-2xl sm:text-[28px] font-bold text-text-primary tracking-tight leading-tight">
+          <h1 className="text-xl xl:text-[28px] font-bold text-text-primary tracking-tight leading-tight truncate">
             {current.title}
           </h1>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40">
+          <div className="hidden xl:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40 shrink-0">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)]" />
             <span>LIVE</span>
           </div>
         </div>
-        <p className="text-xs sm:text-sm text-text-secondary mt-1.5 font-normal leading-relaxed pl-11">
+        <p className="text-xs sm:text-sm text-text-secondary mt-1.5 font-normal leading-relaxed pl-10 xl:pl-11 truncate">
           {current.subtitle}
         </p>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 xl:gap-3 shrink-0">
         {/* Help / Guide Button */}
         {setActiveTab && (
           <button
             onClick={() => setActiveTab("guide")}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-2.5 xl:px-3 py-2 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
               activeTab === "guide"
                 ? "bg-brand text-white border-brand shadow-elevation-sm"
                 : "bg-surface-1 hover:bg-surface-hover border-border-default text-text-secondary hover:text-text-primary"
@@ -102,14 +102,15 @@ export default function AppHeader({
         {/* New Transaction Button */}
         <button
           onClick={onOpenAddModal}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm font-semibold tracking-wide transition-all shadow-md shadow-brand/20 cursor-pointer"
+          className="flex items-center gap-1.5 xl:gap-2 px-3 xl:px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs xl:text-sm font-semibold tracking-wide transition-all shadow-md shadow-brand/20 cursor-pointer shrink-0"
         >
           <Plus className="h-4 w-4 stroke-[2.5]" />
-          <span>New Transaction</span>
+          <span className="hidden xl:inline">New Transaction</span>
+          <span className="xl:hidden">New</span>
         </button>
 
         {/* User Session Menu */}
-        <div className="relative">
+        <div className="relative shrink-0">
           <button
             onClick={() => setIsMenuOpen((prev) => !prev)}
             className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-1 hover:bg-surface-hover border border-border-default transition-colors cursor-pointer text-xs font-bold text-text-primary"

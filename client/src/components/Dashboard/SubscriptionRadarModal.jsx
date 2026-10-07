@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { formatNumber } from "../../utils/formatUtils"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { Radio, Repeat, Clock, Calendar, X, Flame, CreditCard, Plus, Bell } from "lucide-react"
 import AnimatedCounter from "../ui/AnimatedCounter"
 import { getSubscriptionBrand } from "../../utils/subscriptionLogos"
@@ -71,9 +71,9 @@ export default function SubscriptionRadarModal({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
           {/* Backdrop */}
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -82,7 +82,7 @@ export default function SubscriptionRadarModal({
           />
 
           {/* Modal Container */}
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0, scale: 0.98, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.98, y: 10 }}
@@ -90,24 +90,24 @@ export default function SubscriptionRadarModal({
             className="relative w-full max-w-2xl bg-surface-2 border border-border-default rounded-modal shadow-elevation-modal overflow-hidden z-10 flex flex-col max-h-[90dvh]"
           >
             {/* Header (Pinned) */}
-            <div className="flex items-start justify-between border-b border-border-default p-5 pb-4 shrink-0 bg-surface-2">
-              <div>
+            <div className="flex items-start justify-between border-b border-border-default p-4 sm:p-5 sm:pb-4 pb-3 shrink-0 bg-surface-2 gap-3">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <div className="p-1.5 rounded-control bg-surface-3 text-brand">
+                  <div className="p-1.5 rounded-control bg-surface-3 text-brand shrink-0">
                     <Radio className="h-4 w-4" />
                   </div>
-                  <h2 className="text-lg font-bold text-text-primary tracking-tight">
+                  <h2 className="text-base sm:text-lg font-bold text-text-primary tracking-tight truncate">
                     Subscription & Bill Radar
                   </h2>
                 </div>
-                <p className="text-xs text-text-secondary font-normal mt-0.5">
+                <p className="text-xs text-text-secondary font-normal mt-0.5 line-clamp-2 sm:line-clamp-none">
                   Tracking of recurring commitments, annual burn, and renewal cycles.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={onClose}
-                className="p-1.5 text-text-secondary hover:text-text-primary rounded-control hover:bg-surface-hover transition-colors cursor-pointer"
+                className="p-1.5 text-text-secondary hover:text-text-primary rounded-control hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
@@ -115,7 +115,7 @@ export default function SubscriptionRadarModal({
             </div>
 
             {/* Scrollable Content Body */}
-            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-5 space-y-4">
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4">
               {/* Key Burn Rate Metrics Banner */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-card bg-surface-1 border border-border-default">
               <div className="space-y-1">
@@ -187,38 +187,38 @@ export default function SubscriptionRadarModal({
                     return (
                       <div
                         key={sub._id}
-                        className="p-3 rounded-xl bg-surface-1 border border-border-default hover:border-border-strong transition-all flex items-center justify-between group"
+                        className="p-3 rounded-xl bg-surface-1 border border-border-default hover:border-border-strong transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
                           <div className="w-10 h-10 rounded-xl bg-surface-2 border border-border-default/60 flex items-center justify-center shrink-0">
                             {brand.icon}
                           </div>
-                          <div className="space-y-0.5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-semibold text-text-primary group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">
+                          <div className="space-y-1 min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 flex-wrap">
+                              <span className="text-sm font-semibold text-text-primary group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors truncate max-w-[140px] sm:max-w-none">
                                 {sub.title}
                               </span>
-                              <span className={`px-2 py-0.5 rounded text-[10px] font-medium border ${categoryStyle.badge}`}>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-medium border shrink-0 ${categoryStyle.badge}`}>
                                 {sub.category}
                               </span>
-                              <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40">
+                              <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.2 rounded-badge font-semibold uppercase font-mono-nums bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40 shrink-0">
                                 <Repeat className="h-2.5 w-2.5" /> RECURRING
                               </span>
                             </div>
                             <div className="flex items-center gap-2 text-xs text-text-secondary">
-                              <Calendar className="h-3 w-3 text-text-muted" />
-                              <span>Next: <strong className="text-text-primary font-mono">{sub.nextBillingDate}</strong></span>
+                              <Calendar className="h-3 w-3 text-text-muted shrink-0" />
+                              <span className="truncate">Next: <strong className="text-text-primary font-mono">{sub.nextBillingDate}</strong></span>
                             </div>
                           </div>
                         </div>
 
                         {/* Renewal Countdown Badge & Cost */}
-                        <div className="text-right space-y-1">
+                        <div className="flex items-center justify-between sm:justify-start sm:flex-col sm:items-end gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-border-default/40">
                           <p className="font-mono font-bold text-sm text-text-primary">
                             {currencySymbol}{formatNumber(sub.amount, currencySymbol, 2, 2)}
                             <span className="text-xs text-text-secondary font-normal ml-0.5">/month</span>
                           </p>
-                          <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full border ${
+                          <span className={`inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full border shrink-0 ${
                             sub.isImminent 
                               ? 'bg-rose-50 border-rose-200 text-rose-600 dark:bg-rose-950/60 dark:border-rose-800/60 dark:text-rose-400' 
                               : 'bg-surface-2/60 border-border-default/60 text-text-secondary'
@@ -248,7 +248,7 @@ export default function SubscriptionRadarModal({
                 Done
               </button>
             </div>
-          </motion.div>
+          </Motion.div>
         </div>
       )}
     </AnimatePresence>

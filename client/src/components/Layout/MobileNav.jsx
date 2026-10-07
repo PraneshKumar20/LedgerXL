@@ -43,17 +43,17 @@ export default function MobileNav({
   return (
     <>
       {/* Mobile Top App Bar */}
-      <header className="lg:hidden sticky top-0 z-40 bg-surface-1 border-b border-border-default px-4 py-2.5 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
+      <header className="lg:hidden sticky top-0 z-40 bg-surface-1 border-b border-border-default px-2.5 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 min-w-0">
           <button
             onClick={() => setIsDrawerOpen(true)}
-            className="p-1 text-text-secondary hover:text-text-primary rounded-control hover:bg-surface-hover transition-colors cursor-pointer"
+            className="p-1 text-text-secondary hover:text-text-primary rounded-control hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
             title="Open Menu"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <img src="/ledgerxl-logo.png" alt="LedgerXL Logo" className="h-8 w-8 object-contain drop-shadow-sm rounded-lg" />
-          <span className="font-bold text-sm tracking-tight text-text-primary">Ledger<span className="text-brand">XL</span></span>
+          <img src="/ledgerxl-logo.png" alt="LedgerXL Logo" className="h-7 w-7 sm:h-8 sm:w-8 object-contain drop-shadow-sm rounded-lg shrink-0" />
+          <span className="font-bold text-sm tracking-tight text-text-primary truncate">Ledger<span className="text-brand">XL</span></span>
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -229,28 +229,28 @@ export default function MobileNav({
       </AnimatePresence>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-1 border-t border-border-default px-2 py-1.5 pb-safe shadow-elevation-lg">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-surface-1 border-t border-border-default px-1 sm:px-2 py-1.5 pb-safe shadow-elevation-lg">
         <div className="flex items-center justify-around relative">
           {/* Overview */}
           <button
             onClick={() => setActiveTab("overview")}
-            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors cursor-pointer ${
+            className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-3 transition-colors cursor-pointer ${
               activeTab === "overview" ? "text-brand font-semibold" : "text-text-secondary hover:text-text-primary font-medium"
             }`}
           >
             <LayoutDashboard className="h-4 w-4" />
-            <span className="text-[11px] mt-1">Overview</span>
+            <span className="text-[10px] sm:text-[11px] mt-1">Overview</span>
           </button>
 
           {/* Transactions */}
           <button
             onClick={() => setActiveTab("transactions")}
-            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors cursor-pointer ${
+            className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-3 transition-colors cursor-pointer ${
               activeTab === "transactions" ? "text-brand font-semibold" : "text-rose-400/80 hover:text-rose-300 font-medium"
             }`}
           >
             <Receipt className="h-4 w-4" />
-            <span className="text-[11px] mt-1">Ledger</span>
+            <span className="text-[10px] sm:text-[11px] mt-1">Ledger</span>
           </button>
 
           {/* Center (+) New Transaction Action */}
@@ -267,23 +267,23 @@ export default function MobileNav({
           {/* Analytics */}
           <button
             onClick={() => setActiveTab("analytics")}
-            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors cursor-pointer ${
+            className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-3 transition-colors cursor-pointer ${
               activeTab === "analytics" ? "text-brand font-semibold" : "text-text-secondary hover:text-text-primary font-medium"
             }`}
           >
             <BarChart3 className="h-4 w-4" />
-            <span className="text-[11px] mt-1">Analytics</span>
+            <span className="text-[10px] sm:text-[11px] mt-1">Analytics</span>
           </button>
 
           {/* Budgets & Radar */}
           <button
             onClick={() => setActiveTab("budgets")}
-            className={`flex flex-col items-center justify-center py-1 px-3 transition-colors cursor-pointer ${
+            className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-3 transition-colors cursor-pointer ${
               activeTab === "budgets" || activeTab === "subscriptions" ? "text-brand font-semibold" : "text-text-secondary hover:text-text-primary font-medium"
             }`}
           >
             <Layers className="h-4 w-4" />
-            <span className="text-[11px] mt-1">Budgets</span>
+            <span className="text-[10px] sm:text-[11px] mt-1">Budgets</span>
           </button>
         </div>
       </nav>

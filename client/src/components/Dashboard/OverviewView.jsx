@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react"
-import { motion, AnimatePresence } from "framer-motion"
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -216,7 +215,7 @@ export default function OverviewView({
             </div>
 
             <div className="mt-4">
-              <div className="text-3xl sm:text-[38px] font-bold text-text-primary font-mono tracking-tight leading-none">
+              <div className="text-3xl sm:text-[38px] font-bold text-text-primary font-mono tracking-tight leading-none truncate">
                 <AnimatedCounter 
                   value={balance * multiplier} 
                   currencySymbol={currSym}
@@ -254,19 +253,19 @@ export default function OverviewView({
 
           {/* Subtotals (Monthly Income & Monthly Expenses) */}
           <div className="grid grid-cols-2 gap-4 pt-5 mt-5 border-t border-border-default">
-            <div>
-              <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> Monthly Income
+            <div className="min-w-0">
+              <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5 truncate">
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" /> Monthly Income
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight">
+              <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight truncate">
                 <AnimatedCounter value={totalIncome} prefix={currSym} decimals={2} />
               </p>
             </div>
-            <div>
-              <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
-                <TrendingDown className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400" /> Monthly Expenses
+            <div className="min-w-0">
+              <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5 truncate">
+                <TrendingDown className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400 shrink-0" /> Monthly Expenses
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400 font-mono mt-1 leading-tight">
+              <p className="text-lg sm:text-2xl font-bold text-rose-600 dark:text-rose-400 font-mono mt-1 leading-tight truncate">
                 <AnimatedCounter value={totalExpense} prefix={currSym} decimals={2} />
               </p>
             </div>
@@ -313,28 +312,28 @@ export default function OverviewView({
 
           {/* Subtotals (Remaining Buffer & Monthly Limit) */}
           <div className="grid grid-cols-2 gap-4 pt-5 mt-5 border-t border-border-default">
-            <div>
-              <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" /> Remaining Buffer
+            <div className="min-w-0">
+              <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5 truncate">
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" /> Remaining Buffer
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight">
+              <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight truncate">
                 +{currSym}{formatNumber(Math.round(remainingBuffer), currSym, 0, 0)}
               </p>
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center justify-between">
-                <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5">
+                <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5 truncate">
                   <span className="text-xs text-blue-600 dark:text-blue-400">◎</span> Monthly Limit
                 </p>
                 <button
                   onClick={() => setActiveTab("budgets")}
-                  className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5 cursor-pointer"
+                  className="text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors flex items-center gap-0.5 cursor-pointer shrink-0"
                 >
                   <span>manage</span>
                   <ChevronRight className="h-3 w-3" />
                 </button>
               </div>
-              <p className="text-xl sm:text-2xl font-bold text-text-primary font-mono mt-1 leading-tight">
+              <p className="text-lg sm:text-2xl font-bold text-text-primary font-mono mt-1 leading-tight truncate">
                 {currSym}{formatNumber(Math.round(effectiveLimit), currSym, 0, 0)}
               </p>
             </div>
@@ -342,11 +341,11 @@ export default function OverviewView({
         </div>
       </div>
 
-      {/* 2. Middle Row: Two Charts with Exact 7:5 Proportions & Dimensions */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+      {/* 2. Middle Row: Two Charts with Exact 7:5 Proportions on XL and Responsive Stacking on Tablet */}
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
         
-        {/* 7-DAY CASHFLOW VELOCITY CARD: 7 cols (~58.3% width) */}
-        <div className="lg:col-span-7 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
+        {/* 7-DAY CASHFLOW VELOCITY CARD: 7 cols on XL (~58.3% width) */}
+        <div className="xl:col-span-7 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
               <div className="p-1 rounded bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/40">
@@ -424,8 +423,8 @@ export default function OverviewView({
           </div>
         </div>
 
-        {/* SPEND BREAKDOWN CARD: 5 cols (~41.7% width) */}
-        <div className="lg:col-span-5 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
+        {/* SPEND BREAKDOWN CARD: 5 cols on XL (~41.7% width) */}
+        <div className="xl:col-span-5 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between min-h-[265px] h-auto xl:h-[265px]">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
               <div className="p-1 rounded bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40">
@@ -443,7 +442,7 @@ export default function OverviewView({
             </button>
           </div>
 
-          <div className="flex items-center justify-between gap-4 sm:gap-6 pt-1 h-[185px]">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 pt-1 sm:h-[185px]">
             {/* Donut Chart with Centered Animated HUD */}
             <div className="relative w-[155px] h-[155px] shrink-0 flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
@@ -531,7 +530,7 @@ export default function OverviewView({
             </div>
 
             {/* Category Legend & Breakdown List with Proportional Spacing & Synchronized Hover/Click */}
-            <div className="flex-1 flex flex-col justify-between h-[160px] pl-1 sm:pl-3">
+            <div className="w-full sm:flex-1 flex flex-col justify-between sm:h-[160px] pl-0 sm:pl-3">
               {displayCategories.map((cat, idx) => {
                 const isHovered = activeCategoryIndex === idx
 
@@ -541,7 +540,7 @@ export default function OverviewView({
                     onClick={() => setActiveCategoryIndex(activeCategoryIndex === idx ? null : idx)}
                     onMouseEnter={() => setActiveCategoryIndex(idx)}
                     onMouseLeave={() => setActiveCategoryIndex(null)}
-                    className={`grid grid-cols-[1fr_50px_66px] items-center gap-x-2.5 sm:gap-x-3 px-2.5 py-0.5 rounded-lg transition-all duration-150 cursor-pointer ${
+                    className={`grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_50px_66px] items-center gap-x-2.5 sm:gap-x-3 px-2.5 py-0.5 rounded-lg transition-all duration-150 cursor-pointer ${
                       isHovered 
                         ? 'bg-surface-2 shadow-elevation-sm scale-[1.02]' 
                         : 'hover:bg-surface-hover'
@@ -601,7 +600,7 @@ export default function OverviewView({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 pt-4">
           {/* Health Score Metric */}
           <div className="flex items-center gap-3.5 p-3 rounded-lg bg-surface-2 border border-border-default/60">
             <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
@@ -772,7 +771,7 @@ export default function OverviewView({
                       {formatNumber(tx.amount, currSym, 2, 2)}
                     </span>
 
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                       {openEditModal && (
                         <button
                           onClick={(e) => {
