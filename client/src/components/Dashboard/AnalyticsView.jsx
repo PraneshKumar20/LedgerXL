@@ -1,4 +1,5 @@
 import { useMemo } from "react"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { 
   Activity, 
   PieChart as PieIcon, 
@@ -127,7 +128,7 @@ export default function AnalyticsView({
           <p className="text-[20px] sm:text-[26px] font-semibold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight truncate">
             <AnimatedCounter value={savingsRate} decimals={1} suffix="%" />
           </p>
-          <p className="text-xs text-text-secondary font-normal mt-0.5">Surplus retention ratio</p>
+          <p className="text-xs text-text-secondary font-normal mt-0.5">% of income saved</p>
         </div>
 
         {/* Avg Transaction */}
@@ -141,13 +142,13 @@ export default function AnalyticsView({
           <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight truncate">
             <AnimatedCounter value={avgTransaction} prefix={currencySymbol} />
           </p>
-          <p className="text-xs text-text-secondary font-normal mt-0.5">Average ticket per expense</p>
+          <p className="text-xs text-text-secondary font-normal mt-0.5">Per expense transaction</p>
         </div>
 
         {/* Top Outflow Category */}
         <div className="bg-surface-1 border border-border-default rounded-xl p-4 shadow-elevation-sm hover:border-border-strong transition-colors min-w-0">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Top Expense Category</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">Top Spending Category</span>
             <div className="p-1 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/40">
               <TrendingDown className="h-3.5 w-3.5" />
             </div>
@@ -171,7 +172,7 @@ export default function AnalyticsView({
           <p className="text-[20px] sm:text-[26px] font-semibold text-text-primary font-mono mt-1 leading-tight truncate">
             {displayCategories.length}
           </p>
-          <p className="text-xs text-text-secondary font-normal mt-0.5">Active partitions</p>
+          <p className="text-xs text-text-secondary font-normal mt-0.5">Active categories</p>
         </div>
       </div>
 
@@ -235,7 +236,7 @@ export default function AnalyticsView({
           <div className="pb-2 border-b border-border-subtle">
             <h2 className="text-sm font-semibold text-text-primary tracking-tight flex items-center gap-2">
               <PieIcon className="h-4 w-4 text-brand" />
-              <span>Category Allocation</span>
+              <span>Category Breakdown</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">Distribution of expenses</p>
           </div>
@@ -285,7 +286,7 @@ export default function AnalyticsView({
                 <div className="absolute inset-0 flex items-center justify-center text-center pointer-events-none">
                   <AnimatePresence mode="wait">
                     {activeCategoryIndex !== null && displayCategories[activeCategoryIndex] ? (
-                      <motion.div
+                      <Motion.div
                         key={`active-${displayCategories[activeCategoryIndex].name}`}
                         initial={{ scale: 0.75, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -311,9 +312,9 @@ export default function AnalyticsView({
                         >
                           {displayCategories[activeCategoryIndex].pct}
                         </span>
-                      </motion.div>
+                      </Motion.div>
                     ) : (
-                      <motion.div
+                      <Motion.div
                         key="default-center"
                         initial={{ scale: 0.85, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -330,7 +331,7 @@ export default function AnalyticsView({
                         <span className="text-[10px] text-text-secondary mt-0.5">
                           {displayCategories.length} categories
                         </span>
-                      </motion.div>
+                      </Motion.div>
                     )}
                   </AnimatePresence>
                 </div>

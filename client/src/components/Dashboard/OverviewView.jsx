@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react"
+import { motion as Motion, AnimatePresence } from "framer-motion"
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -18,7 +19,8 @@ import {
   Edit2,
   Trash2,
   Repeat,
-  Sparkles
+  Sparkles,
+  X
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Sector } from "recharts"
 import AnimatedCounter from "../ui/AnimatedCounter"
@@ -79,6 +81,23 @@ export default function OverviewView({
   const activeCategoryIndex = propActiveCategoryIndex !== undefined ? propActiveCategoryIndex : internalActiveIndex
   const setActiveCategoryIndex = propSetActiveCategoryIndex || setInternalActiveIndex
 
+  const [isGuideDismissed, setIsGuideDismissed] = useState(() => {
+    try {
+      return localStorage.getItem("ledgerxl_hide_guide_banner") === "true"
+    } catch {
+      return false
+    }
+  })
+
+  const handleDismissGuide = () => {
+    setIsGuideDismissed(true)
+    try {
+      localStorage.setItem("ledgerxl_hide_guide_banner", "true")
+    } catch {
+      // Ignore localStorage errors
+    }
+  }
+
   // High fidelity active donut slice shape with glowing outer halo
   const renderActiveShape = (props) => {
     if (propRenderActiveShape) return propRenderActiveShape(props)
@@ -120,6 +139,24 @@ export default function OverviewView({
   const remainingBuffer = Math.max(0, effectiveLimit - totalExpense)
   const expenseRatio = 100 - incomeShare
   const safePercent = Number.isFinite(budgetPercent) ? Math.max(0, budgetPercent) : 0
+
+  const budgetStatusText = safePercent >= 100
+    ? "Budget limit exceeded"
+    : safePercent >= 85
+    ? "Approaching budget limit"
+    : "Within budget limit"
+
+  const budgetStatusColorClass = safePercent >= 100
+    ? "text-rose-600 dark:text-rose-400"
+    : safePercent >= 85
+    ? "text-amber-600 dark:text-amber-400"
+    : "text-emerald-600 dark:text-emerald-400"
+
+  const budgetProgressBarColorClass = safePercent >= 100
+    ? "bg-gradient-to-r from-rose-600 to-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.4)]"
+    : safePercent >= 85
+    ? "bg-gradient-to-r from-amber-600 to-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.4)]"
+    : "bg-emerald-500 dark:bg-emerald-400"
 
   // Spend Breakdown computed directly from live categoryData with canonical styling
   const computedCategoryExpense = useMemo(() => {
@@ -176,28 +213,41 @@ export default function OverviewView({
   return (
     <div className="space-y-5">
       {/* Beginner Guide Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 rounded-xl bg-surface-1 border border-border-default shadow-elevation-sm">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="h-8 w-8 rounded-lg bg-brand-subtle flex items-center justify-center shrink-0">
-            <Sparkles className="h-4 w-4 text-brand" />
+      {!isGuideDismissed && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 rounded-xl bg-surface-1 border border-border-default shadow-elevation-sm">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="h-8 w-8 rounded-lg bg-brand-subtle flex items-center justify-center shrink-0">
+              <Sparkles className="h-4 w-4 text-brand" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold text-text-primary">
+                New to LedgerXL?
+              </p>
+              <p className="text-[11px] text-text-secondary truncate">
+                Learn how to track spending, set budgets, and understand your cash flow in 2 minutes.
+              </p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-xs font-semibold text-text-primary">
-              New to LedgerXL?
-            </p>
-            <p className="text-[11px] text-text-secondary truncate">
-              Learn how to track spending, set budgets, and understand your cash flow in 2 minutes.
-            </p>
+          <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+            <button
+              onClick={() => setActiveTab("guide")}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-xs font-semibold text-brand transition-colors cursor-pointer"
+            >
+              <span>How to use LedgerXL?</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleDismissGuide}
+              className="p-1.5 text-text-muted hover:text-text-primary rounded-lg hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
+              aria-label="Hide guide banner"
+              title="Hide guide banner"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
         </div>
-        <button
-          onClick={() => setActiveTab("guide")}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-xs font-semibold text-brand transition-colors cursor-pointer shrink-0 self-start sm:self-auto"
-        >
-          <span>How to use LedgerXL?</span>
-          <ArrowRight className="h-3.5 w-3.5" />
-        </button>
-      </div>
+      )}
 
       {/* 1. Top Row: Two Large Metric Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -272,12 +322,12 @@ export default function OverviewView({
           </div>
         </div>
 
-        {/* MONTHLY BUDGET USAGE CARD */}
+        {/* MONTHLY BUDGET USED CARD */}
         <div className="bg-surface-1 border border-border-default rounded-xl p-6 flex flex-col justify-between shadow-elevation-sm">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-text-secondary">
-                MONTHLY BUDGET USAGE
+                MONTHLY BUDGET USED
               </span>
               <div className="h-8 w-8 rounded-lg bg-amber-50 text-amber-600 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-800/40 dark:text-amber-400 flex items-center justify-center">
                 <Gauge className="h-4 w-4" />
@@ -296,7 +346,7 @@ export default function OverviewView({
             {/* Budget Progress Bar */}
             <div className="mt-6 space-y-2">
               <div className="flex justify-between text-xs font-medium">
-                <span className="text-emerald-600 dark:text-emerald-400">Within budget limit</span>
+                <span className={budgetStatusColorClass}>{budgetStatusText}</span>
                 <span className="text-text-secondary font-mono">
                   {currSym}{formatNumber(Math.round(remainingBuffer), currSym, 0, 0)} remaining
                 </span>
@@ -304,17 +354,17 @@ export default function OverviewView({
               <div className="h-1.5 w-full bg-surface-2 rounded-full overflow-hidden">
                 <div 
                   style={{ width: `${Math.min(100, budgetPercent)}%` }} 
-                  className="bg-emerald-500 dark:bg-emerald-400 h-full rounded-full transition-all duration-500" 
+                  className={`${budgetProgressBarColorClass} h-full rounded-full transition-all duration-500`} 
                 />
               </div>
             </div>
           </div>
 
-          {/* Subtotals (Remaining Buffer & Monthly Limit) */}
+          {/* Subtotals (Remaining Budget & Monthly Limit) */}
           <div className="grid grid-cols-2 gap-4 pt-5 mt-5 border-t border-border-default">
             <div className="min-w-0">
               <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5 truncate">
-                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" /> Remaining Buffer
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" /> Remaining Budget
               </p>
               <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight truncate">
                 +{currSym}{formatNumber(Math.round(remainingBuffer), currSym, 0, 0)}
@@ -344,7 +394,7 @@ export default function OverviewView({
       {/* 2. Middle Row: Two Charts with Exact 7:5 Proportions on XL and Responsive Stacking on Tablet */}
       <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
         
-        {/* 7-DAY CASHFLOW VELOCITY CARD: 7 cols on XL (~58.3% width) */}
+        {/* 7-DAY SPENDING TREND CARD: 7 cols on XL (~58.3% width) */}
         <div className="xl:col-span-7 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
@@ -352,12 +402,12 @@ export default function OverviewView({
                 <Activity className="h-3.5 w-3.5" />
               </div>
               <span className="text-sm font-semibold text-text-primary tracking-tight">
-                7-Day Cashflow Velocity
+                7-Day Spending Trend
               </span>
             </div>
             <div>
               <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-muted">
-                Velocity (Avg/Day)
+                Daily Spending Pace
               </span>
               <p className="text-xl sm:text-2xl font-bold text-text-primary font-mono mt-1 leading-tight">
                 {currSym}{formatNumber(Math.round(trendData.reduce((acc, curr) => acc + (curr.expense || 0), 0) / (trendData.length || 7)), currSym, 0, 0)}
@@ -487,7 +537,7 @@ export default function OverviewView({
               <div className="absolute inset-0 flex items-center justify-center text-center pointer-events-none">
                 <AnimatePresence mode="wait">
                   {activeCategoryIndex !== null && displayCategories[activeCategoryIndex] ? (
-                    <motion.div
+                    <Motion.div
                       key={`active-${displayCategories[activeCategoryIndex].name}`}
                       initial={{ scale: 0.75, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
@@ -504,9 +554,9 @@ export default function OverviewView({
                       <span className="text-[14px] font-bold text-text-primary font-mono leading-tight mt-0.5">
                         {displayCategories[activeCategoryIndex].pct}
                       </span>
-                    </motion.div>
+                    </Motion.div>
                   ) : (
-                    <motion.div
+                    <Motion.div
                       key="default-center"
                       initial={{ scale: 0.85, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
@@ -523,7 +573,7 @@ export default function OverviewView({
                       <span className="text-[10px] text-text-secondary mt-0.5">
                         {categoriesCount} categories
                       </span>
-                    </motion.div>
+                    </Motion.div>
                   )}
                 </AnimatePresence>
               </div>
@@ -577,13 +627,13 @@ export default function OverviewView({
         </div>
       </div>
 
-      {/* 3. Bottom Row: Financial Health & Audit */}
+      {/* 3. Bottom Row: Financial Health Overview */}
       <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
         <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
           <div className="flex items-center gap-2">
             <Heart className="h-4 w-4 text-blue-400" />
             <span className="text-sm font-semibold text-text-primary tracking-tight">
-              Financial Health & Audit
+              Financial Health Overview
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -631,7 +681,7 @@ export default function OverviewView({
               </span>
             </div>
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Audit Score</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Financial Health Score</span>
               <span className={`text-xs font-bold ${healthTextColor}`}>{healthTitle}</span>
             </div>
           </div>
@@ -644,37 +694,37 @@ export default function OverviewView({
             <div>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Savings Rate</span>
               <span className="text-base font-bold text-text-primary font-mono">{liveSavingsRate}%</span>
-              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block mt-0.5">Optimal buffer</span>
+              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block mt-0.5">Optimal savings rate</span>
             </div>
             <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/40 dark:text-emerald-400 group-hover:scale-105 transition-transform">
               <PiggyBank className="h-4 w-4" />
             </div>
           </div>
 
-          {/* Avg. Ticket Size Card */}
+          {/* Average Expense Card */}
           <div 
             onClick={() => setActiveTab("transactions")}
             className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
           >
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Avg. Ticket Size</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Average Expense</span>
               <span className="text-base font-bold text-text-primary font-mono">{currSym}{formatNumber(liveAvgTicket, currSym, 2, 2)}</span>
-              <span className="text-[10px] text-blue-600 dark:text-blue-400 block mt-0.5">Per expense</span>
+              <span className="text-[10px] text-blue-600 dark:text-blue-400 block mt-0.5">Per transaction</span>
             </div>
             <div className="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400 group-hover:scale-105 transition-transform">
               <CreditCard className="h-4 w-4" />
             </div>
           </div>
 
-          {/* Top Expense Card */}
+          {/* Top Spending Category Card */}
           <div 
             onClick={() => setActiveTab("analytics")}
             className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
           >
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Top Expense</span>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Top Spending Category</span>
               <span className="text-base font-bold text-text-primary truncate max-w-[120px] block">{liveTopExpenseName}</span>
-              <span className="text-[10px] text-purple-600 dark:text-purple-400 block mt-0.5">Highest outflow</span>
+              <span className="text-[10px] text-purple-600 dark:text-purple-400 block mt-0.5">Highest category outflow</span>
             </div>
             <div className="p-2 rounded-lg bg-purple-50 text-purple-600 border border-purple-200 dark:bg-purple-950/40 dark:border-purple-800/40 dark:text-purple-400 group-hover:scale-105 transition-transform">
               <Plane className="h-4 w-4" />

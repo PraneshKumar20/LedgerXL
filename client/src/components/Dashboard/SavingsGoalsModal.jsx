@@ -174,7 +174,7 @@ export default function SavingsGoalsModal({
                   </h2>
                 </div>
                 <p className="text-xs text-text-secondary font-normal pl-8 sm:pl-9 truncate">
-                  Track target funds, allocate savings, and unlock milestone celebrations.
+                  Track target funds, build savings, and unlock milestone celebrations.
                 </p>
               </div>
 

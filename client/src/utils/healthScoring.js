@@ -87,7 +87,7 @@ export function getGradeFromScore(score = 85) {
       dotColor: "bg-emerald-500 dark:bg-emerald-400",
       textColor: "text-emerald-600 dark:text-emerald-400",
       title: "Exceptional Financial Standing",
-      desc: "Outstanding savings velocity and cashflow resilience. You're in the top financial health bracket.",
+      desc: "Outstanding savings growth and cash flow balance. You're in the top financial health bracket.",
       statusText: "Optimal Tier"
     }
   }
@@ -103,7 +103,7 @@ export function getGradeFromScore(score = 85) {
       dotColor: "bg-amber-500 dark:bg-amber-400",
       textColor: "text-amber-700 dark:text-amber-400",
       title: "Moderate Financial Resilience",
-      desc: "Budget headroom is tightening. Consider trimming discretionary spend to strengthen savings buffer.",
+      desc: "Budget limit is tightening. Consider trimming discretionary spend to strengthen your savings.",
       statusText: "Fair Tier"
     }
   }
@@ -117,8 +117,8 @@ export function getGradeFromScore(score = 85) {
     barGradient: "bg-gradient-to-r from-rose-600 via-red-500 to-rose-400 shadow-[0_0_14px_rgba(244,63,94,0.5)]",
     dotColor: "bg-rose-500 dark:bg-rose-400",
     textColor: "text-rose-600 dark:text-rose-400",
-    title: "High Financial Burn Rate",
-    desc: "Expenses exceed recommended thresholds. Audit high recurring burdens and establish budget limits.",
+    title: "High Spending Pace",
+    desc: "Expenses exceed recommended thresholds. Review high recurring bills and establish budget limits.",
     statusText: "Critical Tier"
   }
 }

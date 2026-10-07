@@ -134,7 +134,7 @@ export default function CategoryEnvelopesModal({
                 {/* Summary Strip */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 items-center justify-between p-3.5 sm:px-5 sm:py-3.5 rounded-xl bg-surface-inset border border-border-subtle gap-3 shrink-0">
                   <div className="flex flex-col">
-                    <span className="text-[10px] uppercase font-semibold tracking-wider text-text-muted">Total Allocated</span>
+                    <span className="text-[10px] uppercase font-semibold tracking-wider text-text-muted">Total Budgeted</span>
                     <p className="text-[17px] leading-tight font-bold text-text-primary font-mono-nums mt-0.5">
                       {currencySymbol}{formatNumber(envelopeStats.totalAllocated, currencySymbol, 0, 0)}
                     </p>

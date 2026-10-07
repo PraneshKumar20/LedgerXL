@@ -237,7 +237,7 @@ export default function BudgetsView({
           </div>
 
           <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
-            <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Remaining Buffer</span>
+            <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Remaining Budget</span>
             <p className={`text-[22px] sm:text-[26px] font-extrabold font-mono leading-tight truncate ${
               budgetLimit <= 0
                 ? "text-text-muted"
@@ -249,7 +249,7 @@ export default function BudgetsView({
           </div>
 
           <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
-            <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Quota Utilized</span>
+            <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Budget Used</span>
             <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight truncate">
               {budgetLimit <= 0 ? "0%" : <AnimatedCounter value={budgetPercent} decimals={0} suffix="%" />}
             </p>
@@ -289,7 +289,7 @@ export default function BudgetsView({
               <span>Category Budgets</span>
             </h2>
             <p className="text-xs text-text-secondary font-normal mt-0.5">
-              Adjust monthly allowances and monitor category velocity
+              Adjust monthly allowances and monitor category spending
             </p>
           </div>
         </div>

@@ -66,7 +66,7 @@ export default function FinancialHealthCard({
 
     const pillarList = [
       {
-        name: "Savings Ratio",
+        name: "Savings Rate",
         scoreValue: totalIncome > 0 
           ? `${currencySymbol}${formatNumber(netSurplus, currencySymbol, 0, 0)}` 
           : `${savingsScore} pts`,
@@ -74,7 +74,7 @@ export default function FinancialHealthCard({
           ? <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">{currencySymbol}{formatNumber(totalIncome, currencySymbol, 0, 0)}</span></>
           : <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">35 max</span></>,
         percent: Math.min(100, Math.max(0, savingsRate || (savingsScore / 35) * 100)),
-        detail: `${savingsRate.toFixed(0)}% retained`,
+        detail: `${savingsRate.toFixed(0)}% of income saved`,
         badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20",
         dotBg: "bg-emerald-500 dark:bg-emerald-400",
         barGradient: "bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400",
@@ -83,7 +83,7 @@ export default function FinancialHealthCard({
         statusTextClass: savingsScore >= 28 ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
       },
       {
-        name: "Budget Buffer",
+        name: "Budget Used",
         scoreValue: budgetLimit > 0 
           ? `${currencySymbol}${formatNumber(totalExpense, currencySymbol, 0, 0)}` 
           : `${budgetScore} pts`,
@@ -91,42 +91,42 @@ export default function FinancialHealthCard({
           ? <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">{currencySymbol}{formatNumber(budgetLimit, currencySymbol, 0, 0)}</span></>
           : <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">30 max</span></>,
         percent: Math.min(100, Math.max(0, budgetUsage)),
-        detail: `${Math.max(0, Math.round(100 - budgetUsage))}% headroom`,
+        detail: `${Math.round(budgetUsage)}% of budget used`,
         badgeClass: "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-500/10 dark:text-sky-400 dark:border-sky-500/20",
         dotBg: "bg-sky-500 dark:bg-sky-400",
         barGradient: "bg-gradient-to-r from-sky-600 via-blue-500 to-cyan-400",
         statusDot: budgetScore >= 25 ? "bg-sky-500 dark:bg-sky-400" : "bg-amber-500 dark:bg-amber-400",
-        statusLabel: budgetScore >= 25 ? "Safe Limit" : budgetScore >= 18 ? "Moderate" : "Tight",
+        statusLabel: budgetScore >= 25 ? "Within Limit" : budgetScore >= 18 ? "Moderate" : "Over Budget",
         statusTextClass: budgetScore >= 25 ? "text-sky-600 dark:text-sky-400" : budgetScore >= 18 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400"
       },
       {
-        name: "Cashflow Buffer",
+        name: "Cash Flow Balance",
         scoreValue: totalIncome > 0 || totalExpense > 0 
           ? `${currencySymbol}${formatNumber(Math.abs(totalIncome - totalExpense), currencySymbol, 0, 0)}` 
           : `${stabilityScore} pts`,
         targetValue: totalIncome > 0 || totalExpense > 0 
-          ? <><span className="text-text-muted">net</span> <span className="font-semibold text-text-primary">{totalIncome >= totalExpense ? "surplus" : "deficit"}</span></>
+          ? <><span className="text-text-muted">net</span> <span className="font-semibold text-text-primary">{totalIncome >= totalExpense ? "net savings" : "overspent"}</span></>
           : <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">20 max</span></>,
         percent: Math.min(100, Math.max(10, (stabilityScore / 20) * 100)),
-        detail: hasSurplus ? "Cashflow Positive" : "Deficit Warning",
+        detail: hasSurplus ? "Cash Flow Positive" : "Expenses Exceeded Income",
         badgeClass: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20",
         dotBg: "bg-indigo-500 dark:bg-indigo-400",
         barGradient: "bg-gradient-to-r from-indigo-600 via-blue-500 to-cyan-400",
         statusDot: hasSurplus ? "bg-emerald-500 dark:bg-emerald-400" : "bg-rose-500 dark:bg-rose-400",
-        statusLabel: hasSurplus ? "Stable" : "Deficit",
+        statusLabel: hasSurplus ? "Positive Flow" : "Overspent",
         statusTextClass: hasSurplus ? "text-emerald-600 dark:text-emerald-400" : "text-rose-600 dark:text-rose-400"
       },
       {
-        name: "Fixed Burden",
+        name: "Recurring Bills",
         scoreValue: `${currencySymbol}${formatNumber(recurringExpense, currencySymbol, 0, 0)}`,
         targetValue: <><span className="text-text-muted">of</span> <span className="font-semibold text-text-primary">{currencySymbol}{formatNumber(totalExpense, currencySymbol, 0, 0)}</span></>,
         percent: Math.min(100, Math.max(0, recurringRatio)),
-        detail: `${recurringRatio.toFixed(0)}% recurring`,
+        detail: `${recurringRatio.toFixed(0)}% of spending on bills`,
         badgeClass: "bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20",
         dotBg: "bg-amber-500 dark:bg-amber-400",
         barGradient: "bg-gradient-to-r from-amber-600 via-orange-500 to-amber-400",
         statusDot: recurringScore >= 11 ? "bg-brand" : "bg-amber-500 dark:bg-amber-400",
-        statusLabel: recurringScore >= 11 ? "Low Burden" : "High Burn",
+        statusLabel: recurringScore >= 11 ? "Manageable Bills" : "High Recurring Costs",
         statusTextClass: recurringScore >= 11 ? "text-brand" : "text-amber-600 dark:text-amber-400"
       }
     ]
@@ -135,19 +135,19 @@ export default function FinancialHealthCard({
     const recs = []
     if (recurringRatio > 35) {
       recs.push({
-        title: "Audit Subscriptions",
-        category: "Recurring Liabilities",
-        desc: "Fixed recurring charges take up more than 35% of outflows. Audit unused subscriptions in Bill Radar.",
+        title: "Review Subscriptions",
+        category: "Recurring Bills",
+        desc: "Fixed recurring charges take up more than 35% of spending. Review unused subscriptions in Bill Radar.",
         potentialSaving: `${currencySymbol}30-80/mo`,
         emoji: "📡",
-        impact: "Lower Burn"
+        impact: "Lower Recurring Costs"
       })
     }
     if (budgetUsage > 85) {
       recs.push({
         title: "Pace Discretionary Spend",
-        category: "Budget Threshold",
-        desc: "You have utilized over 85% of your planned monthly budget limit. Consider limiting dining and shopping.",
+        category: "Budget Limit",
+        desc: "You have spent over 85% of your planned monthly budget limit. Consider limiting dining and shopping.",
         potentialSaving: `${currencySymbol}100-200`,
         emoji: "⚠️",
         impact: "Budget Safety"
@@ -157,7 +157,7 @@ export default function FinancialHealthCard({
       recs.push({
         title: "High Savings Optimization",
         category: "Wealth Accelerator",
-        desc: "Your savings rate exceeds the benchmark 20%. Allocate recurring surplus into dedicated savings targets.",
+        desc: "Your savings rate exceeds the benchmark 20%. Allocate recurring savings into dedicated savings targets.",
         potentialSaving: "Wealth Compounder",
         emoji: "💎",
         impact: "Growth"
@@ -166,7 +166,7 @@ export default function FinancialHealthCard({
       recs.push({
         title: "Boost Emergency Runway",
         category: "Capital Reserve",
-        desc: "Aiming for a 20% savings target creates a comfortable living buffer against unexpected outlays.",
+        desc: "Aiming for a 20% savings target creates a comfortable savings cushion against unexpected expenses.",
         potentialSaving: `${currencySymbol}150+/mo`,
         emoji: "🛡️",
         impact: "Security"
@@ -188,10 +188,10 @@ export default function FinancialHealthCard({
         <div>
           <h2 className="text-[19px] font-bold text-text-primary tracking-tight flex items-center gap-2">
             <Award className="h-5 w-5 text-emerald-500 dark:text-emerald-400" />
-            <span>4-Pillar Financial Health Audit</span>
+            <span>4-Pillar Financial Health Check</span>
           </h2>
           <p className="text-xs text-text-secondary font-normal mt-0.5">
-            Algorithmic scoring across savings rate, budget adherence, cashflow buffer, and recurring burden
+            Algorithmic scoring across savings rate, budget adherence, cash flow balance, and recurring bills
           </p>
         </div>
       </div>
@@ -239,12 +239,12 @@ export default function FinancialHealthCard({
                 <ShieldCheck className="h-4 w-4 shrink-0" />
                 <span className="truncate">{healthTier.statusText}</span>
               </p>
-              <p className="text-[11px] text-text-muted truncate">Real-time audit</p>
+              <p className="text-[11px] text-text-muted truncate">Real-time assessment</p>
             </div>
             <div className="space-y-1 min-w-0">
               <span className="text-[10px] font-semibold text-text-secondary uppercase tracking-wider truncate block">Scoring Pillars</span>
               <p className="text-sm font-bold font-mono text-text-primary truncate">4 Dimensions</p>
-              <p className="text-[11px] text-text-muted truncate">Savings, Budget, Flow, Debt</p>
+              <p className="text-[11px] text-text-muted truncate">Savings, Budget, Flow, Bills</p>
             </div>
           </div>
         </div>
@@ -257,7 +257,7 @@ export default function FinancialHealthCard({
               <span>Health Meter & Progress</span>
             </span>
             <span className="font-bold text-text-primary">
-              {totalScore}% Capacity
+              Score: {totalScore} / 100
             </span>
           </div>
 

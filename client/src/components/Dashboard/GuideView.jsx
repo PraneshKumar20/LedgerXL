@@ -242,7 +242,7 @@ export default function GuideView({
     {
       id: "health",
       badge: "Health Signals",
-      title: "6. Financial Health & Audit",
+      title: "6. Financial Health Overview",
       purpose: "Get a quick interpretation of your financial health without jargon.",
       whenToUse: "Whenever you want a simple, clear pulse check on your finances.",
       icon: Activity,
@@ -582,7 +582,7 @@ export default function GuideView({
               <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-500 shrink-0">
                 <Activity className="h-4 w-4" />
               </div>
-              <span className="text-sm font-bold text-text-primary">5. Health Audit</span>
+              <span className="text-sm font-bold text-text-primary">5. Health Check</span>
             </div>
             <p className="text-xs sm:text-sm text-text-secondary leading-normal">Scores your savings rate & cash runway</p>
           </div>

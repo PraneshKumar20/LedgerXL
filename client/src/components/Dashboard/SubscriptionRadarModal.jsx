@@ -101,7 +101,7 @@ export default function SubscriptionRadarModal({
                   </h2>
                 </div>
                 <p className="text-xs text-text-secondary font-normal mt-0.5 line-clamp-2 sm:line-clamp-none">
-                  Tracking of recurring commitments, annual burn, and renewal cycles.
+                  Tracking of recurring commitments, annual costs, and renewal cycles.
                 </p>
               </div>
               <button
@@ -116,12 +116,12 @@ export default function SubscriptionRadarModal({
 
             {/* Scrollable Content Body */}
             <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-4 sm:p-5 space-y-4">
-              {/* Key Burn Rate Metrics Banner */}
+              {/* Key Recurring Metrics Banner */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-card bg-surface-1 border border-border-default">
               <div className="space-y-1">
                 <div className="flex items-center gap-1.5 text-[11px] uppercase font-semibold tracking-[0.06em] text-text-muted">
                   <Flame className="h-3.5 w-3.5 text-negative" />
-                  <span>Monthly Burn</span>
+                  <span>Monthly Subscription Costs</span>
                 </div>
                 <p className="text-xl font-semibold text-text-primary font-mono-nums">
                   {currencySymbol}<AnimatedCounter value={monthlyBurn} decimals={2} />
@@ -132,7 +132,7 @@ export default function SubscriptionRadarModal({
               <div className="space-y-1 border-t sm:border-t-0 sm:border-l border-border-default pt-2 sm:pt-0 sm:pl-3">
                 <div className="flex items-center gap-1.5 text-[11px] uppercase font-semibold tracking-[0.06em] text-text-muted">
                   <Clock className="h-3.5 w-3.5 text-brand" />
-                  <span>Annualized Cost</span>
+                  <span>Annual Projected Costs</span>
                 </div>
                 <p className="text-xl font-semibold text-text-primary font-mono-nums">
                   {currencySymbol}<AnimatedCounter value={annualBurn} decimals={0} />

@@ -122,7 +122,7 @@ export default function SubscriptionsView({
           </p>
         </div>
 
-        {/* Projected Annual Burn */}
+        {/* Projected Annual Costs */}
         <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm min-w-0">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-secondary">

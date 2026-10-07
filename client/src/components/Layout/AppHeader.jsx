@@ -33,11 +33,11 @@ export default function AppHeader({
     },
     analytics: {
       title: "Analytics & Insights",
-      subtitle: "Financial health audit, spend distribution, and trend patterns"
+      subtitle: "Financial health check, spending distribution, and trend patterns"
     },
     budgets: {
       title: "Budgets & Milestones",
-      subtitle: "Category envelope limits, monthly quotas, and milestone savings goals"
+      subtitle: "Category budget limits, monthly spending limits, and milestone savings goals"
     },
     subscriptions: {
       title: "Recurring Subscriptions",
