@@ -185,39 +185,39 @@ export default function FinancialHealthCard({
 
   const topRec = recommendations[0]
 
+  // Level 2: Concise single-sentence explanation derived from existing dynamic description
+  const conciseDesc = healthTier?.desc
+    ? `${healthTier.desc.split(".")[0].trim()}.`
+    : ""
+
   return (
     <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm space-y-5">
-      {/* LEVEL 1 — Identity Header */}
+      {/* Header — Identity & Details action */}
       <div className="flex items-center justify-between gap-3 pb-3.5 border-b border-border-subtle">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
             <Activity className="h-4 w-4" />
           </div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-text-primary tracking-tight">
-              Financial Health
-            </h3>
-            <span className="text-xs font-mono text-text-muted hidden sm:inline">
-              · 4 pillars
-            </span>
-          </div>
+          <h3 className="text-sm font-semibold text-text-primary tracking-tight">
+            Financial Health
+          </h3>
         </div>
 
         <button
           type="button"
           onClick={() => setShowDetails(!showDetails)}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors px-2.5 py-1 rounded-md hover:bg-surface-2"
+          className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors px-2.5 py-1 rounded-md hover:bg-surface-2 cursor-pointer"
         >
           <span>{showDetails ? "Hide Details" : "Details"}</span>
           <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${showDetails ? "rotate-180" : ""}`} />
         </button>
       </div>
 
-      {/* LEVEL 2 & 3 — Main Result & Supporting Context (Two-sided Hero Row) */}
+      {/* LEVEL 1, 2 & 3 — Dominant Health Result, Concise Explanation & Status Metadata */}
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-        {/* Left Side: Score + Grade + Verdict + Integrated Description */}
-        <div className="space-y-2">
-          {/* Score & Grade */}
+        {/* Left Column: Result & Simple Explanation */}
+        <div className="space-y-1.5">
+          {/* Level 1: Score & Grade */}
           <div className="flex items-baseline gap-3">
             <div className="flex items-baseline gap-1 font-mono">
               <span className="text-3xl sm:text-4xl font-bold tracking-tight text-text-primary leading-none">
@@ -233,93 +233,82 @@ export default function FinancialHealthCard({
             </span>
           </div>
 
-          {/* Verdict + Integrated Description */}
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${healthTier.dotColor} shrink-0`} />
-              <h4 className="text-sm sm:text-base font-semibold text-text-primary tracking-tight">
-                {healthTier.title}
-              </h4>
-            </div>
-            <p className="text-xs text-text-secondary leading-relaxed max-w-xl">
-              {healthTier.desc}
-            </p>
-          </div>
+          {/* Level 1: Verdict */}
+          <h4 className="text-sm sm:text-base font-semibold text-text-primary tracking-tight">
+            {healthTier.title}
+          </h4>
+
+          {/* Level 2: Simple Explanation */}
+          <p className="text-xs sm:text-[13px] text-text-secondary leading-relaxed max-w-xl">
+            {conciseDesc}
+          </p>
         </div>
 
-        {/* Right Side: Tertiary Metadata (Muted & secondary) */}
-        <div className="flex items-center gap-2 text-xs font-mono text-text-muted sm:pt-1 shrink-0">
-          <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+        {/* Level 3: Health Status Metadata (Compact supporting info) */}
+        <div className="flex sm:flex-col items-baseline sm:items-end justify-between sm:justify-start gap-1 sm:gap-0.5 text-xs font-mono shrink-0 sm:text-right pt-0.5">
+          <span className="font-semibold text-text-primary">
             {healthTier.statusText}
           </span>
-          <span>·</span>
-          <span>4 Pillars</span>
+          <span className="text-[11px] text-text-muted">
+            <span className="sm:hidden">· </span>4 Pillars
+          </span>
         </div>
       </div>
 
-      {/* LEVEL 4A — Supporting Visualization: Health Progress */}
+      {/* LEVEL 4 — Supporting Visualization: Health Progress */}
       <div className="space-y-2 pt-1">
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-text-secondary font-medium">Health Progress</span>
           <span className="font-bold text-text-primary">{totalScore} / 100</span>
         </div>
 
-        {/* Thin progress track */}
-        <div className="relative h-2 w-full bg-slate-200 dark:bg-slate-900 border border-border-subtle rounded-full overflow-hidden">
-          {/* Subtle ticks at 60% and 80% */}
-          <div className="absolute inset-0 pointer-events-none z-10 flex">
-            <div className="w-[60%] h-full border-r border-border-default/60" />
-            <div className="w-[20%] h-full border-r border-border-default/60" />
-          </div>
-
+        {/* Thin clean progress bar */}
+        <div className="h-1.5 w-full bg-surface-2 rounded-full overflow-hidden">
           <div
             style={{ width: `${totalScore}%` }}
             className={`h-full rounded-full transition-all duration-700 ${healthTier.barGradient}`}
           />
         </div>
 
-        {/* Compact Tier Range Markers */}
-        <div className="grid grid-cols-3 text-[10px] font-mono text-text-muted pt-0.5">
+        {/* Clean semantic labels without clutter */}
+        <div className="grid grid-cols-3 text-[11px] font-mono pt-0.5">
           <div className="text-left">
-            <span className={totalScore < 60 ? "text-rose-500 dark:text-rose-400 font-semibold" : "text-text-muted"}>
-              &lt;60% Critical
+            <span className={totalScore < 60 ? "font-semibold text-rose-500 dark:text-rose-400" : "text-text-muted"}>
+              Critical
             </span>
           </div>
           <div className="text-center">
-            <span className={totalScore >= 60 && totalScore <= 80 ? "text-amber-500 dark:text-amber-400 font-semibold" : "text-text-muted"}>
-              60%–80% Fair
+            <span className={totalScore >= 60 && totalScore <= 80 ? "font-semibold text-amber-500 dark:text-amber-400" : "text-text-muted"}>
+              Fair
             </span>
           </div>
           <div className="text-right">
-            <span className={totalScore > 80 ? "text-emerald-600 dark:text-emerald-400 font-semibold" : "text-text-muted"}>
-              &gt;80% Optimal
+            <span className={totalScore > 80 ? "font-semibold text-emerald-600 dark:text-emerald-400" : "text-text-muted"}>
+              Optimal
             </span>
           </div>
         </div>
       </div>
 
-      {/* LEVEL 4B — Integrated Actionable Recommendation */}
+      {/* LEVEL 5 — Compact Actionable Recommendation (What to know) */}
       {topRec && (
-        <div className="pt-4 border-t border-border-subtle/80 space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5">
-              <Sparkles className="h-3.5 w-3.5 text-brand" />
-              <span className="text-[10px] font-bold text-text-secondary uppercase tracking-wider">
-                Recommendation
-              </span>
-            </div>
-            <span className="text-[11px] font-mono text-text-muted">
-              {recommendations.length} insight{recommendations.length !== 1 ? 's' : ''}
+        <div className="pt-4 border-t border-border-subtle/80 space-y-1.5">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="h-3 w-3 text-brand shrink-0" />
+            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider font-mono">
+              Recommendation
             </span>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
             <h5 className="text-xs sm:text-sm font-semibold text-text-primary tracking-tight">
               {topRec.title}
             </h5>
-            <span className="self-start sm:self-auto text-[10px] font-medium font-mono px-2 py-0.5 rounded bg-surface-2 text-text-secondary border border-border-subtle">
-              {topRec.category}
-            </span>
+            {topRec.category && (
+              <span className="self-start sm:self-auto text-[10px] font-mono font-medium px-2 py-0.5 rounded bg-surface-2 text-text-secondary border border-border-subtle">
+                {topRec.category}
+              </span>
+            )}
           </div>
 
           <p className="text-xs text-text-secondary leading-relaxed max-w-2xl">

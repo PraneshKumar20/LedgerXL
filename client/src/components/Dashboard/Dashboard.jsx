@@ -26,6 +26,7 @@ import SavingsGoalsModal from "./SavingsGoalsModal"
 import { useToast } from "../ui/Toast"
 import { calculateFinancialHealth } from "../../utils/healthScoring"
 import { getAuthSession } from "../../utils/authUtils"
+import { getWeeklyTrendData } from "../../utils/weeklyTrend"
 
 const DEMO_TRANSACTIONS = [
   { title: "Monthly Salary", amount: 620839.06, category: "Salary", type: "income", isRecurring: true, date: "2026-09-11T10:00:00.000Z" },
@@ -660,40 +661,8 @@ export default function Dashboard({ defaultTab = "overview" }) {
   }, [displayExpenses])
 
   const trendData = useMemo(() => {
-    // Match reference screenshot 7-day velocity bar heights
-    if (isGuest && displayExpenses.length === 12) {
-      return [
-        { key: "Aug 28", date: "Aug 28", income: Math.round(25000 * multiplier), expense: Math.round(18000 * multiplier) },
-        { key: "Aug 30", date: "Aug 30", income: Math.round(26000 * multiplier), expense: Math.round(19000 * multiplier) },
-        { key: "Sep 1", date: "Sep 1", income: Math.round(24000 * multiplier), expense: Math.round(38000 * multiplier) },
-        { key: "Sep 3", date: "Sep 3", income: Math.round(28000 * multiplier), expense: Math.round(22000 * multiplier) },
-        { key: "Sep 5", date: "Sep 5", income: Math.round(32000 * multiplier), expense: Math.round(24000 * multiplier) },
-        { key: "Sep 7", date: "Sep 7", income: Math.round(340000 * multiplier), expense: Math.round(88000 * multiplier) },
-        { key: "Sep 9", date: "Sep 9", income: Math.round(600000 * multiplier), expense: Math.round(92000 * multiplier) }
-      ]
-    }
-    const targetDates = [
-      { key: "Aug 28", date: "Aug 28", income: 0, expense: 0 },
-      { key: "Aug 30", date: "Aug 30", income: 0, expense: 0 },
-      { key: "Sep 1", date: "Sep 1", income: 0, expense: 0 },
-      { key: "Sep 3", date: "Sep 3", income: 0, expense: 0 },
-      { key: "Sep 5", date: "Sep 5", income: 0, expense: 0 },
-      { key: "Sep 7", date: "Sep 7", income: 0, expense: 0 },
-      { key: "Sep 9", date: "Sep 9", income: 0, expense: 0 }
-    ]
-    const map = {}
-    targetDates.forEach(d => { map[d.key] = { ...d } })
-
-    displayExpenses.forEach(curr => {
-      const d = new Date(curr.date)
-      const dateKey = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      if (map[dateKey]) {
-        map[dateKey][curr.type === 'income' ? 'income' : 'expense'] += curr.amount
-      }
-    })
-
-    return targetDates.map(d => map[d.key])
-  }, [displayExpenses, isGuest, multiplier])
+    return getWeeklyTrendData(displayExpenses)
+  }, [displayExpenses])
 
   const totalCategoryExpense = useMemo(() => {
     return categoryData.reduce((sum, item) => sum + item.value, 0)

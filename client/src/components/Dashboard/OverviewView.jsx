@@ -258,19 +258,18 @@ export default function OverviewView({
                 />
               </div>
               <p className="text-xs sm:text-[13px] text-text-secondary font-normal mt-2">
-                Current net position across active accounts
+                Current net position
               </p>
             </div>
 
             {/* Income vs Expense Progress Bar */}
             <div className="mt-6 space-y-2">
-              <div className="flex justify-between text-xs font-medium">
-                <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
-                  Income • {Math.round(incomeShare)}%
+              <div className="flex justify-between text-xs font-mono">
+                <span className="text-text-secondary font-medium">
+                  Income {Math.round(incomeShare)}%
                 </span>
-                <span className="text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
-                  Expense • {Math.round(expenseRatio)}%
+                <span className="text-text-secondary font-medium">
+                  Expenses {Math.round(expenseRatio)}%
                 </span>
               </div>
               <div className="h-1.5 w-full bg-surface-2 rounded-full overflow-hidden flex">
@@ -292,7 +291,7 @@ export default function OverviewView({
               <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5 truncate">
                 <TrendingUp className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" /> Monthly Income
               </p>
-              <p className="text-lg sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-1 leading-tight truncate">
+              <p className="text-base sm:text-lg font-bold text-text-primary font-mono mt-1 leading-tight truncate">
                 <AnimatedCounter value={totalIncome} prefix={currSym} decimals={2} />
               </p>
             </div>
@@ -300,7 +299,7 @@ export default function OverviewView({
               <p className="text-[11px] text-text-secondary font-semibold uppercase tracking-[0.05em] flex items-center gap-1.5 truncate">
                 <TrendingDown className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400 shrink-0" /> Monthly Expenses
               </p>
-              <p className="text-lg sm:text-2xl font-bold text-rose-600 dark:text-rose-400 font-mono mt-1 leading-tight truncate">
+              <p className="text-base sm:text-lg font-bold text-text-primary font-mono mt-1 leading-tight truncate">
                 <AnimatedCounter value={totalExpense} prefix={currSym} decimals={2} />
               </p>
             </div>
@@ -656,7 +655,7 @@ export default function OverviewView({
                 7-Day Spending Trend
               </h3>
               <p className="text-xs text-text-secondary font-normal">
-                Daily cash flow and spending pace
+                Your spending this week
               </p>
             </div>
           </div>
@@ -672,9 +671,9 @@ export default function OverviewView({
             </div>
             <span className="text-text-muted hidden sm:inline">|</span>
             <div className="hidden sm:flex items-center gap-1.5">
-              <span className="text-text-muted font-sans">Daily Pace:</span>
+              <span className="text-text-muted font-sans">This Week:</span>
               <span className="font-bold text-text-primary">
-                {currSym}{formatNumber(Math.round(trendData.reduce((acc, curr) => acc + (curr.expense || 0), 0) / (trendData.length || 7)), currSym, 0, 0)}
+                {currSym}{formatNumber(Math.round(trendData.reduce((acc, curr) => acc + (curr.expense || 0), 0)), currSym, 0, 0)}
               </span>
             </div>
           </div>
@@ -712,7 +711,6 @@ export default function OverviewView({
                 radius={[3, 3, 0, 0]} 
                 name="Income" 
                 barSize={16}
-                minPointSize={12}
               />
               <Bar 
                 dataKey="expense" 
@@ -720,7 +718,6 @@ export default function OverviewView({
                 radius={[3, 3, 0, 0]} 
                 name="Expense" 
                 barSize={16}
-                minPointSize={10}
               />
             </BarChart>
           </ResponsiveContainer>

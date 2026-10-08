@@ -149,7 +149,6 @@ export default function AnalyticsView({
                   radius={[3, 3, 0, 0]} 
                   name="Income" 
                   barSize={16}
-                  minPointSize={12}
                 />
                 <Bar 
                   dataKey="expense" 
@@ -157,7 +156,6 @@ export default function AnalyticsView({
                   radius={[3, 3, 0, 0]} 
                   name="Expense" 
                   barSize={16}
-                  minPointSize={12}
                 />
               </BarChart>
             </ResponsiveContainer>
