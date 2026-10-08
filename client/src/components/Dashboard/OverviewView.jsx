@@ -7,13 +7,8 @@ import {
   Gauge, 
   Activity, 
   Clock, 
-  SlidersHorizontal, 
-  Heart, 
-  ShieldCheck, 
-  PiggyBank, 
-  CreditCard, 
-  Plane, 
-  Grid,
+  Percent,
+  PieChart as PieIcon,
   ChevronRight,
   ArrowRight,
   Edit2,
@@ -23,6 +18,7 @@ import {
   X
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Sector } from "recharts"
+import FinancialHealthCard from "./FinancialHealthCard"
 import AnimatedCounter from "../ui/AnimatedCounter"
 import { formatNumber } from "../../utils/formatUtils"
 import { getCategoryStyle } from "../../utils/categoryColors"
@@ -71,7 +67,6 @@ export default function OverviewView({
   openEditModal,
   handleDeleteTransaction,
   setActiveTab,
-  financialHealth,
   savingsRate,
   avgTransaction,
   topCategory
@@ -177,19 +172,6 @@ export default function OverviewView({
 
   const categoriesCount = displayCategories.length
 
-  // Financial Health Live Metrics
-  const healthScore = financialHealth?.score ?? 83
-  const healthGrade = financialHealth?.grade ?? "A+"
-  const healthTitle = financialHealth?.title ?? "Good financial health"
-
-  // Grade color rule: > 80 Green, 60-80 Yellow, < 60 Red
-  const healthColor = healthScore >= 80 ? "#10B981" : healthScore >= 60 ? "#F59E0B" : "#F43F5E"
-  const healthTextColor = healthScore >= 80 ? "text-emerald-400" : healthScore >= 60 ? "text-amber-400" : "text-rose-400"
-
-  const circleRadius = 24
-  const circumference = 2 * Math.PI * circleRadius
-  const strokeDashoffset = circumference - (healthScore / 100) * circumference
-
   const liveSavingsRate = savingsRate !== undefined ? Number(savingsRate).toFixed(1) : (totalIncome > 0 ? (((totalIncome - totalExpense) / totalIncome) * 100).toFixed(1) : "0.0")
   const expenseCount = displayExpenses.filter(e => e.type === 'expense').length
   const liveAvgTicket = avgTransaction !== undefined ? avgTransaction : (expenseCount > 0 ? (totalExpense / expenseCount) : 0)
@@ -211,7 +193,7 @@ export default function OverviewView({
   }, [displayExpenses])
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6 sm:space-y-7">
       {/* Beginner Guide Banner */}
       {!isGuideDismissed && (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 rounded-xl bg-surface-1 border border-border-default shadow-elevation-sm">
@@ -249,11 +231,14 @@ export default function OverviewView({
         </div>
       )}
 
-      {/* 1. Top Row: Two Large Metric Cards */}
+      {/* ================================================== */}
+      {/* LEVEL 1 — FINANCIAL SNAPSHOT                       */}
+      {/* Primary financial position: Net Balance & Budget  */}
+      {/* ================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         
         {/* TOTAL NET BALANCE CARD */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-6 flex flex-col justify-between shadow-elevation-sm">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 flex flex-col justify-between shadow-elevation-sm">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-text-secondary">
@@ -323,7 +308,7 @@ export default function OverviewView({
         </div>
 
         {/* MONTHLY BUDGET USED CARD */}
-        <div className="bg-surface-1 border border-border-default rounded-xl p-6 flex flex-col justify-between shadow-elevation-sm">
+        <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 flex flex-col justify-between shadow-elevation-sm">
           <div>
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-text-secondary">
@@ -391,118 +376,62 @@ export default function OverviewView({
         </div>
       </div>
 
-      {/* 2. Middle Row: Two Charts with Exact 7:5 Proportions on XL and Responsive Stacking on Tablet */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-5">
-        
-        {/* 7-DAY SPENDING TREND CARD: 7 cols on XL (~58.3% width) */}
-        <div className="xl:col-span-7 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between h-[265px]">
-          <div className="flex items-center justify-between pb-1">
-            <div className="flex items-center gap-2">
-              <div className="p-1 rounded bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/40">
-                <Activity className="h-3.5 w-3.5" />
-              </div>
-              <span className="text-sm font-semibold text-text-primary tracking-tight">
-                7-Day Spending Trend
-              </span>
+      {/* ================================================== */}
+      {/* LEVEL 2 — SPENDING OVERVIEW                        */}
+      {/* Spend Wheel + Category Breakdown + 2x2 KPI Grid    */}
+      {/* Unified Executive Card                             */}
+      {/* ================================================== */}
+      <div className="bg-surface-1 border border-border-default rounded-2xl p-5 sm:p-6 shadow-elevation-sm space-y-5">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border-subtle">
+          <div className="flex items-center gap-3">
+            <div className="h-9 w-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+              <Clock className="h-4 w-4" />
             </div>
             <div>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.06em] text-text-muted">
-                Daily Spending Pace
-              </span>
-              <p className="text-xl sm:text-2xl font-bold text-text-primary font-mono mt-1 leading-tight">
-                {currSym}{formatNumber(Math.round(trendData.reduce((acc, curr) => acc + (curr.expense || 0), 0) / (trendData.length || 7)), currSym, 0, 0)}
+              <h3 className="text-base sm:text-lg font-bold text-text-primary tracking-tight">
+                Spending Overview
+              </h3>
+              <p className="text-xs text-text-secondary font-normal">
+                Category distribution of outflow
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-4 text-xs font-medium pb-2">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400" />
-              <span className="text-text-secondary">Income</span>
+          <div className="flex items-center gap-3.5 self-start sm:self-auto">
+            <div className="text-xs font-mono text-text-secondary flex items-center gap-2">
+              <span className="font-bold text-text-primary">
+                {currSym}{formatNumber(Math.round(totalCatExpense), currSym, 0, 0)}
+              </span>
+              <span className="text-text-muted">·</span>
+              <span>{categoriesCount} categories</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-rose-500" />
-              <span className="text-text-secondary">Expense</span>
-            </div>
-          </div>
 
-          <div className="h-[185px] pt-1">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart 
-                data={trendData} 
-                margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
-                barGap={4}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#1e293b" : "#e2e8f0"} vertical={false} opacity={0.7} />
-                <XAxis 
-                  dataKey="date" 
-                  stroke={isDark ? "#64748b" : "#94a3b8"} 
-                  fontSize={11} 
-                  tickLine={false} 
-                  axisLine={false} 
-                />
-                <YAxis 
-                  stroke={isDark ? "#64748b" : "#94a3b8"} 
-                  fontSize={11} 
-                  tickLine={false} 
-                  axisLine={false} 
-                  tickFormatter={formatYAxis}
-                />
-                <Tooltip 
-                  cursor={{ fill: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)' }}
-                  content={(props) => <CustomBarTooltip {...props} currSym={currSym} />}
-                />
-                <Bar 
-                  dataKey="income" 
-                  fill="#10B981" 
-                  radius={[3, 3, 0, 0]} 
-                  name="Income" 
-                  barSize={16}
-                  minPointSize={12}
-                />
-                <Bar 
-                  dataKey="expense" 
-                  fill="#F43F5E" 
-                  radius={[3, 3, 0, 0]} 
-                  name="Expense" 
-                  barSize={16}
-                  minPointSize={10}
-                />
-              </BarChart>
-            </ResponsiveContainer>
+            <button
+              onClick={() => setActiveTab("transactions")}
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-800/50 transition-colors text-xs font-semibold cursor-pointer"
+            >
+              <span>View Details</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
 
-        {/* SPEND BREAKDOWN CARD: 5 cols on XL (~41.7% width) */}
-        <div className="xl:col-span-5 bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm flex flex-col justify-between min-h-[265px] h-auto xl:h-[265px]">
-          <div className="flex items-center justify-between pb-1">
-            <div className="flex items-center gap-2">
-              <div className="p-1 rounded bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40">
-                <Clock className="h-3.5 w-3.5" />
-              </div>
-              <span className="text-sm font-semibold text-text-primary tracking-tight">
-                Spend Breakdown
-              </span>
-            </div>
-            <button 
-              className="p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors cursor-pointer"
-              title="Filter"
-            >
-              <SlidersHorizontal className="h-3.5 w-3.5" />
-            </button>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6 pt-1 sm:h-[185px]">
+        {/* 2-Sided Layout: Donut & Category List (Left) + 2x2 KPI Cards (Right) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          
+          {/* Left Side: Donut Wheel + Category Breakdown (7 cols on lg/xl) */}
+          <div className="lg:col-span-7 flex flex-col sm:flex-row items-center gap-6 sm:gap-7">
             {/* Donut Chart with Centered Animated HUD */}
-            <div className="relative w-[155px] h-[155px] shrink-0 flex items-center justify-center">
+            <div className="relative w-[170px] h-[170px] sm:w-[185px] sm:h-[185px] shrink-0 flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={displayCategories}
                     cx="50%"
                     cy="50%"
-                    innerRadius={46}
-                    outerRadius={68}
+                    innerRadius={50}
+                    outerRadius={75}
                     paddingAngle={2}
                     dataKey="value"
                     stroke={isDark ? "#0f1523" : "#ffffff"}
@@ -511,7 +440,7 @@ export default function OverviewView({
                     activeShape={renderActiveShape}
                     isAnimationActive={true}
                     animationBegin={0}
-                    animationDuration={1500}
+                    animationDuration={1200}
                     animationEasing="ease-out"
                     onMouseEnter={(_, index) => setActiveCategoryIndex(index)}
                     onMouseLeave={() => setActiveCategoryIndex(null)}
@@ -546,12 +475,12 @@ export default function OverviewView({
                       className="flex flex-col items-center justify-center text-center px-1"
                     >
                       <span 
-                        className="text-[10px] font-bold uppercase tracking-wider truncate max-w-[85px]"
+                        className="text-[10px] font-bold uppercase tracking-wider truncate max-w-[95px]"
                         style={{ color: displayCategories[activeCategoryIndex].color }}
                       >
                         {displayCategories[activeCategoryIndex].name}
                       </span>
-                      <span className="text-[14px] font-bold text-text-primary font-mono leading-tight mt-0.5">
+                      <span className="text-[16px] font-bold text-text-primary font-mono leading-tight mt-0.5">
                         {displayCategories[activeCategoryIndex].pct}
                       </span>
                     </Motion.div>
@@ -564,13 +493,13 @@ export default function OverviewView({
                       transition={{ duration: 0.15 }}
                       className="flex flex-col items-center justify-center text-center"
                     >
-                      <span className="text-[9px] uppercase tracking-wider text-text-muted font-medium">
-                        Total Outflow
+                      <span className="text-[9px] uppercase tracking-wider text-text-muted font-semibold">
+                        TOTAL OUTFLOW
                       </span>
-                      <span className="text-[15px] font-bold text-text-primary font-mono leading-tight mt-0.5">
+                      <span className="text-[16px] font-bold text-text-primary font-mono leading-tight mt-0.5">
                         {currSym}{formatNumber(Math.round(totalCatExpense), currSym, 0, 0)}
                       </span>
-                      <span className="text-[10px] text-text-secondary mt-0.5">
+                      <span className="text-[10px] text-text-secondary mt-0.5 font-medium">
                         {categoriesCount} categories
                       </span>
                     </Motion.div>
@@ -579,8 +508,8 @@ export default function OverviewView({
               </div>
             </div>
 
-            {/* Category Legend & Breakdown List with Proportional Spacing & Synchronized Hover/Click */}
-            <div className="w-full sm:flex-1 flex flex-col justify-between sm:h-[160px] pl-0 sm:pl-3">
+            {/* Category Breakdown List */}
+            <div className="flex-1 w-full space-y-2 min-w-0">
               {displayCategories.map((cat, idx) => {
                 const isHovered = activeCategoryIndex === idx
 
@@ -590,16 +519,15 @@ export default function OverviewView({
                     onClick={() => setActiveCategoryIndex(activeCategoryIndex === idx ? null : idx)}
                     onMouseEnter={() => setActiveCategoryIndex(idx)}
                     onMouseLeave={() => setActiveCategoryIndex(null)}
-                    className={`grid grid-cols-[1fr_auto_auto] sm:grid-cols-[1fr_50px_66px] items-center gap-x-2.5 sm:gap-x-3 px-2.5 py-0.5 rounded-lg transition-all duration-150 cursor-pointer ${
+                    className={`flex items-center justify-between gap-3 px-2.5 py-1.5 rounded-lg transition-all duration-150 cursor-pointer ${
                       isHovered 
-                        ? 'bg-surface-2 shadow-elevation-sm scale-[1.02]' 
+                        ? 'bg-surface-2 scale-[1.01]' 
                         : 'hover:bg-surface-hover'
                     }`}
                   >
-                    {/* Dot + Category Name */}
                     <div className="flex items-center gap-2.5 min-w-0">
                       <span 
-                        className={`h-2 w-2 rounded-full shrink-0 transition-transform duration-150 ${isHovered ? 'scale-125' : ''}`} 
+                        className={`h-2.5 w-2.5 rounded-full shrink-0 transition-transform duration-150 ${isHovered ? 'scale-125' : ''}`} 
                         style={{ 
                           backgroundColor: cat.color,
                           boxShadow: isHovered ? `0 0 8px ${cat.color}` : undefined
@@ -610,134 +538,203 @@ export default function OverviewView({
                       </span>
                     </div>
 
-                    {/* Percentage */}
-                    <span className={`text-[12px] font-mono text-right transition-colors ${isHovered ? 'text-text-primary' : 'text-text-secondary'}`}>
-                      {cat.pct}
-                    </span>
-
-                    {/* Amount */}
-                    <span className="text-[12px] font-mono font-bold text-text-primary text-right">
-                      {currSym}{formatNumber(cat.value, currSym, 0, 0)}
-                    </span>
+                    <div className="flex items-center gap-4 shrink-0 font-mono text-xs">
+                      <span className={`min-w-[42px] text-right transition-colors ${isHovered ? 'text-text-primary' : 'text-text-secondary'}`}>
+                        {cat.pct}
+                      </span>
+                      <span className="font-bold text-text-primary min-w-[65px] text-right">
+                        {currSym}{formatNumber(cat.value, currSym, 0, 0)}
+                      </span>
+                    </div>
                   </div>
                 )
               })}
             </div>
           </div>
+
+          {/* Right Side: 2x2 Grid of the 4 KPI Cards (5 cols on lg/xl) */}
+          <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            {/* 1. SAVINGS RATE */}
+            <div className="bg-surface-2/40 border border-border-default rounded-xl p-3.5 shadow-elevation-xs hover:border-border-strong transition-colors min-w-0 flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40 shrink-0">
+                <Percent className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-text-secondary block truncate">
+                  SAVINGS RATE
+                </span>
+                <p className="text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400 font-mono mt-0.5 leading-tight truncate">
+                  <AnimatedCounter value={Number(liveSavingsRate)} decimals={1} suffix="%" />
+                </p>
+                <p className="text-[11px] text-text-secondary font-normal mt-0.5 truncate">
+                  % of income saved
+                </p>
+              </div>
+            </div>
+
+            {/* 2. AVERAGE EXPENSE */}
+            <div className="bg-surface-2/40 border border-border-default rounded-xl p-3.5 shadow-elevation-xs hover:border-border-strong transition-colors min-w-0 flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-400 dark:border-blue-800/40 shrink-0">
+                <Activity className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-text-secondary block truncate">
+                  AVERAGE EXPENSE
+                </span>
+                <p className="text-xl sm:text-2xl font-bold text-text-primary font-mono mt-0.5 leading-tight truncate">
+                  <AnimatedCounter value={liveAvgTicket} prefix={currSym} decimals={2} />
+                </p>
+                <p className="text-[11px] text-text-secondary font-normal mt-0.5 truncate">
+                  Per expense transaction
+                </p>
+              </div>
+            </div>
+
+            {/* 3. TOP SPENDING CATEGORY */}
+            <div className="bg-surface-2/40 border border-border-default rounded-xl p-3.5 shadow-elevation-xs hover:border-border-strong transition-colors min-w-0 flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/40 shrink-0">
+                <TrendingDown className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-text-secondary block truncate">
+                  TOP SPENDING CATEGORY
+                </span>
+                <p className="text-xl sm:text-2xl font-bold text-rose-600 dark:text-rose-400 mt-0.5 leading-tight truncate">
+                  {liveTopExpenseName}
+                </p>
+                <p className="text-[11px] text-text-secondary font-normal mt-0.5 truncate">
+                  Highest category outflow
+                </p>
+              </div>
+            </div>
+
+            {/* 4. CATEGORIES USED */}
+            <div className="bg-surface-2/40 border border-border-default rounded-xl p-3.5 shadow-elevation-xs hover:border-border-strong transition-colors min-w-0 flex items-start gap-3">
+              <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/40 shrink-0">
+                <PieIcon className="h-4 w-4" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] font-semibold uppercase tracking-[0.06em] text-text-secondary block truncate">
+                  CATEGORIES USED
+                </span>
+                <p className="text-xl sm:text-2xl font-bold text-text-primary font-mono mt-0.5 leading-tight truncate">
+                  {categoriesCount}
+                </p>
+                <p className="text-[11px] text-text-secondary font-normal mt-0.5 truncate">
+                  Active categories
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* 3. Bottom Row: Financial Health Overview */}
-      <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
-        <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
-          <div className="flex items-center gap-2">
-            <Heart className="h-4 w-4 text-blue-400" />
-            <span className="text-sm font-semibold text-text-primary tracking-tight">
-              Financial Health Overview
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <span className={`h-2 w-2 rounded-full ${healthScore >= 80 ? 'bg-emerald-400' : healthScore >= 60 ? 'bg-amber-400' : 'bg-rose-500'}`} />
-              <span className="text-xs font-semibold text-text-secondary">{healthGrade} Grade</span>
-            </div>
-            <button 
-              onClick={() => setActiveTab("analytics")}
-              className="text-xs text-blue-400 hover:underline cursor-pointer"
-            >
-              Details
-            </button>
-          </div>
-        </div>
+      {/* ================================================== */}
+      {/* LEVEL 3 — FINANCIAL HEALTH                         */}
+      {/* Answers: How healthy is my financial behavior?     */}
+      {/* ================================================== */}
+      <FinancialHealthCard
+        totalIncome={totalIncome}
+        totalExpense={totalExpense}
+        budgetLimit={effectiveLimit}
+        expenses={displayExpenses}
+        currencySymbol={currSym}
+      />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 pt-4">
-          {/* Health Score Metric */}
-          <div className="flex items-center gap-3.5 p-3 rounded-lg bg-surface-2 border border-border-default/60">
-            <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
-              <svg className="w-12 h-12 -rotate-90" viewBox="0 0 56 56">
-                <circle
-                  cx="28"
-                  cy="28"
-                  r={circleRadius}
-                  fill="none"
-                  stroke="var(--border-subtle)"
-                  strokeWidth="4"
-                />
-                <circle
-                  cx="28"
-                  cy="28"
-                  r={circleRadius}
-                  fill="none"
-                  stroke={healthColor}
-                  strokeWidth="4"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={strokeDashoffset}
-                  strokeLinecap="round"
-                  className="transition-all duration-1000 ease-out"
-                />
-              </svg>
-              <span className="absolute text-xs font-bold font-mono text-text-primary">
-                {healthScore}
+      {/* ================================================== */}
+      {/* LEVEL 4 — SUPPORTING TRENDS                        */}
+      {/* Daily spending pace & 7-day flow pattern           */}
+      {/* ================================================== */}
+      <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-2.5">
+            <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+              <Activity className="h-4 w-4" />
+            </div>
+            <div>
+              <h3 className="text-sm sm:text-base font-semibold text-text-primary tracking-tight">
+                7-Day Spending Trend
+              </h3>
+              <p className="text-xs text-text-secondary font-normal">
+                Daily cash flow and spending pace
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs font-mono">
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 dark:bg-emerald-400" />
+              <span className="text-text-secondary font-sans">Income</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-rose-500" />
+              <span className="text-text-secondary font-sans">Expense</span>
+            </div>
+            <span className="text-text-muted hidden sm:inline">|</span>
+            <div className="hidden sm:flex items-center gap-1.5">
+              <span className="text-text-muted font-sans">Daily Pace:</span>
+              <span className="font-bold text-text-primary">
+                {currSym}{formatNumber(Math.round(trendData.reduce((acc, curr) => acc + (curr.expense || 0), 0) / (trendData.length || 7)), currSym, 0, 0)}
               </span>
             </div>
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Financial Health Score</span>
-              <span className={`text-xs font-bold ${healthTextColor}`}>{healthTitle}</span>
-            </div>
           </div>
+        </div>
 
-          {/* Savings Rate Card */}
-          <div 
-            onClick={() => setActiveTab("budgets")}
-            className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
-          >
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Savings Rate</span>
-              <span className="text-base font-bold text-text-primary font-mono">{liveSavingsRate}%</span>
-              <span className="text-[10px] text-emerald-600 dark:text-emerald-400 block mt-0.5">Optimal savings rate</span>
-            </div>
-            <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/40 dark:text-emerald-400 group-hover:scale-105 transition-transform">
-              <PiggyBank className="h-4 w-4" />
-            </div>
-          </div>
-
-          {/* Average Expense Card */}
-          <div 
-            onClick={() => setActiveTab("transactions")}
-            className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
-          >
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Average Expense</span>
-              <span className="text-base font-bold text-text-primary font-mono">{currSym}{formatNumber(liveAvgTicket, currSym, 2, 2)}</span>
-              <span className="text-[10px] text-blue-600 dark:text-blue-400 block mt-0.5">Per transaction</span>
-            </div>
-            <div className="p-2 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/40 dark:border-blue-800/40 dark:text-blue-400 group-hover:scale-105 transition-transform">
-              <CreditCard className="h-4 w-4" />
-            </div>
-          </div>
-
-          {/* Top Spending Category Card */}
-          <div 
-            onClick={() => setActiveTab("analytics")}
-            className="flex items-center justify-between p-3 rounded-lg bg-surface-2 border border-border-default/60 hover:border-border-strong transition-colors cursor-pointer group"
-          >
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-text-muted block">Top Spending Category</span>
-              <span className="text-base font-bold text-text-primary truncate max-w-[120px] block">{liveTopExpenseName}</span>
-              <span className="text-[10px] text-purple-600 dark:text-purple-400 block mt-0.5">Highest category outflow</span>
-            </div>
-            <div className="p-2 rounded-lg bg-purple-50 text-purple-600 border border-purple-200 dark:bg-purple-950/40 dark:border-purple-800/40 dark:text-purple-400 group-hover:scale-105 transition-transform">
-              <Plane className="h-4 w-4" />
-            </div>
-          </div>
+        <div className="h-[200px] sm:h-[220px] pt-1">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart 
+              data={trendData} 
+              margin={{ top: 10, right: 10, left: -15, bottom: 0 }}
+              barGap={4}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke={isDark ? "#1e293b" : "#e2e8f0"} vertical={false} opacity={0.7} />
+              <XAxis 
+                dataKey="date" 
+                stroke={isDark ? "#64748b" : "#94a3b8"} 
+                fontSize={11} 
+                tickLine={false} 
+                axisLine={false} 
+              />
+              <YAxis 
+                stroke={isDark ? "#64748b" : "#94a3b8"} 
+                fontSize={11} 
+                tickLine={false} 
+                axisLine={false} 
+                tickFormatter={formatYAxis}
+              />
+              <Tooltip 
+                cursor={{ fill: isDark ? 'rgba(255,255,255,0.02)' : 'rgba(15,23,42,0.04)' }}
+                content={(props) => <CustomBarTooltip {...props} currSym={currSym} />}
+              />
+              <Bar 
+                dataKey="income" 
+                fill="#10B981" 
+                radius={[3, 3, 0, 0]} 
+                name="Income" 
+                barSize={16}
+                minPointSize={12}
+              />
+              <Bar 
+                dataKey="expense" 
+                fill="#F43F5E" 
+                radius={[3, 3, 0, 0]} 
+                name="Expense" 
+                barSize={16}
+                minPointSize={10}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
-      {/* 4. Recent Transactions Card (Directly Below Financial Health) */}
-      <div className="bg-surface-1 border border-border-default rounded-xl p-5 shadow-elevation-sm">
-        <div className="flex items-center justify-between pb-3">
+      {/* ================================================== */}
+      {/* LEVEL 5 — RECENT ACTIVITY                          */}
+      {/* Answers: What actually happened recently?          */}
+      {/* ================================================== */}
+      <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 shadow-elevation-sm space-y-3">
+        <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
           <div>
-            <h3 className="text-base font-semibold text-text-primary tracking-tight">
+            <h3 className="text-sm sm:text-base font-semibold text-text-primary tracking-tight">
               Recent Transactions
             </h3>
             <p className="text-xs text-text-secondary mt-0.5 font-normal">
@@ -746,7 +743,7 @@ export default function OverviewView({
           </div>
           <button
             onClick={() => setActiveTab("transactions")}
-            className="text-xs text-blue-400 hover:text-blue-300 transition-colors flex items-center gap-1 font-medium cursor-pointer group"
+            className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors flex items-center gap-1 font-medium cursor-pointer group"
           >
             <span>View All ({displayExpenses.length})</span>
             <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -758,7 +755,7 @@ export default function OverviewView({
             No recent transactions recorded.
           </div>
         ) : (
-          <div className="mt-2 space-y-1">
+          <div className="space-y-1">
             {recentTransactions.map((tx) => {
               const isIncome = tx.type === "income"
               const categoryStyle = getCategoryStyle(tx.category)

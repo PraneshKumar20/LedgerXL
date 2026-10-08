@@ -3,7 +3,6 @@ import { motion as Motion, AnimatePresence } from "framer-motion"
 import { 
   LayoutDashboard, 
   Receipt, 
-  BarChart3, 
   Layers, 
   Radio, 
   Command, 
@@ -85,7 +84,7 @@ export default function Sidebar({
           </div>
         )
 
-      case "analytics": {
+      case "overview": {
         const badgeStyle = getGradeBadgeStyle(healthGrade, isActive, healthScore)
         return (
           <div className={`px-2.5 py-0.5 rounded-full text-xs font-semibold shrink-0 border transition-colors ${badgeStyle.badgeClass}`}>
@@ -127,12 +126,6 @@ export default function Sidebar({
       label: "Transactions",
       icon: Receipt,
       iconColor: "text-rose-400 group-hover:text-rose-300"
-    },
-    {
-      id: "analytics",
-      label: "Analytics",
-      icon: BarChart3,
-      iconColor: "text-indigo-400 group-hover:text-indigo-300"
     },
     {
       id: "budgets",

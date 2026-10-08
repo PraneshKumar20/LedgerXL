@@ -83,10 +83,10 @@ export default function GuideView({
     {
       emoji: "📊",
       intent: "I want to see where my money goes",
-      destination: "Analytics & Insights",
-      summary: "Discover category breakdown trends and monthly spending trajectories.",
+      destination: "Financial Overview",
+      summary: "Discover category breakdown trends, spending pace, and financial health in your command center.",
       actionLabel: "Review Your Spending",
-      action: onOpenAnalytics,
+      action: onOpenOverview || onOpenAnalytics,
       badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/40"
     },
     {
@@ -171,22 +171,22 @@ export default function GuideView({
       secondaryAction: onOpenTransactions
     },
     {
-      id: "analytics",
-      badge: "Spending Insights",
-      title: "3. Analytics & Insights",
-      purpose: "Understand where your money goes and how your spending changes.",
-      whenToUse: "When you want to review spending patterns and spot lifestyle trends.",
+      id: "overview-health",
+      badge: "Spending & Health",
+      title: "3. Financial Overview & Health",
+      purpose: "Understand where your money goes and monitor your 4-pillar financial health.",
+      whenToUse: "When you want to review spending patterns, category distributions, and health habits.",
       icon: TrendingUp,
       iconColor: "text-indigo-500 dark:text-indigo-400",
       iconBg: "bg-indigo-50 dark:bg-indigo-950/40 border-indigo-200 dark:border-indigo-800/40",
       chips: [
         { label: "Top Spending Categories", note: "Where your biggest money goes" },
-        { label: "Spending Trends", note: "Month-over-month trajectory" },
+        { label: "Spending Trends", note: "Daily spending trajectory" },
         { label: "Income vs. Expenses", note: "Total money made vs. total spent" },
-        { label: "Useful Insights", note: "Actionable observations on spikes" }
+        { label: "4-Pillar Health Score", note: "Algorithmic health assessment" }
       ],
-      actionLabel: "Review Your Spending",
-      action: onOpenAnalytics
+      actionLabel: "Open Overview",
+      action: onOpenOverview || onOpenAnalytics
     },
     {
       id: "budgets-goals",
@@ -562,9 +562,9 @@ export default function GuideView({
               <div className="p-1.5 rounded-lg bg-indigo-500/10 text-indigo-500 shrink-0">
                 <TrendingUp className="h-4 w-4" />
               </div>
-              <span className="text-sm font-bold text-text-primary">3. Analytics</span>
+              <span className="text-sm font-bold text-text-primary">3. Financial Health</span>
             </div>
-            <p className="text-xs sm:text-sm text-text-secondary leading-normal">Spots spending habits & trajectories</p>
+            <p className="text-xs sm:text-sm text-text-secondary leading-normal">Scores savings rate, budget & bills</p>
           </div>
 
           <div className="p-3.5 rounded-xl bg-surface-2/60 border border-border-subtle flex flex-col justify-between space-y-1.5">

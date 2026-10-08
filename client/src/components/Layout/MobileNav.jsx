@@ -3,7 +3,6 @@ import { motion as Motion, AnimatePresence } from "framer-motion"
 import { 
   LayoutDashboard, 
   Receipt, 
-  BarChart3, 
   Layers, 
   Radio,
   Plus, 
@@ -30,7 +29,6 @@ export default function MobileNav({
   const navItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, iconColor: "text-blue-400" },
     { id: "transactions", label: "Transactions Ledger", icon: Receipt, iconColor: "text-rose-400" },
-    { id: "analytics", label: "Analytics & Insights", icon: BarChart3, iconColor: "text-indigo-400" },
     { id: "budgets", label: "Budgets & Milestones", icon: Layers, iconColor: "text-emerald-400" },
     { id: "subscriptions", label: "Bill Radar", icon: Radio, iconColor: "text-amber-400" }
   ]
@@ -264,26 +262,26 @@ export default function MobileNav({
             </button>
           </div>
 
-          {/* Analytics */}
-          <button
-            onClick={() => setActiveTab("analytics")}
-            className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-3 transition-colors cursor-pointer ${
-              activeTab === "analytics" ? "text-brand font-semibold" : "text-text-secondary hover:text-text-primary font-medium"
-            }`}
-          >
-            <BarChart3 className="h-4 w-4" />
-            <span className="text-[10px] sm:text-[11px] mt-1">Analytics</span>
-          </button>
-
-          {/* Budgets & Radar */}
+          {/* Budgets */}
           <button
             onClick={() => setActiveTab("budgets")}
             className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-3 transition-colors cursor-pointer ${
-              activeTab === "budgets" || activeTab === "subscriptions" ? "text-brand font-semibold" : "text-text-secondary hover:text-text-primary font-medium"
+              activeTab === "budgets" ? "text-brand font-semibold" : "text-text-secondary hover:text-text-primary font-medium"
             }`}
           >
             <Layers className="h-4 w-4" />
             <span className="text-[10px] sm:text-[11px] mt-1">Budgets</span>
+          </button>
+
+          {/* Bill Radar */}
+          <button
+            onClick={() => setActiveTab("subscriptions")}
+            className={`flex flex-col items-center justify-center py-1 px-1.5 sm:px-3 transition-colors cursor-pointer ${
+              activeTab === "subscriptions" ? "text-brand font-semibold" : "text-text-secondary hover:text-text-primary font-medium"
+            }`}
+          >
+            <Radio className="h-4 w-4" />
+            <span className="text-[10px] sm:text-[11px] mt-1">Radar</span>
           </button>
         </div>
       </nav>

@@ -13,7 +13,6 @@ import AppHeader from "../Layout/AppHeader"
 // View Components
 import OverviewView from "./OverviewView"
 import TransactionsView from "./TransactionsView"
-import AnalyticsView from "./AnalyticsView"
 import BudgetsView from "./BudgetsView"
 import SubscriptionsView from "./SubscriptionsView"
 import GuideView from "./GuideView"
@@ -48,7 +47,14 @@ export default function Dashboard({ defaultTab = "overview" }) {
   const { addToast } = useToast()
 
   // Navigation tab state
-  const [activeTab, setActiveTab] = useState(defaultTab)
+  const [activeTab, setActiveTab] = useState(defaultTab === "analytics" ? "overview" : defaultTab)
+
+  // Redirect legacy analytics tab to overview
+  useEffect(() => {
+    if (activeTab === "analytics") {
+      setActiveTab("overview")
+    }
+  }, [activeTab])
 
   // User session state
   const [currentUser, setCurrentUser] = useState(() => {
@@ -834,7 +840,6 @@ export default function Dashboard({ defaultTab = "overview" }) {
                   openAddModal={openAddModal}
                   setIsEnvelopeModalOpen={setIsEnvelopeModalOpen}
                   setActiveTab={setActiveTab}
-                  financialHealth={financialHealth}
                   savingsRate={savingsRate}
                   avgTransaction={avgTransaction}
                   topCategory={topCategory}
@@ -851,23 +856,6 @@ export default function Dashboard({ defaultTab = "overview" }) {
                   totalIncome={totalIncome}
                   totalExpense={totalExpense}
                   balance={balance}
-                />
-              )}
-
-              {activeTab === "analytics" && (
-                <AnalyticsView
-                  totalIncome={totalIncome}
-                  totalExpense={totalExpense}
-                  budgetLimit={budgetLimit}
-                  multiplier={multiplier}
-                  currencySymbol={currSym}
-                  displayExpenses={displayExpenses}
-                  trendData={trendData}
-                  categoryData={categoryData}
-                  totalCategoryExpense={totalCategoryExpense}
-                  activeCategoryIndex={activeCategoryIndex}
-                  setActiveCategoryIndex={setActiveCategoryIndex}
-                  renderActiveShape={renderActiveShape}
                 />
               )}
 
@@ -917,7 +905,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
                       setActiveTab("overview")
                     }
                   }}
-                  onOpenAnalytics={() => setActiveTab("analytics")}
+                  onOpenAnalytics={() => setActiveTab("overview")}
                   onOpenCategoryEnvelopes={() => setIsEnvelopeModalOpen(true)}
                   onCompleteOnboarding={handleCompleteOnboarding}
                   isOnboarding={Boolean(currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false)}

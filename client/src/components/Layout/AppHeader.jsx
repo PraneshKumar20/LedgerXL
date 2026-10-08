@@ -25,15 +25,11 @@ export default function AppHeader({
   const titles = {
     overview: {
       title: "Financial Overview",
-      subtitle: "Your complete financial picture, at a glance."
+      subtitle: "Your financial command center, spending breakdown, and health check."
     },
     transactions: {
       title: "Transaction Ledger",
       subtitle: "Comprehensive journal of income, expenses, and recurring outflows"
-    },
-    analytics: {
-      title: "Analytics & Insights",
-      subtitle: "Financial health check, spending distribution, and trend patterns"
     },
     budgets: {
       title: "Budgets & Milestones",
