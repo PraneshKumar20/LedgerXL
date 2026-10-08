@@ -858,14 +858,10 @@ export default function Dashboard({ defaultTab = "overview" }) {
                 <AnalyticsView
                   totalIncome={totalIncome}
                   totalExpense={totalExpense}
-                  balance={balance}
                   budgetLimit={budgetLimit}
                   multiplier={multiplier}
                   currencySymbol={currSym}
                   displayExpenses={displayExpenses}
-                  savingsRate={savingsRate}
-                  avgTransaction={avgTransaction}
-                  topCategory={topCategory}
                   trendData={trendData}
                   categoryData={categoryData}
                   totalCategoryExpense={totalCategoryExpense}
