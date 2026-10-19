@@ -285,7 +285,7 @@ export default function BudgetsView({
             <p className="text-[24px] sm:text-[28px] font-extrabold text-text-primary font-mono leading-tight truncate">
               <AnimatedCounter value={totalExpense} prefix={currSym} />
             </p>
-            <p className="text-xs text-text-secondary font-normal">Active month outlays</p>
+            <p className="text-xs text-text-secondary font-normal">Total monthly spend</p>
           </div>
 
           <div className="p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
@@ -401,68 +401,73 @@ export default function BudgetsView({
                 />
 
                 {/* Top Row: Category Icon, Name & Status Pill */}
-                <div className="flex items-start justify-between gap-3 relative z-10">
+                <div className="flex items-center justify-between gap-3 relative z-10">
                   <div className="flex items-center gap-3 min-w-0">
                     <div
                       className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border shadow-xs transition-transform duration-200 group-hover:scale-105 ${theme.iconBg}`}
                     >
                       {getCategoryIcon(cat)}
                     </div>
-                    <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-text-primary tracking-tight truncate">
-                        {cat}
-                      </h3>
-                      <p className="text-[11px] text-text-secondary truncate mt-0.5 font-normal">
-                        {spent > 0 ? "Active outlays" : "No outlays yet"}
-                      </p>
-                    </div>
+                    <h3 className="text-base font-bold text-text-primary tracking-tight truncate">
+                      {cat}
+                    </h3>
                   </div>
 
                   {/* Status Badge */}
                   {hasLimit ? (
                     isOver ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20 shrink-0">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/25 shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
                         {rawPercent.toFixed(0)}%
                       </span>
                     ) : isNear ? (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 shrink-0">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/25 shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                         {rawPercent.toFixed(0)}%
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0">
+                      <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/25 shrink-0">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         {rawPercent.toFixed(0)}%
                       </span>
                     )
                   ) : (
-                    <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-surface-3 text-text-muted border border-border-default shrink-0">
+                    <span className="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-surface-3 text-text-secondary border border-border-default shrink-0">
                       No limit
                     </span>
                   )}
                 </div>
 
-                {/* Middle Row: Primary Spend & Limit */}
-                <div className="space-y-2.5 my-4 relative z-10">
-                  <div className="flex items-baseline justify-between gap-2">
+                {/* Middle Row: Primary Spend & Prominent Limit */}
+                <div className="space-y-3 my-4 relative z-10">
+                  <div className="flex items-baseline justify-between gap-3">
                     <div>
-                      <span className="text-xs font-mono font-medium text-text-muted mr-1">{currSym}</span>
-                      <span className="text-2xl font-bold font-mono tracking-tight text-text-primary leading-none">
-                        {formatNumber(spent, currSym, 0, 0)}
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block mb-0.5">
+                        Spent
                       </span>
+                      <div className="flex items-baseline">
+                        <span className="text-sm font-mono font-semibold text-text-muted mr-1">{currSym}</span>
+                        <span className="text-2xl sm:text-[26px] font-bold font-mono tracking-tight text-text-primary leading-none">
+                          {formatNumber(spent, currSym, 0, 0)}
+                        </span>
+                      </div>
                     </div>
 
-                    <div className="text-[11px] font-mono text-text-secondary text-right">
+                    <div className="text-right">
+                      <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block mb-0.5">
+                        Monthly Limit
+                      </span>
                       {hasLimit ? (
-                        <span>
-                          <span className="text-text-muted font-sans mr-1">of</span>
-                          <span className="font-semibold text-text-primary">
-                            {currSym}{formatNumber(limit, currSym, 0, 0)}
+                        <div className="flex items-baseline justify-end">
+                          <span className="text-sm font-mono font-semibold text-text-secondary mr-1">{currSym}</span>
+                          <span className="text-xl sm:text-2xl font-bold font-mono text-text-primary leading-none">
+                            {formatNumber(limit, currSym, 0, 0)}
                           </span>
-                        </span>
+                        </div>
                       ) : (
-                        <span className="text-text-muted font-sans">No budget set</span>
+                        <span className="text-xs font-medium text-text-muted bg-surface-3 px-2.5 py-1 rounded-md border border-border-default inline-block mt-0.5">
+                          Not configured
+                        </span>
                       )}
                     </div>
                   </div>
