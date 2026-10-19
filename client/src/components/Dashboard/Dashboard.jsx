@@ -270,6 +270,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
           Food: 30000,
           Bills: 20000,
           Entertainment: 15000,
+          Subscriptions: 0,
           Other: 10000
         })
       } else {

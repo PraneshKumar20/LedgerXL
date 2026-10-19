@@ -172,11 +172,34 @@ export default function BudgetsView({
     return map
   }, [displayExpenses])
 
-  const categories = Object.keys(categoryBudgets)
+  const CANONICAL_CATEGORIES = useMemo(() => [
+    'Food',
+    'Travel',
+    'Bills',
+    'Subscriptions',
+    'Entertainment',
+    'Shopping',
+    'Other'
+  ], [])
 
-  // Quick summary aggregates
+  const categories = useMemo(() => {
+    if (!categoryBudgets || Object.keys(categoryBudgets).length === 0) {
+      return CANONICAL_CATEGORIES
+    }
+    const existingKeys = Object.keys(categoryBudgets)
+    const combined = [...CANONICAL_CATEGORIES]
+    existingKeys.forEach(k => {
+      if (!combined.includes(k)) combined.push(k)
+    })
+    return combined
+  }, [categoryBudgets, CANONICAL_CATEGORIES])
+
+  // Quick summary aggregates: strictly sums positive configured limits
   const totalAllocated = useMemo(() => {
-    return Object.values(categoryBudgets || {}).reduce((sum, v) => sum + ((Number(v) || 0) * multiplier), 0)
+    return Object.values(categoryBudgets || {}).reduce((sum, v) => {
+      const val = Number(v) || 0
+      return sum + (val > 0 ? val * multiplier : 0)
+    }, 0)
   }, [categoryBudgets, multiplier])
 
   const budgetedCategoriesCount = useMemo(() => {
@@ -332,79 +355,110 @@ export default function BudgetsView({
         </div>
       </div>
 
-      {/* Category Envelopes Grid */}
+      {/* Category Budgets Grid */}
       <div className="bg-surface-1 border border-border-default rounded-2xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle mb-6">
+        {/* Header Summary: Compact, readable, without excessive pill styling */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border-subtle mb-6">
           <div>
             <h2 className="text-[18px] font-bold text-text-primary tracking-tight flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+              <div className="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand shrink-0">
                 <Sliders className="h-4 w-4" />
               </div>
               <span>Category Budgets</span>
             </h2>
-            <p className="text-xs text-text-secondary font-normal mt-1">
-              Adjust monthly allowances and monitor category spending across envelopes
-            </p>
-          </div>
-
-          {/* Quick Metrics Bar */}
-          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-2 border border-border-default text-xs">
-              <span className="text-text-muted font-normal">Allocated:</span>
-              <span className="font-semibold font-mono text-text-primary">
-                {currSym}{formatNumber(totalAllocated, currSym, 0, 0)}
+            <div className="flex items-center gap-2 text-xs text-text-secondary mt-1 flex-wrap">
+              <span>Adjust monthly allowances and monitor category spending</span>
+              <span className="text-border-strong hidden sm:inline">•</span>
+              <span className="font-semibold text-text-primary font-mono">
+                {currSym}{formatNumber(totalAllocated, currSym, 0, 0)} allocated
               </span>
-              <span className="text-text-muted text-[11px]">
-                ({budgetedCategoriesCount}/{categories.length} set)
+              <span className="text-border-strong">•</span>
+              <span className="text-text-secondary">
+                {budgetedCategoriesCount} of {categories.length} categories
               </span>
             </div>
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
             <button
+              type="button"
               onClick={() => setIsEnvelopeModalOpen(true)}
-              className="px-3 py-1.5 rounded-xl bg-surface-2 hover:bg-surface-hover active:bg-surface-active text-text-primary border border-border-default hover:border-border-strong text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all shadow-xs"
+              className="px-3 py-1.5 rounded-xl bg-surface-2 hover:bg-surface-hover active:bg-surface-active text-text-secondary hover:text-text-primary border border-border-default hover:border-border-strong text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
             >
-              <Sliders className="h-3.5 w-3.5 text-brand" />
+              <Sliders className="h-3.5 w-3.5 text-text-muted" />
               <span>Manage All</span>
             </button>
           </div>
         </div>
 
-        {/* Premium Category Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-4.5">
+        {/* Clean, Consistent Category Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-4.5">
           {categories.map((cat) => {
             const rawLimit = Number(categoryBudgets[cat]) || 0
             const limit = rawLimit * multiplier
             const spent = categorySpending[cat] || 0
             const hasLimit = rawLimit > 0
-            const percent = hasLimit ? Math.min((spent / limit) * 100, 100) : 0
+
+            // Budget Threshold Policy:
+            // - Over budget: spent > limit (restrained red warning, clamped progress bar)
+            // - Budget reached: spent === limit (amber warning, 100% capacity)
+            // - Approaching limit: 80% <= percent < 100% (amber notice)
+            // - Healthy / Within limit: percent < 80% (calm emerald)
+            // - No limit configured: neutral non-progress divider, clear "Set limit" action
+            // Robust floating-point and rounding calculations:
+            // Guard against epsilon differences (e.g. 2999.9999999 vs 3000)
             const rawPercent = hasLimit ? (spent / limit) * 100 : 0
-            const remaining = limit - spent
+            const diff = limit - spent
+            const isExact = hasLimit && Math.abs(diff) < 0.01
+            const isOver = hasLimit && !isExact && spent > limit
+            const isNear = hasLimit && !isOver && !isExact && rawPercent >= 80
+
+            // If spending is below limit, cap percent display at 99% to prevent misleading "100% used" with money left
+            const percentDisplay = isExact || isOver
+              ? Math.round(rawPercent)
+              : Math.min(99, Math.round(rawPercent))
+
+            const remaining = isExact ? 0 : Math.max(0, diff)
+            const overspent = isExact ? 0 : Math.max(0, spent - limit)
+
             const isEditing = editingCategory === cat
             const theme = getCategoryCardTheme(cat)
-            const isOver = hasLimit && spent > limit
-            const isNear = hasLimit && rawPercent >= 80 && !isOver
+
+            // Progress bar and status label styling
+            let barColor = "bg-emerald-500 dark:bg-emerald-400"
+            let statusText = `${percentDisplay}% used`
+            let statusColor = "text-text-secondary"
+
+            if (isOver) {
+              barColor = "bg-rose-500 dark:bg-rose-400"
+              statusText = "Over budget"
+              statusColor = "text-rose-600 dark:text-rose-400 font-semibold"
+            } else if (isExact) {
+              barColor = "bg-amber-500 dark:bg-amber-400"
+              statusText = "Budget reached"
+              statusColor = "text-amber-600 dark:text-amber-400 font-semibold"
+            } else if (isNear) {
+              barColor = "bg-amber-500 dark:bg-amber-400"
+              statusText = `${percentDisplay}% used`
+              statusColor = "text-amber-600 dark:text-amber-400 font-medium"
+            }
 
             return (
               <div
                 key={cat}
-                className={`relative p-5 rounded-2xl bg-surface-2/70 dark:bg-surface-2/40 backdrop-blur-sm border transition-all duration-300 flex flex-col justify-between group overflow-hidden ${
+                className={`p-5 rounded-2xl bg-surface-2/60 dark:bg-surface-2/30 border transition-all duration-200 flex flex-col justify-between ${
                   isOver
-                    ? "border-rose-500/30 hover:border-rose-500/50 shadow-sm shadow-rose-500/5 hover:shadow-elevation-md"
+                    ? "border-rose-300/80 dark:border-rose-900/60 shadow-xs"
                     : isEditing
-                    ? "border-brand shadow-sm ring-2 ring-brand/10"
-                    : "border-border-default/80 hover:border-border-strong hover:shadow-elevation-md"
+                    ? "border-brand ring-2 ring-brand/10 shadow-xs"
+                    : "border-border-default/80 hover:border-border-strong shadow-xs"
                 }`}
               >
-                {/* Ambient Category Glow */}
-                <div
-                  className="absolute -top-12 -right-12 w-28 h-28 rounded-full blur-2xl pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity duration-300"
-                  style={{ backgroundColor: theme.glow }}
-                />
-
-                {/* Top Row: Category Icon, Name & Status Pill */}
-                <div className="flex items-center justify-between gap-3 relative z-10">
-                  <div className="flex items-center gap-3 min-w-0">
+                {/* 1. Category Name, Icon & Top Action */}
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border shadow-xs transition-transform duration-200 group-hover:scale-105 ${theme.iconBg}`}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 border shadow-xs ${theme.iconBg}`}
                     >
                       {getCategoryIcon(cat)}
                     </div>
@@ -413,88 +467,39 @@ export default function BudgetsView({
                     </h3>
                   </div>
 
-                  {/* Status Badge */}
-                  {hasLimit ? (
-                    isOver ? (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/25 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        {rawPercent.toFixed(0)}%
-                      </span>
-                    ) : isNear ? (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/25 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                        {rawPercent.toFixed(0)}%
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/25 shrink-0">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                        {rawPercent.toFixed(0)}%
-                      </span>
-                    )
-                  ) : (
-                    <span className="inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full bg-surface-3 text-text-secondary border border-border-default shrink-0">
-                      No limit
-                    </span>
+                  {!isEditing && (
+                    <button
+                      type="button"
+                      onClick={() => handleStartEdit(cat, rawLimit)}
+                      className={`px-2 py-1 rounded-lg text-xs font-medium flex items-center gap-1 transition-colors cursor-pointer shrink-0 ${
+                        hasLimit
+                          ? "text-text-secondary hover:text-text-primary hover:bg-surface-3"
+                          : "text-brand hover:text-brand-hover hover:bg-brand/10 font-semibold"
+                      }`}
+                    >
+                      <Edit3 className="h-3 w-3" />
+                      <span>{hasLimit ? "Edit" : "Set limit"}</span>
+                    </button>
                   )}
                 </div>
 
-                {/* Middle Row: Primary Spend & Prominent Limit */}
-                <div className="space-y-3 my-4 relative z-10">
-                  <div className="flex items-baseline justify-between gap-3">
-                    <div>
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block mb-0.5">
-                        Spent
-                      </span>
-                      <div className="flex items-baseline">
-                        <span className="text-sm font-mono font-semibold text-text-muted mr-1">{currSym}</span>
-                        <span className="text-2xl sm:text-[26px] font-bold font-mono tracking-tight text-text-primary leading-none">
-                          {formatNumber(spent, currSym, 0, 0)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="text-right">
-                      <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block mb-0.5">
-                        Monthly Limit
-                      </span>
-                      {hasLimit ? (
-                        <div className="flex items-baseline justify-end">
-                          <span className="text-sm font-mono font-semibold text-text-secondary mr-1">{currSym}</span>
-                          <span className="text-xl sm:text-2xl font-bold font-mono text-text-primary leading-none">
-                            {formatNumber(limit, currSym, 0, 0)}
-                          </span>
-                        </div>
-                      ) : (
-                        <span className="text-xs font-medium text-text-muted bg-surface-3 px-2.5 py-1 rounded-md border border-border-default inline-block mt-0.5">
-                          Not configured
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* High Fidelity Progress Bar */}
-                  <div className="h-2 w-full bg-surface-inset border border-border-subtle/70 rounded-full overflow-hidden p-[1px] relative">
-                    {hasLimit ? (
-                      <div
-                        className={`h-full rounded-full transition-all duration-700 ease-out ${
-                          isOver
-                            ? "bg-gradient-to-r from-rose-500 to-red-600 shadow-sm shadow-rose-500/30"
-                            : isNear
-                            ? "bg-gradient-to-r from-amber-500 to-orange-500 shadow-sm shadow-amber-500/20"
-                            : theme.bar
-                        }`}
-                        style={{ width: `${percent}%` }}
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-transparent" />
-                    )}
+                {/* 2. Primary Financial Value: Spent */}
+                <div className="my-3">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block mb-0.5">
+                    Spent
+                  </span>
+                  <div className="text-2xl sm:text-[26px] font-bold font-mono tracking-tight text-text-primary leading-tight">
+                    {currSym}{formatNumber(spent, currSym, 0, 0)}
                   </div>
                 </div>
 
-                {/* Bottom Row: Remaining Status & Action */}
-                <div className="flex items-center justify-between pt-3 border-t border-border-default/70 relative z-10 min-h-[38px]">
+                {/* 3. Monthly Limit (Display or Inline Edit Input) */}
+                <div className="mb-3">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider text-text-secondary block mb-0.5">
+                    Monthly limit
+                  </span>
                   {isEditing ? (
-                    <div className="flex items-center gap-1.5 w-full">
+                    <div className="flex items-center gap-1.5 mt-1">
                       <div className="relative flex-1">
                         <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-mono font-semibold text-text-muted">
                           {currSym}
@@ -539,49 +544,65 @@ export default function BudgetsView({
                       </button>
                     </div>
                   ) : (
-                    <>
-                      {/* Status Buffer */}
-                      <div className="flex items-center gap-1.5 text-xs min-w-0">
-                        {hasLimit ? (
-                          !isOver ? (
-                            <>
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                              <span className="text-text-primary font-medium truncate font-mono">
-                                {currSym}{formatNumber(remaining, currSym, 0, 0)}
-                              </span>
-                              <span className="text-text-muted text-[11px] truncate font-sans">left</span>
-                            </>
-                          ) : (
-                            <>
-                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
-                              <span className="text-rose-500 font-semibold truncate font-mono">
-                                {currSym}{formatNumber(Math.abs(remaining), currSym, 0, 0)}
-                              </span>
-                              <span className="text-rose-400 text-[11px] truncate font-sans">over</span>
-                            </>
-                          )
-                        ) : (
-                          <span className="text-[11px] text-text-muted flex items-center gap-1.5 font-sans">
-                            <span className="w-1.5 h-1.5 rounded-full bg-border-strong shrink-0" />
-                            <span>Unallocated</span>
-                          </span>
-                        )}
+                    <div className="text-sm font-semibold font-mono text-text-secondary">
+                      {hasLimit ? (
+                        <span>{currSym}{formatNumber(limit, currSym, 0, 0)}</span>
+                      ) : (
+                        <span className="text-xs font-normal font-sans text-text-muted">No monthly limit</span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* 4. Progress Bar & 5. Remaining / Status Row */}
+                <div className="pt-1">
+                  {hasLimit ? (
+                    <div className="space-y-1.5">
+                      {/* Slim, Understated Progress Bar (Clamped to 100% max fill) */}
+                      <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800/80 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all duration-500 ${barColor}`}
+                          style={{ width: `${Math.min(100, Math.max(0, rawPercent))}%` }}
+                        />
                       </div>
 
-                      {/* Quick Action Button */}
-                      <button
-                        type="button"
-                        onClick={() => handleStartEdit(cat, rawLimit)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
-                          hasLimit
-                            ? "bg-surface-3 hover:bg-surface-hover text-text-secondary hover:text-text-primary border border-border-default hover:border-border-strong"
-                            : "bg-brand/10 hover:bg-brand/20 active:bg-brand/30 text-brand border border-brand/20 shadow-xs"
-                        }`}
-                      >
-                        <Edit3 className="h-3 w-3" />
-                        <span>{hasLimit ? "Edit" : "Set Limit"}</span>
-                      </button>
-                    </>
+                      {/* Status / % Used on left, Remaining on right */}
+                      <div className="flex items-center justify-between text-xs pt-1 min-h-[22px]">
+                        <span className={statusColor}>
+                          {statusText}
+                        </span>
+                        <span className={`font-mono font-semibold ${
+                          isOver
+                            ? "text-rose-600 dark:text-rose-400"
+                            : isExact
+                            ? "text-amber-600 dark:text-amber-400"
+                            : "text-emerald-600 dark:text-emerald-400"
+                        }`}>
+                          {isOver
+                            ? `${currSym}${formatNumber(overspent, currSym, 0, 0)} over budget`
+                            : isExact
+                            ? `${currSym}0 remaining`
+                            : `${currSym}${formatNumber(remaining, currSym, 0, 0)} remaining`}
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      {/* Neutral non-progress placeholder preserving consistent card height */}
+                      <div className="h-1.5 w-full flex items-center">
+                        <div className="w-full border-t border-dashed border-border-default/60" />
+                      </div>
+
+                      {/* Unallocated Status Row */}
+                      <div className="flex items-center justify-between text-xs pt-1 min-h-[22px]">
+                        <span className="text-text-muted font-normal">
+                          Unallocated
+                        </span>
+                        <span className="text-text-muted font-mono">
+                          —
+                        </span>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
