@@ -13,12 +13,20 @@ import {
   Laptop,
   Edit3,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  UtensilsCrossed,
+  Receipt,
+  Tv,
+  ShoppingBag,
+  RefreshCw,
+  FolderKanban,
+  Check,
+  X,
+  Wallet
 } from "lucide-react"
 import AnimatedCounter from "../ui/AnimatedCounter"
-import { getCategoryStyle } from "../../utils/categoryColors"
 
-// Helper to resolve clean, theme-aligned icons and styles for savings goals
+// Helper to resolve theme-aligned icons and styles for savings goals
 const getGoalStyle = (goal) => {
   const t = (goal.title || "").toLowerCase()
   if (t.includes("emergency") || t.includes("reserve") || t.includes("shield") || t.includes("safe")) {
@@ -57,35 +65,80 @@ const getGoalStyle = (goal) => {
   }
 }
 
-// Category progress bar gradient mapping to provide visual distinction
-const getCategoryBarGradient = (cat, percent) => {
-  if (percent >= 100) {
-    return "bg-gradient-to-r from-rose-600 via-red-500 to-rose-400 shadow-[0_0_10px_rgba(244,63,94,0.45)]"
-  }
-  if (percent >= 90) {
-    return "bg-gradient-to-r from-rose-600 to-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.35)]"
-  }
-  if (percent >= 80) {
-    return "bg-gradient-to-r from-amber-600 to-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.35)]"
-  }
-  switch (cat) {
-    case "Travel":
-      return "bg-gradient-to-r from-purple-600 via-indigo-500 to-purple-400 shadow-[0_0_8px_rgba(139,92,246,0.3)]"
-    case "Shopping":
-      return "bg-gradient-to-r from-emerald-600 via-teal-500 to-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.3)]"
+// Map Lucide icons per category for high-fidelity visual identity
+const getCategoryIcon = (category) => {
+  switch (category) {
     case "Food":
-      return "bg-gradient-to-r from-rose-600 via-pink-500 to-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.3)]"
+      return <UtensilsCrossed className="h-4 w-4" />
+    case "Travel":
+      return <Plane className="h-4 w-4" />
     case "Bills":
-      return "bg-gradient-to-r from-amber-600 via-orange-500 to-amber-400 shadow-[0_0_8px_rgba(245,158,11,0.3)]"
+      return <Receipt className="h-4 w-4" />
+    case "Subscriptions":
+      return <RefreshCw className="h-4 w-4" />
     case "Entertainment":
-      return "bg-gradient-to-r from-purple-500 via-fuchsia-400 to-pink-400 shadow-[0_0_8px_rgba(192,132,252,0.3)]"
-    case "Other":
-      return "bg-gradient-to-r from-slate-500 via-sky-500 to-cyan-400 shadow-[0_0_8px_rgba(56,189,248,0.25)]"
+      return <Tv className="h-4 w-4" />
+    case "Shopping":
+      return <ShoppingBag className="h-4 w-4" />
     default:
-      return "bg-gradient-to-r from-blue-600 via-indigo-500 to-cyan-400 shadow-[0_0_8px_rgba(59,130,246,0.3)]"
+      return <FolderKanban className="h-4 w-4" />
   }
 }
 
+// Sophisticated color schemes per category with ambient background glows
+const getCategoryCardTheme = (category) => {
+  switch (category) {
+    case "Food":
+      return {
+        iconBg: "bg-rose-500/10 text-rose-500 border-rose-500/20 dark:bg-rose-500/15",
+        glow: "rgba(244, 63, 94, 0.12)",
+        bar: "bg-gradient-to-r from-rose-500 to-rose-400",
+        accent: "text-rose-500 dark:text-rose-400"
+      }
+    case "Travel":
+      return {
+        iconBg: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20 dark:bg-purple-500/15",
+        glow: "rgba(139, 92, 246, 0.12)",
+        bar: "bg-gradient-to-r from-purple-500 to-indigo-400",
+        accent: "text-purple-600 dark:text-purple-400"
+      }
+    case "Bills":
+      return {
+        iconBg: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 dark:bg-amber-500/15",
+        glow: "rgba(245, 158, 11, 0.12)",
+        bar: "bg-gradient-to-r from-amber-500 to-amber-400",
+        accent: "text-amber-600 dark:text-amber-400"
+      }
+    case "Subscriptions":
+      return {
+        iconBg: "bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/20 dark:bg-sky-500/15",
+        glow: "rgba(56, 189, 248, 0.12)",
+        bar: "bg-gradient-to-r from-sky-500 to-cyan-400",
+        accent: "text-sky-600 dark:text-sky-400"
+      }
+    case "Entertainment":
+      return {
+        iconBg: "bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400 border-fuchsia-500/20 dark:bg-fuchsia-500/15",
+        glow: "rgba(217, 70, 239, 0.12)",
+        bar: "bg-gradient-to-r from-fuchsia-500 to-pink-400",
+        accent: "text-fuchsia-600 dark:text-fuchsia-400"
+      }
+    case "Shopping":
+      return {
+        iconBg: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 dark:bg-emerald-500/15",
+        glow: "rgba(16, 185, 129, 0.12)",
+        bar: "bg-gradient-to-r from-emerald-500 to-teal-400",
+        accent: "text-emerald-600 dark:text-emerald-400"
+      }
+    default:
+      return {
+        iconBg: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20 dark:bg-indigo-500/15",
+        glow: "rgba(99, 102, 241, 0.12)",
+        bar: "bg-gradient-to-r from-indigo-500 to-blue-400",
+        accent: "text-indigo-600 dark:text-indigo-400"
+      }
+  }
+}
 
 export default function BudgetsView({
   budgetLimit,
@@ -121,6 +174,15 @@ export default function BudgetsView({
 
   const categories = Object.keys(categoryBudgets)
 
+  // Quick summary aggregates
+  const totalAllocated = useMemo(() => {
+    return Object.values(categoryBudgets || {}).reduce((sum, v) => sum + ((Number(v) || 0) * multiplier), 0)
+  }, [categoryBudgets, multiplier])
+
+  const budgetedCategoriesCount = useMemo(() => {
+    return Object.values(categoryBudgets || {}).filter(v => Number(v) > 0).length
+  }, [categoryBudgets])
+
   const handleStartEdit = (category, currentLimit) => {
     setEditingCategory(category)
     setTempLimit(String(Math.round(currentLimit * multiplier)))
@@ -151,7 +213,7 @@ export default function BudgetsView({
   return (
     <div className="space-y-6 md:space-y-8">
       {/* Top Section: Overall Monthly Budget Status */}
-      <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
+      <div className="bg-surface-1 border border-border-default rounded-2xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-border-subtle">
           <div>
             <h2 className="text-[19px] font-bold text-text-primary tracking-tight flex items-center gap-2">
@@ -209,7 +271,7 @@ export default function BudgetsView({
             </div>
             <button
               onClick={() => setIsEnvelopeModalOpen(true)}
-              className="px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-hover text-text-primary border border-border-default text-xs font-medium flex items-center gap-1.5 cursor-pointer transition-colors shadow-elevation-sm"
+              className="px-3.5 py-1.5 rounded-xl bg-surface-2 hover:bg-surface-hover active:bg-surface-active text-text-primary border border-border-default hover:border-border-strong text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all shadow-elevation-sm"
             >
               <Sliders className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
               <span>Envelope Manager</span>
@@ -218,29 +280,29 @@ export default function BudgetsView({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 pt-4">
-          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
+          <div className="p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Total Spent</span>
-            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight truncate">
+            <p className="text-[24px] sm:text-[28px] font-extrabold text-text-primary font-mono leading-tight truncate">
               <AnimatedCounter value={totalExpense} prefix={currSym} />
             </p>
             <p className="text-xs text-text-secondary font-normal">Active month outlays</p>
           </div>
 
-          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
+          <div className="p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Remaining Budget</span>
-            <p className={`text-[22px] sm:text-[26px] font-extrabold font-mono leading-tight truncate ${
+            <p className={`text-[24px] sm:text-[28px] font-extrabold font-mono leading-tight truncate ${
               budgetLimit <= 0
                 ? "text-text-muted"
-                : (budgetLimit * multiplier - totalExpense) >= 0 ? 'text-emerald-600 dark:text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.25)]' : 'text-rose-600 dark:text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.25)]'
+                : (budgetLimit * multiplier - totalExpense) >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'
             }`}>
               {budgetLimit <= 0 ? "—" : <AnimatedCounter value={Math.max(0, (budgetLimit * multiplier) - totalExpense)} prefix={currSym} />}
             </p>
             <p className="text-xs text-text-secondary font-normal">{budgetLimit <= 0 ? "No limit configured" : "Remaining before limit"}</p>
           </div>
 
-          <div className="p-3.5 sm:p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
+          <div className="p-4 rounded-xl bg-surface-inset/90 border border-border-subtle space-y-1 min-w-0">
             <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-[0.06em]">Budget Used</span>
-            <p className="text-[22px] sm:text-[26px] font-extrabold text-text-primary font-mono leading-tight truncate">
+            <p className="text-[24px] sm:text-[28px] font-extrabold text-text-primary font-mono leading-tight truncate">
               {budgetLimit <= 0 ? "0%" : <AnimatedCounter value={budgetPercent} decimals={0} suffix="%" />}
             </p>
             <p className="text-xs text-text-secondary font-normal">{budgetLimit <= 0 ? "Of monthly allowance" : "Of monthly limit"}</p>
@@ -271,108 +333,185 @@ export default function BudgetsView({
       </div>
 
       {/* Category Envelopes Grid */}
-      <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
-        <div className="flex items-center justify-between pb-4 border-b border-border-subtle mb-5">
+      <div className="bg-surface-1 border border-border-default rounded-2xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle mb-6">
           <div>
-            <h2 className="text-[18px] font-bold text-text-primary tracking-tight flex items-center gap-2">
-              <Sliders className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-[18px] font-bold text-text-primary tracking-tight flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-brand/10 border border-brand/20 flex items-center justify-center text-brand">
+                <Sliders className="h-4 w-4" />
+              </div>
               <span>Category Budgets</span>
             </h2>
-            <p className="text-xs text-text-secondary font-normal mt-0.5">
-              Adjust monthly allowances and monitor category spending
+            <p className="text-xs text-text-secondary font-normal mt-1">
+              Adjust monthly allowances and monitor category spending across envelopes
             </p>
+          </div>
+
+          {/* Quick Metrics Bar */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-2 border border-border-default text-xs">
+              <span className="text-text-muted font-normal">Allocated:</span>
+              <span className="font-semibold font-mono text-text-primary">
+                {currSym}{formatNumber(totalAllocated, currSym, 0, 0)}
+              </span>
+              <span className="text-text-muted text-[11px]">
+                ({budgetedCategoriesCount}/{categories.length} set)
+              </span>
+            </div>
+            <button
+              onClick={() => setIsEnvelopeModalOpen(true)}
+              className="px-3 py-1.5 rounded-xl bg-surface-2 hover:bg-surface-hover active:bg-surface-active text-text-primary border border-border-default hover:border-border-strong text-xs font-semibold flex items-center gap-1.5 cursor-pointer transition-all shadow-xs"
+            >
+              <Sliders className="h-3.5 w-3.5 text-brand" />
+              <span>Manage All</span>
+            </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3.5">
+        {/* Premium Category Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 sm:gap-4.5">
           {categories.map((cat) => {
-            const rawLimit = categoryBudgets[cat] || 0
+            const rawLimit = Number(categoryBudgets[cat]) || 0
             const limit = rawLimit * multiplier
             const spent = categorySpending[cat] || 0
-            const percent = limit > 0 ? Math.min((spent / limit) * 100, 100) : 0
+            const hasLimit = rawLimit > 0
+            const percent = hasLimit ? Math.min((spent / limit) * 100, 100) : 0
+            const rawPercent = hasLimit ? (spent / limit) * 100 : 0
             const remaining = limit - spent
-            const colors = getCategoryStyle(cat)
             const isEditing = editingCategory === cat
-            const barGradient = getCategoryBarGradient(cat, percent)
+            const theme = getCategoryCardTheme(cat)
+            const isOver = hasLimit && spent > limit
+            const isNear = hasLimit && rawPercent >= 80 && !isOver
 
             return (
               <div
                 key={cat}
-                className="p-4 sm:p-5 rounded-xl bg-surface-1 border border-border-default hover:border-border-strong transition-all duration-200 space-y-3.5 group hover:shadow-elevation-sm dark:hover:shadow-black/20"
+                className={`relative p-5 rounded-2xl bg-surface-2/70 dark:bg-surface-2/40 backdrop-blur-sm border transition-all duration-300 flex flex-col justify-between group overflow-hidden ${
+                  isOver
+                    ? "border-rose-500/30 hover:border-rose-500/50 shadow-sm shadow-rose-500/5 hover:shadow-elevation-md"
+                    : isEditing
+                    ? "border-brand shadow-sm ring-2 ring-brand/10"
+                    : "border-border-default/80 hover:border-border-strong hover:shadow-elevation-md"
+                }`}
               >
-                {/* Header: Category Badge + Percentage */}
-                <div className="flex items-center justify-between">
-                  <span className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded border ${colors.badge}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${colors.bg}`} />
-                    <span>{cat}</span>
-                  </span>
-                  <span className="text-[13px] font-mono font-semibold text-text-secondary">
-                    {percent.toFixed(0)}%
-                  </span>
+                {/* Ambient Category Glow */}
+                <div
+                  className="absolute -top-12 -right-12 w-28 h-28 rounded-full blur-2xl pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity duration-300"
+                  style={{ backgroundColor: theme.glow }}
+                />
+
+                {/* Top Row: Category Icon, Name & Status Pill */}
+                <div className="flex items-start justify-between gap-3 relative z-10">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 border shadow-xs transition-transform duration-200 group-hover:scale-105 ${theme.iconBg}`}
+                    >
+                      {getCategoryIcon(cat)}
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="text-sm font-semibold text-text-primary tracking-tight truncate">
+                        {cat}
+                      </h3>
+                      <p className="text-[11px] text-text-secondary truncate mt-0.5 font-normal">
+                        {spent > 0 ? "Active outlays" : "No outlays yet"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Status Badge */}
+                  {hasLimit ? (
+                    isOver ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-rose-500/10 text-rose-500 border border-rose-500/20 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                        {rawPercent.toFixed(0)}%
+                      </span>
+                    ) : isNear ? (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                        {rawPercent.toFixed(0)}%
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shrink-0">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        {rawPercent.toFixed(0)}%
+                      </span>
+                    )
+                  ) : (
+                    <span className="inline-flex items-center text-[11px] font-medium px-2.5 py-0.5 rounded-full bg-surface-3 text-text-muted border border-border-default shrink-0">
+                      No limit
+                    </span>
+                  )}
                 </div>
 
-                {/* Amount & Limit Row */}
-                <div className="space-y-2">
-                  <div className="flex justify-between items-baseline pt-0.5">
-                    <div className="flex items-baseline gap-0.5">
-                      <span className="text-[11px] font-semibold font-mono text-text-muted mr-0.5">{currSym}</span>
-                      <span className="text-[20px] font-bold text-text-primary font-mono tracking-tight leading-none">
+                {/* Middle Row: Primary Spend & Limit */}
+                <div className="space-y-2.5 my-4 relative z-10">
+                  <div className="flex items-baseline justify-between gap-2">
+                    <div>
+                      <span className="text-xs font-mono font-medium text-text-muted mr-1">{currSym}</span>
+                      <span className="text-2xl font-bold font-mono tracking-tight text-text-primary leading-none">
                         {formatNumber(spent, currSym, 0, 0)}
                       </span>
                     </div>
-                    <div className="text-[11px] font-mono text-text-muted flex items-center gap-1.5">
-                      <span>of</span>
-                      <span className="font-semibold text-text-primary">
-                        {currSym}{formatNumber(limit, currSym, 0, 0)}
-                      </span>
+
+                    <div className="text-[11px] font-mono text-text-secondary text-right">
+                      {hasLimit ? (
+                        <span>
+                          <span className="text-text-muted font-sans mr-1">of</span>
+                          <span className="font-semibold text-text-primary">
+                            {currSym}{formatNumber(limit, currSym, 0, 0)}
+                          </span>
+                        </span>
+                      ) : (
+                        <span className="text-text-muted font-sans">No budget set</span>
+                      )}
                     </div>
                   </div>
 
-                  {/* High fidelity progress bar */}
-                  <div className="h-1.5 w-full bg-surface-inset border border-border-subtle rounded-full overflow-hidden flex">
-                    <div
-                      className={`h-full rounded-full transition-all duration-500 opacity-90 ${barGradient}`}
-                      style={{ width: `${percent}%` }}
-                    />
+                  {/* High Fidelity Progress Bar */}
+                  <div className="h-2 w-full bg-surface-inset border border-border-subtle/70 rounded-full overflow-hidden p-[1px] relative">
+                    {hasLimit ? (
+                      <div
+                        className={`h-full rounded-full transition-all duration-700 ease-out ${
+                          isOver
+                            ? "bg-gradient-to-r from-rose-500 to-red-600 shadow-sm shadow-rose-500/30"
+                            : isNear
+                            ? "bg-gradient-to-r from-amber-500 to-orange-500 shadow-sm shadow-amber-500/20"
+                            : theme.bar
+                        }`}
+                        style={{ width: `${percent}%` }}
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-transparent" />
+                    )}
                   </div>
                 </div>
 
-                {/* Bottom Row: Remaining buffer & Edit button */}
-                <div className="flex items-center justify-between pt-3 border-t border-border-default/70 text-xs">
-                  <div className="flex items-center gap-1.5 font-mono">
-                    {remaining >= 0 ? (
-                      <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-positive inline-block shrink-0" />
-                        <span className="text-text-primary font-medium">{currSym}{formatNumber(remaining, currSym, 0, 0)}</span>
-                        <span className="text-text-muted font-normal text-[11px]">left</span>
-                      </>
-                    ) : (
-                      <>
-                        <span className="w-1.5 h-1.5 rounded-full bg-negative inline-block shrink-0" />
-                        <span className="text-negative font-semibold">-{currSym}{formatNumber(Math.abs(remaining), currSym, 0, 0)}</span>
-                        <span className="text-negative font-normal text-[11px] opacity-80">over</span>
-                      </>
-                    )}
-                  </div>
-
+                {/* Bottom Row: Remaining Status & Action */}
+                <div className="flex items-center justify-between pt-3 border-t border-border-default/70 relative z-10 min-h-[38px]">
                   {isEditing ? (
-                    <div className="flex items-center gap-1.5">
-                      <input
-                        type="text"
-                        autoFocus
-                        value={tempLimit}
-                        onChange={(e) => setTempLimit(e.target.value.replace(/[^0-9]/g, ''))}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            setEditingCategory(null)
-                            const val = tempLimit.replace(/[^0-9]/g, '')
-                            handleUpdateCategoryBudget(cat, (Number(val) || 0) / multiplier)
-                          } else if (e.key === 'Escape') {
-                            setEditingCategory(null)
-                          }
-                        }}
-                        className="w-20 bg-surface-2 border border-brand/70 rounded-md px-2 py-0.5 text-text-primary text-[11px] font-mono font-bold text-right outline-none ring-1 ring-brand/30"
-                      />
+                    <div className="flex items-center gap-1.5 w-full">
+                      <div className="relative flex-1">
+                        <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs font-mono font-semibold text-text-muted">
+                          {currSym}
+                        </span>
+                        <input
+                          type="text"
+                          autoFocus
+                          value={tempLimit}
+                          placeholder="0"
+                          onChange={(e) => setTempLimit(e.target.value.replace(/[^0-9]/g, ''))}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              setEditingCategory(null)
+                              const val = tempLimit.replace(/[^0-9]/g, '')
+                              handleUpdateCategoryBudget(cat, (Number(val) || 0) / multiplier)
+                            } else if (e.key === 'Escape') {
+                              setEditingCategory(null)
+                            }
+                          }}
+                          className="w-full bg-surface-1 border border-brand rounded-lg pl-6 pr-2 py-1 text-xs font-mono font-bold text-text-primary outline-none focus:ring-2 focus:ring-brand/30 shadow-xs"
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={() => {
@@ -380,20 +519,64 @@ export default function BudgetsView({
                           const val = tempLimit.replace(/[^0-9]/g, '')
                           handleUpdateCategoryBudget(cat, (Number(val) || 0) / multiplier)
                         }}
-                        className="px-2 py-1 rounded bg-brand hover:bg-brand-hover text-white text-[10px] font-mono font-bold cursor-pointer transition-colors shadow-elevation-sm"
-                        title="Save Target (Enter)"
+                        className="p-1.5 rounded-lg bg-brand hover:bg-brand-hover active:bg-brand-active text-white cursor-pointer transition-colors shadow-xs"
+                        title="Save (Enter)"
                       >
-                        ↵
+                        <Check className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEditingCategory(null)}
+                        className="p-1.5 rounded-lg bg-surface-3 hover:bg-surface-hover text-text-muted hover:text-text-primary cursor-pointer transition-colors border border-border-default"
+                        title="Cancel (Esc)"
+                      >
+                        <X className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   ) : (
-                    <button
-                      onClick={() => handleStartEdit(cat, rawLimit)}
-                      className="px-2 py-1 rounded-md text-[11px] font-medium text-text-secondary hover:text-text-primary bg-surface-2/40 hover:bg-surface-hover border border-border-default/40 hover:border-border-strong transition-all flex items-center gap-1 cursor-pointer group/btn"
-                    >
-                      <Edit3 className="h-3 w-3 text-text-muted group-hover/btn:text-brand transition-colors" />
-                      <span>Edit Limit</span>
-                    </button>
+                    <>
+                      {/* Status Buffer */}
+                      <div className="flex items-center gap-1.5 text-xs min-w-0">
+                        {hasLimit ? (
+                          !isOver ? (
+                            <>
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                              <span className="text-text-primary font-medium truncate font-mono">
+                                {currSym}{formatNumber(remaining, currSym, 0, 0)}
+                              </span>
+                              <span className="text-text-muted text-[11px] truncate font-sans">left</span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                              <span className="text-rose-500 font-semibold truncate font-mono">
+                                {currSym}{formatNumber(Math.abs(remaining), currSym, 0, 0)}
+                              </span>
+                              <span className="text-rose-400 text-[11px] truncate font-sans">over</span>
+                            </>
+                          )
+                        ) : (
+                          <span className="text-[11px] text-text-muted flex items-center gap-1.5 font-sans">
+                            <span className="w-1.5 h-1.5 rounded-full bg-border-strong shrink-0" />
+                            <span>Unallocated</span>
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Quick Action Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(cat, rawLimit)}
+                        className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shrink-0 ${
+                          hasLimit
+                            ? "bg-surface-3 hover:bg-surface-hover text-text-secondary hover:text-text-primary border border-border-default hover:border-border-strong"
+                            : "bg-brand/10 hover:bg-brand/20 active:bg-brand/30 text-brand border border-brand/20 shadow-xs"
+                        }`}
+                      >
+                        <Edit3 className="h-3 w-3" />
+                        <span>{hasLimit ? "Edit" : "Set Limit"}</span>
+                      </button>
+                    </>
                   )}
                 </div>
               </div>
@@ -403,7 +586,7 @@ export default function BudgetsView({
       </div>
 
       {/* Savings Goals & Milestones */}
-      <div className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
+      <div className="bg-surface-1 border border-border-default rounded-2xl p-5 sm:p-6 lg:p-7 shadow-elevation-sm">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border-subtle mb-5">
           <div>
             <h2 className="text-[18px] font-bold text-text-primary tracking-tight flex items-center gap-2">
@@ -454,7 +637,7 @@ export default function BudgetsView({
               return (
                 <div
                   key={goal.id}
-                  className="bg-surface-1 border border-border-default hover:border-border-strong rounded-xl p-4 sm:p-5 transition-all duration-200 flex flex-col justify-between space-y-4 group hover:shadow-elevation-sm dark:hover:shadow-black/20"
+                  className="bg-surface-2/70 dark:bg-surface-2/40 border border-border-default/80 hover:border-border-strong rounded-2xl p-4 sm:p-5 transition-all duration-200 flex flex-col justify-between space-y-4 group hover:shadow-elevation-sm"
                 >
                   {/* Top Header: Icon Squircle + Title & Target Date */}
                   <div className="flex items-start justify-between gap-3">
