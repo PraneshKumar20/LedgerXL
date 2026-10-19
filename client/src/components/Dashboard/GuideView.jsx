@@ -55,7 +55,7 @@ export default function GuideView({
   const prevCompletedCountRef = useRef(null)
   const isInitialMountRef = useRef(true)
 
-  const toggleStep = (stepNumber) => {
+  const toggleStep = useCallback((stepNumber) => {
     setManualCompleted((prev) => {
       const next = prev.includes(stepNumber)
         ? prev.filter((s) => s !== stepNumber)
@@ -67,6 +67,11 @@ export default function GuideView({
       }
       return next
     })
+  }, [checklistStorageKey])
+
+  const scrollToSetupChecklist = () => {
+    const el = document.getElementById("quick-start-checklist")
+    if (el) el.scrollIntoView({ behavior: "smooth" })
   }
 
   // 1. Where Should I Add What? (Fast Action Finder)
@@ -86,7 +91,7 @@ export default function GuideView({
       destination: "Financial Overview",
       summary: "Discover category breakdown trends, spending pace, and financial health in your command center.",
       actionLabel: "Review Your Spending",
-      action: onOpenOverview || onOpenAnalytics,
+      action: isOnboarding ? scrollToSetupChecklist : (onOpenOverview || onOpenAnalytics),
       badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-400 dark:border-indigo-800/40"
     },
     {
@@ -122,7 +127,7 @@ export default function GuideView({
       destination: "Financial Health",
       summary: "Check your overall financial grade, savings rate, and cash runway.",
       actionLabel: "View Financial Health",
-      action: onOpenOverview,
+      action: isOnboarding ? scrollToSetupChecklist : onOpenOverview,
       badgeColor: "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/40"
     }
   ]
@@ -146,8 +151,8 @@ export default function GuideView({
         { label: "Cash Flow", note: "Money in vs. money out over time" },
         { label: "Financial Health", note: "Quick snapshot of your financial position" }
       ],
-      actionLabel: "View Financial Overview",
-      action: onOpenOverview
+      actionLabel: isOnboarding ? "View Setup Checklist" : "View Financial Overview",
+      action: isOnboarding ? scrollToSetupChecklist : onOpenOverview
     },
     {
       id: "transactions",
@@ -167,8 +172,8 @@ export default function GuideView({
       ],
       actionLabel: "Add a Transaction",
       action: onOpenAddModal,
-      secondaryLabel: "View Transactions Ledger",
-      secondaryAction: onOpenTransactions
+      secondaryLabel: isOnboarding ? undefined : "View Transactions Ledger",
+      secondaryAction: isOnboarding ? undefined : onOpenTransactions
     },
     {
       id: "overview-health",
@@ -185,8 +190,8 @@ export default function GuideView({
         { label: "Income vs. Expenses", note: "Total money made vs. total spent" },
         { label: "4-Pillar Health Score", note: "Algorithmic health assessment" }
       ],
-      actionLabel: "Open Overview",
-      action: onOpenOverview || onOpenAnalytics
+      actionLabel: isOnboarding ? "View Setup Checklist" : "Open Overview",
+      action: isOnboarding ? scrollToSetupChecklist : (onOpenOverview || onOpenAnalytics)
     },
     {
       id: "budgets-goals",
@@ -254,8 +259,8 @@ export default function GuideView({
         { label: "Cash Flow", note: "Shows whether more money is coming in than going out." },
         { label: "Financial Health Score", note: "Combines key financial signals into a simple overall picture." }
       ],
-      actionLabel: "View Financial Health",
-      action: onOpenOverview
+      actionLabel: isOnboarding ? "View Setup Checklist" : "View Financial Health",
+      action: isOnboarding ? scrollToSetupChecklist : onOpenOverview
     }
   ]
 
@@ -298,9 +303,9 @@ export default function GuideView({
     },
     { 
       id: 6, 
-      text: "Review your financial health and net cash position", 
-      action: onCompleteOnboarding || onOpenOverview, 
-      label: "View Financial Health",
+      text: "Complete onboarding / review your financial health", 
+      action: () => toggleStep(6), 
+      label: manualCompleted.includes(6) ? "Completed" : "Complete Task",
       isAutoDone: manualCompleted.includes(6) 
     }
   ], [
@@ -314,9 +319,8 @@ export default function GuideView({
     onOpenBudgets, 
     onOpenCategoryEnvelopes, 
     onOpenSavingsGoals, 
-    onOpenSubscriptions, 
-    onCompleteOnboarding, 
-    onOpenOverview
+    onOpenSubscriptions,
+    toggleStep
   ])
 
   const completedCount = checklistItems.filter(
@@ -513,13 +517,33 @@ export default function GuideView({
               <Plus className="h-4 w-4 stroke-[2.5]" />
               <span>Add Your First Transaction</span>
             </button>
-            <button
-              onClick={onCompleteOnboarding || onOpenOverview}
-              className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-text-primary text-sm font-medium transition-colors cursor-pointer w-full sm:w-auto"
-            >
-              <span>{isOnboarding ? "Get Started — Go to Dashboard" : "Go to Financial Overview"}</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            {isOnboarding ? (
+              isAllCompleted ? (
+                <button
+                  onClick={onCompleteOnboarding}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm font-semibold transition-all shadow-md shadow-emerald-600/20 cursor-pointer w-full sm:w-auto"
+                >
+                  <span>Enter LedgerXL</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={scrollToSetupChecklist}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-text-primary text-sm font-medium transition-colors cursor-pointer w-full sm:w-auto"
+                >
+                  <span>View Setup Checklist ({completedCount}/{checklistItems.length})</span>
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              )
+            ) : (
+              <button
+                onClick={onOpenOverview}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-text-primary text-sm font-medium transition-colors cursor-pointer w-full sm:w-auto"
+              >
+                <span>Go to Financial Overview</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -767,7 +791,7 @@ export default function GuideView({
       </section>
 
       {/* 5. QUICK START CHECKLIST WITH COMPLETION CELEBRATION */}
-      <section className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-7 shadow-elevation-sm space-y-4">
+      <section id="quick-start-checklist" className="bg-surface-1 border border-border-default rounded-xl p-5 sm:p-7 shadow-elevation-sm space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border-subtle">
           {isAllCompleted ? (
             <div className="flex items-center gap-3">
@@ -784,7 +808,7 @@ export default function GuideView({
                   🎉 You&apos;re All Set!
                 </h3>
                 <p className="text-xs sm:text-sm text-text-secondary mt-0.5">
-                  You&apos;ve completed your LedgerXL quick start.
+                  {isOnboarding ? "Your LedgerXL workspace is ready." : "You've completed your LedgerXL quick start."}
                 </p>
               </div>
             </div>
@@ -804,13 +828,23 @@ export default function GuideView({
 
           <div className="flex items-center justify-between sm:justify-end gap-3 flex-wrap w-full sm:w-auto">
             {isAllCompleted && (
-              <button
-                onClick={onCompleteOnboarding || onOpenOverview}
-                className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-md shadow-emerald-600/20 cursor-pointer w-full sm:w-auto"
-              >
-                <span>Start Managing Your Finances</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
+              isOnboarding ? (
+                <button
+                  onClick={onCompleteOnboarding}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-xs sm:text-sm font-semibold transition-all shadow-md shadow-brand/20 cursor-pointer w-full sm:w-auto"
+                >
+                  <span>Enter LedgerXL</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              ) : (
+                <button
+                  onClick={onOpenOverview}
+                  className="inline-flex items-center justify-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs sm:text-sm font-semibold transition-all shadow-md shadow-emerald-600/20 cursor-pointer w-full sm:w-auto"
+                >
+                  <span>Go to Financial Overview</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              )
             )}
             <div className="text-right">
               <span className="text-sm font-bold text-text-primary">
@@ -876,31 +910,83 @@ export default function GuideView({
       </section>
 
       {/* 6. PRIMARY COMPLETION CTA */}
-      <section className="relative overflow-hidden bg-surface-1 border border-border-default hover:border-border-strong rounded-xl p-5 sm:p-7 shadow-elevation-sm transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
-        <div className="space-y-1.5 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40 mb-0.5">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            <span>{isAllCompleted ? "🎉 Quick Start Complete" : "Ready to Begin"}</span>
+      {isOnboarding ? (
+        isAllCompleted ? (
+          <section className="relative overflow-hidden bg-surface-1 border-2 border-brand/50 hover:border-brand rounded-2xl p-6 sm:p-8 shadow-elevation-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="space-y-2 max-w-xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                <CheckCircle2 className="h-4 w-4" />
+                <span>🎉 All Onboarding Tasks Completed</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-text-primary tracking-tight">
+                You&apos;re All Set!
+              </h3>
+              <p className="text-sm text-text-secondary leading-relaxed">
+                Your LedgerXL workspace is ready. Step into your personal financial command center to explore your live analytics, budgets, and cash flow.
+              </p>
+            </div>
+            <div className="shrink-0 w-full sm:w-auto">
+              <button
+                onClick={onCompleteOnboarding}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-base font-bold transition-all shadow-lg shadow-brand/30 cursor-pointer group hover:scale-[1.02]"
+              >
+                <span>Enter LedgerXL</span>
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </section>
+        ) : (
+          <section className="relative overflow-hidden bg-surface-1 border border-border-default rounded-xl p-5 sm:p-7 shadow-elevation-sm transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+            <div className="space-y-1.5 max-w-xl">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-subtle text-brand border border-brand/20">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Setup Checklist Progress</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
+                Complete all onboarding tasks to enter your workspace
+              </h3>
+              <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+                You&apos;ve completed {completedCount} of {checklistItems.length} setup tasks. Finish the remaining items above to unlock your full financial command center.
+              </p>
+            </div>
+            <div className="shrink-0 w-full sm:w-auto">
+              <button
+                onClick={scrollToSetupChecklist}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-surface-2 hover:bg-surface-hover border border-border-default text-text-primary text-xs sm:text-sm font-semibold transition-colors cursor-pointer"
+              >
+                <span>View Remaining Tasks ({checklistItems.length - completedCount} left)</span>
+                <ArrowRight className="h-3.5 w-3.5 text-text-muted" />
+              </button>
+            </div>
+          </section>
+        )
+      ) : (
+        <section className="relative overflow-hidden bg-surface-1 border border-border-default hover:border-border-strong rounded-xl p-5 sm:p-7 shadow-elevation-sm transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40 mb-0.5">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span>{isAllCompleted ? "🎉 Quick Start Complete" : "Ready to Begin"}</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
+              {isAllCompleted ? "🎉 You're All Set!" : "Ready to take command of your finances?"}
+            </h3>
+            <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+              {isAllCompleted 
+                ? "You've completed your LedgerXL quick start. Jump straight into your personal Financial Overview." 
+                : "Jump straight into your personal Financial Overview to start tracking your cash flow, budgets, and savings."}
+            </p>
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight">
-            {isAllCompleted ? "🎉 You're All Set!" : "Ready to take command of your finances?"}
-          </h3>
-          <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-            {isAllCompleted 
-              ? "You've completed your LedgerXL quick start. Jump straight into your personal Financial Overview." 
-              : "Jump straight into your personal Financial Overview to start tracking your cash flow, budgets, and savings."}
-          </p>
-        </div>
-        <div className="shrink-0 w-full sm:w-auto">
-          <button
-            onClick={onCompleteOnboarding || onOpenOverview}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm sm:text-base font-semibold transition-all shadow-md shadow-brand/25 cursor-pointer group"
-          >
-            <span>Start Managing Your Finances</span>
-            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
-          </button>
-        </div>
-      </section>
+          <div className="shrink-0 w-full sm:w-auto">
+            <button
+              onClick={onOpenOverview}
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl bg-brand hover:bg-brand-hover active:bg-brand-active text-white text-sm sm:text-base font-semibold transition-all shadow-md shadow-brand/25 cursor-pointer group"
+            >
+              <span>Go to Financial Overview</span>
+              <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
+        </section>
+      )}
 
       {/* 7. IMPORTANT CLARITY (DISCLAIMER) */}
       <section className="p-4 rounded-xl bg-surface-2/80 border border-border-subtle flex items-start gap-3 text-text-secondary text-xs sm:text-sm leading-relaxed">

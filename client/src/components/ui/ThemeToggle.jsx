@@ -1,5 +1,5 @@
 import { Sun, Moon } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion as Motion } from "framer-motion"
 import { useTheme } from "../../context/ThemeContext"
 
 export default function ThemeToggle({ 
@@ -21,7 +21,7 @@ export default function ThemeToggle({
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
       aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
     >
-      <motion.div
+      <Motion.div
         key={theme}
         initial={{ scale: 0.7, rotate: isDark ? -45 : 45, opacity: 0 }}
         animate={{ scale: 1, rotate: 0, opacity: 1 }}
@@ -39,7 +39,7 @@ export default function ThemeToggle({
             {isDark ? "Light Mode" : "Dark Mode"}
           </span>
         )}
-      </motion.div>
+      </Motion.div>
     </button>
   )
 }

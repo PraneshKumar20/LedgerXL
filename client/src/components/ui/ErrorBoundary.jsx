@@ -18,7 +18,7 @@ export default class ErrorBoundary extends React.Component {
   handleReset = () => {
     try {
       localStorage.clear()
-    } catch (e) {}
+    } catch { /* localStorage.clear may fail in restricted environments */ }
     window.location.reload()
   }
 

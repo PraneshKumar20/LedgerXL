@@ -86,16 +86,6 @@ const getCategoryBarGradient = (cat, percent) => {
   }
 }
 
-// Percentage status indicator badge style
-const getPercentBadge = (percent) => {
-  if (percent >= 90) {
-    return "bg-rose-500/15 text-rose-400 border-rose-500/30"
-  }
-  if (percent >= 80) {
-    return "bg-amber-500/15 text-amber-400 border-amber-500/30"
-  }
-  return "bg-surface-2 text-text-primary border-border-default/60"
-}
 
 export default function BudgetsView({
   budgetLimit,
@@ -149,7 +139,7 @@ export default function BudgetsView({
               spread: 60,
               origin: { y: 0.6 }
             })
-          } catch (e) {}
+          } catch { /* confetti may not be available */ }
         }
         return { ...g, currentAmount: nextAmount }
       }

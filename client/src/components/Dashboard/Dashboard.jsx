@@ -3,12 +3,14 @@ import { formatNumber } from "../../utils/formatUtils"
 import { motion as Motion, AnimatePresence } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import { Sector } from "recharts"
+import { LogOut } from "lucide-react"
 import axios from "../../api/axios"
 
 // Layout Components
 import Sidebar from "../Layout/Sidebar"
 import MobileNav from "../Layout/MobileNav"
 import AppHeader from "../Layout/AppHeader"
+import ThemeToggle from "../ui/ThemeToggle"
 
 // View Components
 import OverviewView from "./OverviewView"
@@ -65,6 +67,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
 
   const isGuest = Boolean(currentUser?.isGuest)
   const userStorageKey = currentUser?.email ? currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'guest'
+  const isOnboardingMode = Boolean(currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false)
 
   // Enforce session check: unauthenticated sessions must not run in Dashboard
   useEffect(() => {
@@ -97,13 +100,13 @@ export default function Dashboard({ defaultTab = "overview" }) {
                   ...t,
                   _id: `initial-${index}`
                 }))
-                try { localStorage.setItem(`expenses_${key}`, JSON.stringify(upgraded)) } catch (err) {}
+                try { localStorage.setItem(`expenses_${key}`, JSON.stringify(upgraded)) } catch { /* localStorage write may fail in private browsing */ }
                 return upgraded
               }
               return parsed
             }
           }
-        } catch (e) {}
+        } catch { /* localStorage read may fail in private browsing */ }
       }
       return DEMO_TRANSACTIONS.map((t, index) => ({
         ...t,
@@ -132,7 +135,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
           const parsed = JSON.parse(saved)
           if (Array.isArray(parsed)) return parsed
         }
-      } catch (e) {}
+      } catch { /* localStorage read may fail */ }
     }
     if (isGuest) {
       return [
@@ -149,7 +152,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
     try {
       localStorage.setItem(`savings_goals_${userStorageKey}`, JSON.stringify(updated))
       addToast({ title: "Goals Updated", message: "Savings progress saved.", type: "success" })
-    } catch (e) {}
+    } catch { /* localStorage write may fail */ }
   }
   
   // Category Budget Envelopes State (Persisted per user)
@@ -159,7 +162,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
         const key = currentUser?.email ? currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'guest'
         const saved = localStorage.getItem(`category_budgets_${key}`)
         if (saved) return JSON.parse(saved)
-      } catch (e) {}
+      } catch { /* localStorage read may fail */ }
     }
     if (isGuest) {
       return {
@@ -188,7 +191,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
       const next = { ...prev, [category]: limit }
       try {
         localStorage.setItem(`category_budgets_${userStorageKey}`, JSON.stringify(next))
-      } catch (e) {}
+      } catch { /* localStorage write may fail */ }
       return next
     })
     try {
@@ -197,7 +200,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
         message: `${category} limit set to ${currSym}${formatNumber(Math.round(limit * multiplier), currSym, 0, 0)}`, 
         type: "success" 
       })
-    } catch (e) {}
+    } catch { /* toast may fail during unmount */ }
   }
 
   // Budget limit & Currency state (INR as default, persisted per user)
@@ -207,7 +210,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
         const key = currentUser?.email ? currentUser.email.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'guest'
         const saved = localStorage.getItem(`budget_limit_${key}`)
         if (saved !== null) return Number(saved) || 0
-      } catch (e) {}
+      } catch { /* localStorage read may fail */ }
     }
     return isGuest ? 286541 : 0
   })
@@ -222,7 +225,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
         message: `Monthly budget limit set to ${currSym}${formatNumber(Math.round(num * multiplier), currSym, 0, 0)}`, 
         type: "success" 
       })
-    } catch (e) {}
+    } catch { /* localStorage write may fail */ }
   }
 
   // Synchronize scoped state if session user changes
@@ -243,7 +246,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
       } else {
         setSavingsGoals([])
       }
-    } catch (e) {}
+    } catch { /* localStorage read may fail */ }
 
     try {
       const savedLimit = localStorage.getItem(`budget_limit_${key}`)
@@ -254,7 +257,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
       } else {
         setBudgetLimit(0)
       }
-    } catch (e) {}
+    } catch { /* localStorage read may fail */ }
 
     try {
       const savedBudgets = localStorage.getItem(`category_budgets_${key}`)
@@ -280,9 +283,10 @@ export default function Dashboard({ defaultTab = "overview" }) {
           Other: 0
         })
       }
-    } catch (e) {}
+    } catch { /* localStorage read may fail */ }
 
     fetchExpenses()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser?.email, currentUser?.isGuest])
 
   const [currency, setCurrency] = useState(() => {
@@ -290,7 +294,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
       try {
         const saved = localStorage.getItem("currency")
         if (saved) return saved
-      } catch (e) {}
+      } catch { /* localStorage read may fail */ }
     }
     return "INR"
   })
@@ -304,7 +308,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
     if (typeof window !== 'undefined') {
       try {
         return localStorage.getItem("sidebar_collapsed") === "true"
-      } catch (e) {}
+      } catch { /* localStorage read may fail */ }
     }
     return false
   })
@@ -312,7 +316,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
   const toggleSidebar = () => {
     setIsSidebarCollapsed(prev => {
       const next = !prev
-      try { localStorage.setItem("sidebar_collapsed", String(next)) } catch (e) {}
+      try { localStorage.setItem("sidebar_collapsed", String(next)) } catch { /* localStorage write may fail */ }
       return next
     })
   }
@@ -336,6 +340,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
   useEffect(() => {
     fetchExpenses()
     fetchExchangeRate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const fetchExchangeRate = async () => {
@@ -711,6 +716,134 @@ export default function Dashboard({ defaultTab = "overview" }) {
     })
   }, [totalIncome, totalExpense, budgetLimit, multiplier, displayExpenses])
 
+  if (isOnboardingMode) {
+    return (
+      <div className="min-h-screen bg-background text-text-primary selection:bg-brand-subtle selection:text-brand-focus flex flex-col">
+        {/* Dedicated Onboarding Header */}
+        <header className="sticky top-0 z-40 bg-surface-1/90 backdrop-blur-md border-b border-border-default px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-elevation-sm">
+          <div className="flex items-center gap-3">
+            <img src="/ledgerxl-logo.png" alt="LedgerXL Logo" className="h-9 w-9 object-contain rounded-xl drop-shadow-sm" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-base tracking-tight text-text-primary font-sans">
+                  Ledger<span className="text-brand">XL</span>
+                </span>
+                <span className="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-brand-subtle text-brand border border-brand/20">
+                  Onboarding Setup
+                </span>
+              </div>
+              <p className="text-[11px] text-text-secondary hidden sm:block font-sans">
+                Personal Financial Command
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Quick Currency Switcher */}
+            <div className="flex bg-surface-inset p-0.5 rounded-lg border border-border-subtle">
+              {["INR", "USD"].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => {
+                    setCurrency(c)
+                    try { localStorage.setItem("currency", c) } catch {
+                      // ignore storage error
+                    }
+                    addToast({ title: "Currency Changed", message: `Active display currency set to ${c}.`, type: "info" })
+                  }}
+                  className={`px-2.5 py-1 text-xs font-semibold rounded-md cursor-pointer transition-colors ${
+                    currency === c ? "bg-brand text-white shadow-elevation-sm" : "text-text-secondary hover:text-text-primary"
+                  }`}
+                >
+                  {c === "USD" ? "$ USD" : "₹ INR"}
+                </button>
+              ))}
+            </div>
+
+            {/* Theme Toggle */}
+            <ThemeToggle variant="outline" className="h-8 w-8 sm:h-9 sm:w-9" />
+
+            {/* Sign Out Button */}
+            <button
+              onClick={handleLogout}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-xs font-medium text-text-secondary hover:text-negative transition-colors cursor-pointer"
+              title="Sign Out"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Sign Out</span>
+            </button>
+          </div>
+        </header>
+
+        {/* Main Onboarding Viewport */}
+        <main className="flex-1 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+          <GuideView
+            onOpenAddModal={openAddModal}
+            onOpenTransactions={() => {}}
+            onOpenBudgets={() => setIsEnvelopeModalOpen(true)}
+            onOpenSavingsGoals={() => setIsSavingsGoalsOpen(true)}
+            onOpenSubscriptions={() => setIsSubscriptionRadarOpen(true)}
+            onOpenOverview={() => {}}
+            onOpenAnalytics={() => {}}
+            onOpenCategoryEnvelopes={() => setIsEnvelopeModalOpen(true)}
+            onCompleteOnboarding={handleCompleteOnboarding}
+            isOnboarding={true}
+            hasIncome={expenses.some(e => e.type === "income")}
+            hasExpense={expenses.some(e => e.type === "expense")}
+            hasBudgets={Object.values(categoryBudgets || {}).some(v => Number(v) > 0)}
+            hasGoals={(savingsGoals || []).length > 0}
+            hasSubscriptions={recurringCount > 0 || expenses.some(e => Boolean(e.isRecurring))}
+            userStorageKey={userStorageKey}
+          />
+        </main>
+
+        {/* Global Modals for Onboarding Tasks */}
+        <TransactionModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSave={handleSaveTransaction}
+          editingTransaction={editingTransaction}
+          currencySymbol={currSym}
+        />
+
+        <QuickAddCommand 
+          isOpen={isQuickAddOpen}
+          onClose={() => setIsQuickAddOpen(false)}
+          onSave={handleSaveTransaction}
+          currencySymbol={currSym}
+        />
+
+        <CategoryEnvelopesModal
+          isOpen={isEnvelopeModalOpen}
+          onClose={() => setIsEnvelopeModalOpen(false)}
+          expenses={displayExpenses}
+          currencySymbol={currSym}
+          multiplier={multiplier}
+          categoryBudgets={categoryBudgets}
+          onUpdateCategoryBudget={handleUpdateCategoryBudget}
+        />
+
+        <SubscriptionRadarModal
+          isOpen={isSubscriptionRadarOpen}
+          onClose={() => setIsSubscriptionRadarOpen(false)}
+          expenses={displayExpenses}
+          currencySymbol={currSym}
+          multiplier={multiplier}
+          onOpenAddModal={openAddModal}
+        />
+
+        <SavingsGoalsModal
+          isOpen={isSavingsGoalsOpen}
+          onClose={() => setIsSavingsGoalsOpen(false)}
+          savingsGoals={savingsGoals}
+          onUpdateGoals={handleUpdateSavingsGoals}
+          currencySymbol={currSym}
+          multiplier={multiplier}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="flex min-h-screen bg-background text-text-primary">
       {/* Desktop Left Sidebar */}
@@ -728,7 +861,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
         currency={currency}
         setCurrency={(c) => {
           setCurrency(c)
-          try { localStorage.setItem("currency", c) } catch (e) {}
+          try { localStorage.setItem("currency", c) } catch { /* localStorage write may fail */ }
           addToast({ title: "Currency Changed", message: `Active display currency set to ${c}.`, type: "info" })
         }}
         currentUser={currentUser}
@@ -749,7 +882,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
           currency={currency}
           setCurrency={(c) => {
             setCurrency(c)
-            try { localStorage.setItem("currency", c) } catch (e) {}
+            try { localStorage.setItem("currency", c) } catch { /* localStorage write may fail */ }
             addToast({ title: "Currency Changed", message: `Switched to ${c}.`, type: "info" })
           }}
           currentUser={currentUser}
@@ -771,7 +904,7 @@ export default function Dashboard({ defaultTab = "overview" }) {
             currency={currency}
             setCurrency={(c) => {
               setCurrency(c)
-              try { localStorage.setItem("currency", c) } catch (e) {}
+              try { localStorage.setItem("currency", c) } catch { /* localStorage write may fail */ }
             }}
             recurringCount={recurringCount}
             goalsCount={savingsGoals.length}
@@ -867,17 +1000,11 @@ export default function Dashboard({ defaultTab = "overview" }) {
                     setIsSavingsGoalsOpen(true)
                   }}
                   onOpenSubscriptions={() => setActiveTab("subscriptions")}
-                  onOpenOverview={() => {
-                    if (currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false) {
-                      handleCompleteOnboarding()
-                    } else {
-                      setActiveTab("overview")
-                    }
-                  }}
+                  onOpenOverview={() => setActiveTab("overview")}
                   onOpenAnalytics={() => setActiveTab("overview")}
                   onOpenCategoryEnvelopes={() => setIsEnvelopeModalOpen(true)}
                   onCompleteOnboarding={handleCompleteOnboarding}
-                  isOnboarding={Boolean(currentUser && !currentUser.isGuest && currentUser.hasCompletedOnboarding === false)}
+                  isOnboarding={false}
                   hasIncome={expenses.some(e => e.type === "income")}
                   hasExpense={expenses.some(e => e.type === "expense")}
                   hasBudgets={Object.values(categoryBudgets || {}).some(v => Number(v) > 0)}

@@ -11,19 +11,19 @@ export default function SubscriptionRadarModal({
   onClose,
   expenses = [],
   currencySymbol = "₹",
-  multiplier = 1,
+  _multiplier = 1,
   onOpenAddModal
 }) {
   // Extract all recurring expenses
   const recurringSubscriptions = useMemo(() => {
     if (!Array.isArray(expenses)) return []
 
+    const now = new Date()
     return expenses
       .filter(e => e.isRecurring && e.type === 'expense')
       .map(item => {
         // Calculate estimated next billing date (same day of next month)
-        const txDate = new Date(item.date || Date.now())
-        const now = new Date()
+        const txDate = new Date(item.date || now.getTime())
         const billingDay = txDate.getDate()
         // Clamp to the last day of the target month so a billing day of
         // 29/30/31 doesn't overflow into the following month (e.g. Jan 31 -> Mar 3)
@@ -50,6 +50,7 @@ export default function SubscriptionRadarModal({
       })
       .sort((a, b) => a.daysUntilRenewal - b.daysUntilRenewal)
   }, [expenses])
+
 
   // Summary Metrics
   const { monthlyBurn, annualBurn, upcomingCount } = useMemo(() => {

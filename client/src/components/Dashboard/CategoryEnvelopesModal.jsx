@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react"
-import { motion as Motion, AnimatePresence } from "framer-motion"
+import { motion, motion as Motion, AnimatePresence } from "framer-motion"
 import { Layers, X, CheckCircle2, ShieldAlert } from "lucide-react"
 import { formatNumber } from "../../utils/formatUtils"
 import { getCategoryStyle } from "../../utils/categoryColors"
@@ -233,7 +233,7 @@ export default function CategoryEnvelopesModal({
                         <div className="space-y-1.5">
                           <div className="flex items-center gap-3">
                             <div className="flex-1 h-1 bg-surface-inset rounded-full overflow-hidden flex">
-                              <motion.div
+                              <Motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${item.percent}%` }}
                                 transition={{ duration: 0.5, ease: "easeOut" }}

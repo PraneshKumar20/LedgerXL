@@ -13,9 +13,7 @@ import {
   ArrowRight,
   Edit2,
   Trash2,
-  Repeat,
-  Sparkles,
-  X
+  Repeat
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Sector } from "recharts"
 import FinancialHealthCard from "./FinancialHealthCard"
@@ -75,23 +73,6 @@ export default function OverviewView({
   const [internalActiveIndex, setInternalActiveIndex] = useState(null)
   const activeCategoryIndex = propActiveCategoryIndex !== undefined ? propActiveCategoryIndex : internalActiveIndex
   const setActiveCategoryIndex = propSetActiveCategoryIndex || setInternalActiveIndex
-
-  const [isGuideDismissed, setIsGuideDismissed] = useState(() => {
-    try {
-      return localStorage.getItem("ledgerxl_hide_guide_banner") === "true"
-    } catch {
-      return false
-    }
-  })
-
-  const handleDismissGuide = () => {
-    setIsGuideDismissed(true)
-    try {
-      localStorage.setItem("ledgerxl_hide_guide_banner", "true")
-    } catch {
-      // Ignore localStorage errors
-    }
-  }
 
   // High fidelity active donut slice shape with glowing outer halo
   const renderActiveShape = (props) => {
@@ -194,43 +175,6 @@ export default function OverviewView({
 
   return (
     <div className="space-y-6 sm:space-y-7">
-      {/* Beginner Guide Banner */}
-      {!isGuideDismissed && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 rounded-xl bg-surface-1 border border-border-default shadow-elevation-sm">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="h-8 w-8 rounded-lg bg-brand-subtle flex items-center justify-center shrink-0">
-              <Sparkles className="h-4 w-4 text-brand" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-xs font-semibold text-text-primary">
-                New to LedgerXL?
-              </p>
-              <p className="text-[11px] text-text-secondary truncate">
-                Learn how to track spending, set budgets, and understand your cash flow in 2 minutes.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
-            <button
-              onClick={() => setActiveTab("guide")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-surface-hover border border-border-default text-xs font-semibold text-brand transition-colors cursor-pointer"
-            >
-              <span>How to use LedgerXL?</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </button>
-            <button
-              type="button"
-              onClick={handleDismissGuide}
-              className="p-1.5 text-text-muted hover:text-text-primary rounded-lg hover:bg-surface-hover transition-colors cursor-pointer shrink-0"
-              aria-label="Hide guide banner"
-              title="Hide guide banner"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* ================================================== */}
       {/* LEVEL 1 — FINANCIAL SNAPSHOT                       */}
       {/* Primary financial position: Net Balance & Budget  */}

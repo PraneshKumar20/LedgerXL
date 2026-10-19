@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
 import { formatNumber } from "../../utils/formatUtils"
-import { motion as Motion, AnimatePresence } from "framer-motion"
+import { motion, motion as Motion, AnimatePresence } from "framer-motion"
 import confetti from "canvas-confetti"
 import { 
   Target, Plus, Trash2, 
@@ -241,7 +241,7 @@ export default function SavingsGoalsModal({
             {/* New Goal Creator Inline Form */}
             <AnimatePresence>
               {isCreating && (
-                <motion.form
+                <Motion.form
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
@@ -324,7 +324,7 @@ export default function SavingsGoalsModal({
                       Save Target Goal
                     </button>
                   </div>
-                </motion.form>
+                </Motion.form>
               )}
             </AnimatePresence>
 
@@ -413,7 +413,7 @@ export default function SavingsGoalsModal({
                         </div>
 
                         <div className="relative h-2 w-full bg-surface-inset rounded-full overflow-hidden">
-                          <motion.div
+                          <Motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${progress}%` }}
                             transition={{ duration: 0.8, ease: "easeOut" }}
