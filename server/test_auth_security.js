@@ -215,6 +215,22 @@ async function main() {
     }
   });
 
+  await runAsyncTest("Signup rejects invalid email missing domain or TLD (400)", async () => {
+    const req = { body: { name: "John Doe", email: "johndoe@gmail", password: "Password123" } };
+    const res = createMockRes();
+    await Signup(req, res);
+    assert.strictEqual(res.statusCode, 400);
+    assert.match(res.body.message, /valid email address/i);
+  });
+
+  await runAsyncTest("Signup rejects password shorter than 6 characters (400)", async () => {
+    const req = { body: { name: "John Doe", email: "johndoe@example.com", password: "123" } };
+    const res = createMockRes();
+    await Signup(req, res);
+    assert.strictEqual(res.statusCode, 400);
+    assert.match(res.body.message, /at least 6 characters/i);
+  });
+
   await runAsyncTest("Login rejects missing fields (400)", async () => {
     const req = { body: { email: "alice@example.com" } };
     const res = createMockRes();
@@ -278,6 +294,71 @@ async function main() {
       const decoded = jwt.verify(res.body.token, TEST_SECRET);
       assert.strictEqual(decoded.id, userId.toString());
       assert.strictEqual(res.body.user.hasCompletedOnboarding, true, "Legacy user without hasCompletedOnboarding defaults to true");
+    } finally {
+      User.findOne = origFindOne;
+    }
+  });
+
+  await runAsyncTest("Login heals legacy account registered with missing .com (e.g. friend@gmail -> friend@gmail.com)", async () => {
+    const origFindOne = User.findOne;
+    try {
+      const userId = new mongoose.Types.ObjectId();
+      const hashedPassword = await bcrypt.hash("Password123", 10);
+      let saved = false;
+      const legacyDoc = {
+        _id: userId,
+        name: "My Friend",
+        email: "friend@gmail",
+        password: hashedPassword,
+        hasCompletedOnboarding: true,
+        save: async () => { saved = true; }
+      };
+
+      User.findOne = async (query) => {
+        if (query.email === "friend@gmail.com") return null; // Not found under .com
+        if (query.email === "friend@gmail") return legacyDoc; // Found under legacy typo
+        return null;
+      };
+
+      const req = { body: { email: "friend@gmail.com", password: "Password123" } };
+      const res = createMockRes();
+      await Login(req, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      assert.ok(res.body.token);
+      assert.strictEqual(saved, true, "Legacy account email should be healed in database");
+      assert.strictEqual(legacyDoc.email, "friend@gmail.com");
+    } finally {
+      User.findOne = origFindOne;
+    }
+  });
+
+  await runAsyncTest("Login accepts friend@gmail when registered as friend@gmail.com", async () => {
+    const origFindOne = User.findOne;
+    try {
+      const userId = new mongoose.Types.ObjectId();
+      const hashedPassword = await bcrypt.hash("Password123", 10);
+      const userDoc = {
+        _id: userId,
+        name: "My Friend",
+        email: "friend@gmail.com",
+        password: hashedPassword,
+        hasCompletedOnboarding: true
+      };
+
+      User.findOne = async (query) => {
+        if (query.email === "friend@gmail") return null; // No account with typo
+        if (query.email === "friend@gmail.com") return userDoc; // Target account
+        return null;
+      };
+
+      const req = { body: { email: "friend@gmail", password: "Password123" } };
+      const res = createMockRes();
+      await Login(req, res);
+
+      assert.strictEqual(res.statusCode, 200);
+      assert.ok(res.body.token);
+      assert.strictEqual(res.body.user.email, "friend@gmail.com");
     } finally {
       User.findOne = origFindOne;
     }
